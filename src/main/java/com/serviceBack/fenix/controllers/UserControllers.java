@@ -8,26 +8,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.generateJWT.JwtService;
-import com.serviceBack.fenix.interfaces.UsuariosInterface;
+import com.serviceBack.fenix.interfaces.UsuariosInterfaces;
 import com.serviceBack.fenix.models.NuevoUsuario;
 import com.serviceBack.fenix.models.Usuarios;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/usuarios")
-public class UsuariosControllers {
+public class UserControllers {
 
 	@Autowired
-	private UsuariosInterface service;
+	private UsuariosInterfaces service;
 
 	@PostMapping("/session")//Iniciar una nueva session de usuario
-	public String inicioSesion(@RequestBody Usuarios usuarios) {
+	public String startSession(@RequestBody Usuarios usuarios) {
 		System.out.println(usuarios.getSecrete_pass());
-		return service.iniciSession(usuarios);
+		return service.startSession(usuarios);
 	}
 	
-	@PostMapping("/crear_usuario")//Crear un usuario nuevo
-	public String crearNuevoUsuario(@RequestBody NuevoUsuario nuevoUsuario) {
-		return service.nuevoUsuario(nuevoUsuario);
+	@PostMapping("/create_user")//Crear un usuario nuevo
+	public String createUserCtr(@RequestBody NuevoUsuario nuevoUsuario) {
+		return service.createUser(nuevoUsuario);
 	}	
 }
