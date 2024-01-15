@@ -1,106 +1,116 @@
 package com.serviceBack.fenix.models;
 
-
-
 public class Ingresos {
-	private String usuario;
-	private String nit;
-	private String canalDigital;
-	private String fechaGarita;
-	private String fechaBodega;
-	private String fechaOperativa;
-	private String documento;
-	private String codigoQR;
-	private int bultos;
-	private double cif;
-	private double impuestos;
 
-	public String getUsuario() {
-		return usuario;
-	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
+    private String usuario;
+    private String nit;
+    private String canalDigital;
+    private String fechaGarita;
+    private String fechaBodega;
+    private String fechaOperativa;
+    private String documento;
+    private String codigoQR;
+    private int bultos;
+    private double cif;
+    private double impuestos;
+    private String idTransaccion;
 
-	public String getNit() {
-		return nit;
-	}
 
-	public void setNit(String nit) {
-		this.nit = nit;
-	}
+    public String getUsuario() {
+        return usuario;
+    }
 
-	public String getCanalDigital() {
-		return canalDigital;
-	}
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
 
-	public void setCanalDigital(String canalDigital) {
-		this.canalDigital = canalDigital;
-	}
+    public String getNit() {
+        return nit;
+    }
 
-	public String getFechaGarita() {
-		return fechaGarita;
-	}
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
 
-	public void setFechaGarita(String fechaGarita) {
-		this.fechaGarita = fechaGarita;
-	}
+    public String getCanalDigital() {
+        return canalDigital;
+    }
 
-	public String getFechaBodega() {
-		return fechaBodega;
-	}
+    public void setCanalDigital(String canalDigital) {
+        this.canalDigital = canalDigital;
+    }
 
-	public void setFechaBodega(String fechaBodega) {
-		this.fechaBodega = fechaBodega;
-	}
+    public String getFechaGarita() {
+        return fechaGarita;
+    }
 
-	public String getFechaOperativa() {
-		return fechaOperativa;
-	}
+    public void setFechaGarita(String fechaGarita) {
+        this.fechaGarita = fechaGarita;
+    }
 
-	public void setFechaOperativa(String fechaOperativa) {
-		this.fechaOperativa = fechaOperativa;
-	}
+    public String getFechaBodega() {
+        return fechaBodega;
+    }
 
-	public String getDocumento() {
-		return documento;
-	}
+    public void setFechaBodega(String fechaBodega) {
+        this.fechaBodega = fechaBodega;
+    }
 
-	public void setDocumento(String documento) {
-		this.documento = documento;
-	}
+    public String getFechaOperativa() {
+        return fechaOperativa;
+    }
 
-	public String getCodigoQR() {
-		return codigoQR;
-	}
+    public void setFechaOperativa(String fechaOperativa) {
+        this.fechaOperativa = fechaOperativa;
+    }
 
-	public void setCodigoQR(String codigoQR) {
-		this.codigoQR = codigoQR;
-	}
+    public String getDocumento() {
+        return documento;
+    }
 
-	public int getBultos() {
-		return bultos;
-	}
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
 
-	public void setBultos(int bultos) {
-		this.bultos = bultos;
-	}
+    public String getCodigoQR() {
+        return codigoQR;
+    }
 
-	public double getCif() {
-		return cif;
-	}
+    public void setCodigoQR(String codigoQR) {
+        this.codigoQR = codigoQR;
+    }
 
-	public void setCif(double cif) {
-		this.cif = cif;
-	}
+    public int getBultos() {
+        return bultos;
+    }
 
-	public double getImpuestos() {
-		return impuestos;
-	}
+    public void setBultos(int bultos) {
+        this.bultos = bultos;
+    }
 
-	public void setImpuestos(double impuestos) {
-		this.impuestos = impuestos;
-	}
+    public double getCif() {
+        return cif;
+    }
+
+    public void setCif(double cif) {
+        this.cif = cif;
+    }
+
+    public double getImpuestos() {
+        return impuestos;
+    }
+
+    public void setImpuestos(double impuestos) {
+        this.impuestos = impuestos;
+    }
+
+    public String getIdTransaccion() {
+        return idTransaccion;
+    }
+
+    public void setIdTransaccion(String idTransaccion) {
+        this.idTransaccion = idTransaccion;
+    }
 
 }

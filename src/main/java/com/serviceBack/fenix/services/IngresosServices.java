@@ -1,12 +1,14 @@
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.controllers.Code_OTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
-import com.serviceBack.fenix.utils.ResponseService;
+import com.serviceBack.fenix.Util.ResponseService;
+import commons.StoredProcedures;
 
 import org.springframework.dao.DataAccessException;
 
@@ -21,25 +23,30 @@ public class IngresosServices implements IngresosInterfaces {
     }
 
     @Override
-    public ResponseService createIngresos(Ingresos ingresos) {
+    public ResponseService createIngresos(Ingresos ingreso) {
         ResponseService response = new ResponseService();
 
-        String sqlQuery = "SELECT * FROM corebyte.transaccion_ingresos";
-        System.out.println(sqlQuery);
+        StoredProcedures stored = new StoredProcedures();
+        // Crear un objeto StringBuilder
+        StringBuilder queryString = new StringBuilder();
 
+        // Agregar cada parte de la cadena utilizando el método append
+        queryString.append(stored.CALL_UPDATE_INGRESO).append("('")
+                .append(ingreso.getUsuario()).append("',")
+                .append("").append(ingreso.getIdTransaccion()).append(",")
+                .append("'").append(ingreso.getNit()).append("',")
+                .append("'").append(ingreso.getCanalDigital()).append("',")
+                .append("'").append(ingreso.getFechaOperativa()).append("',")
+                .append("'").append(ingreso.getDocumento()).append("',")
+                .append("'").append(ingreso.getCodigoQR()).append("',")
+                .append("'").append(ingreso.getBultos()).append("',")
+                .append("'").append(ingreso.getCif()).append("',")
+                .append("'").append(ingreso.getImpuestos()).append("')");
+
+        System.out.println("queryString> " + queryString.toString());
+        // Obtener la cadena final
         try {
-            jdbcTemplate.query(sqlQuery, rs -> {
-                // Verificar si hay al menos una fila en el ResultSet
-                if (rs.next()) {
-                    // TODO: Implementa tu lógica para extraer datos del ResultSet
-                    System.out.println("conectado a db corebyte canal digital>>> " + rs.getString("canal_digital"));
-                    return rs.getString("canal_digital");  // Utiliza 1 en lugar de 0
-                } else {
-                    // Manejar el caso donde no hay filas en el ResultSet
-                    System.out.println("No hay filas en el ResultSet");
-                    return null;  // Otra opción sería lanzar una excepción indicando que no hay datos
-                }
-            });
+            jdbcTemplate.update(queryString.toString());
         } catch (DataAccessException e) {
             System.out.println("DataAccessException: " + e.getMessage());
             e.printStackTrace();  // Imprime la traza completa del error para diagnóstico
@@ -52,5 +59,21 @@ public class IngresosServices implements IngresosInterfaces {
         response.setData("Ok");
 
         return response;
+    }
+
+    @Override
+    public String createOTPIng(Code_OTP code_OTP) {
+        ResponseService response = new ResponseService();
+
+        StoredProcedures stored = new StoredProcedures();
+        // Crear un objeto StringBuilder
+        StringBuilder queryString = new StringBuilder();
+        queryString.append(stored.CALL_INSERT_OTP_CODE).append("('").append(code_OTP.getIdTransaccion()).append("','").append(code_OTP.getArea()).append("')");
+        System.out.println("queryString>> " + queryString.toString());
+        response.setCodeResponse("00");
+        response.setMessageResponse("Ingreso creado exitosamente");
+        response.setData("Ok");
+
+        return "hola";
     }
 }

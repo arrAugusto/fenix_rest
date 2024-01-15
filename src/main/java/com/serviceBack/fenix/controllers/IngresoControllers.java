@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
-import com.serviceBack.fenix.utils.ResponseService;
+import com.serviceBack.fenix.Util.ResponseService;
 
 @RestController
 @CrossOrigin("*")
@@ -20,7 +20,12 @@ public class IngresoControllers {
     private IngresosInterfaces service;
 
     @PostMapping("/crearte_ingreso")//Iniciar una nueva session de usuario
-    public ResponseService startSession(@RequestBody Ingresos ingresos) {
+    public ResponseService createIngreso(@RequestBody Ingresos ingresos) {
         return service.createIngresos(ingresos);
     }
+    
+    @PostMapping("/create_opt")//Iniciar una nueva session de usuario
+    public String crearOTPCode(@RequestBody Code_OTP code_OTP) {
+        return service.createOTPIng(code_OTP);
+    }    
 }
