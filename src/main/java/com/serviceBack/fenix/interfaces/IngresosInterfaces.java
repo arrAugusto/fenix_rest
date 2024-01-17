@@ -2,7 +2,7 @@ package com.serviceBack.fenix.interfaces;
 
 import com.serviceBack.fenix.controllers.Code_OTP;
 import com.serviceBack.fenix.models.Ingresos;
-import com.serviceBack.fenix.Util.ResponseService;
+import com.serviceBack.fenix.Utils.ResponseService;
 
 public interface IngresosInterfaces {
 

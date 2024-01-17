@@ -1,116 +1,124 @@
 package com.serviceBack.fenix.models;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMax;
+
 public class Ingresos {
 
+	@Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
+	private String usuario;
 
-    private String usuario;
-    private String nit;
-    private String canalDigital;
-    private String fechaGarita;
-    private String fechaBodega;
-    private String fechaOperativa;
-    private String documento;
-    private String codigoQR;
-    private int bultos;
-    private double cif;
-    private double impuestos;
-    private String idTransaccion;
+	@Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
+	private String nit;
 
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
+	private String canalDigital;
 
-    public String getUsuario() {
-        return usuario;
-    }
+	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
+	private String fechaOperativa;
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
+	@Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
+	private String documento;
 
-    public String getNit() {
-        return nit;
-    }
+	@Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+	private String codigoQR;
 
-    public void setNit(String nit) {
-        this.nit = nit;
-    }
+	@Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
+	@Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
+	private int bultos;
 
-    public String getCanalDigital() {
-        return canalDigital;
-    }
+	@DecimalMin(value = "0.0", inclusive = false, message = "El valor debe ser mayor que {value}")
+	@DecimalMax(value = "99999999.0", inclusive = false, message = "El valor debe ser menor que {value}")
+	private Double cif;
 
-    public void setCanalDigital(String canalDigital) {
-        this.canalDigital = canalDigital;
-    }
+	@DecimalMin(value = "0.0", inclusive = false, message = "El valor debe ser mayor que {value}")
+	@DecimalMax(value = "10000000.0", inclusive = false, message = "El valor debe ser menor que {value}")
+	private Double impuestos;
 
-    public String getFechaGarita() {
-        return fechaGarita;
-    }
+	@Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
+	private String idTransaccion;
 
-    public void setFechaGarita(String fechaGarita) {
-        this.fechaGarita = fechaGarita;
-    }
+	public String getUsuario() {
+		return usuario;
+	}
 
-    public String getFechaBodega() {
-        return fechaBodega;
-    }
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
 
-    public void setFechaBodega(String fechaBodega) {
-        this.fechaBodega = fechaBodega;
-    }
+	public String getNit() {
+		return nit;
+	}
 
-    public String getFechaOperativa() {
-        return fechaOperativa;
-    }
+	public void setNit(String nit) {
+		this.nit = nit;
+	}
 
-    public void setFechaOperativa(String fechaOperativa) {
-        this.fechaOperativa = fechaOperativa;
-    }
+	public String getCanalDigital() {
+		return canalDigital;
+	}
 
-    public String getDocumento() {
-        return documento;
-    }
+	public void setCanalDigital(String canalDigital) {
+		this.canalDigital = canalDigital;
+	}
 
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
+	public String getFechaOperativa() {
+		return fechaOperativa;
+	}
 
-    public String getCodigoQR() {
-        return codigoQR;
-    }
+	public void setFechaOperativa(String fechaOperativa) {
+		this.fechaOperativa = fechaOperativa;
+	}
 
-    public void setCodigoQR(String codigoQR) {
-        this.codigoQR = codigoQR;
-    }
+	public String getDocumento() {
+		return documento;
+	}
 
-    public int getBultos() {
-        return bultos;
-    }
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
 
-    public void setBultos(int bultos) {
-        this.bultos = bultos;
-    }
+	public String getCodigoQR() {
+		return codigoQR;
+	}
 
-    public double getCif() {
-        return cif;
-    }
+	public void setCodigoQR(String codigoQR) {
+		this.codigoQR = codigoQR;
+	}
 
-    public void setCif(double cif) {
-        this.cif = cif;
-    }
+	public int getBultos() {
+		return bultos;
+	}
 
-    public double getImpuestos() {
-        return impuestos;
-    }
+	public void setBultos(int bultos) {
+		this.bultos = bultos;
+	}
 
-    public void setImpuestos(double impuestos) {
-        this.impuestos = impuestos;
-    }
+	public Double getCif() {
+		return cif;
+	}
 
-    public String getIdTransaccion() {
-        return idTransaccion;
-    }
+	public void setCif(Double cif) {
+		this.cif = cif;
+	}
 
-    public void setIdTransaccion(String idTransaccion) {
-        this.idTransaccion = idTransaccion;
-    }
+	public Double getImpuestos() {
+		return impuestos;
+	}
+
+	public void setImpuestos(Double impuestos) {
+		this.impuestos = impuestos;
+	}
+
+	public String getIdTransaccion() {
+		return idTransaccion;
+	}
+
+	public void setIdTransaccion(String idTransaccion) {
+		this.idTransaccion = idTransaccion;
+	}
 
 }

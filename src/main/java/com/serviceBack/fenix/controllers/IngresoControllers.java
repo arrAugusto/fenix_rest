@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
-import com.serviceBack.fenix.Util.ResponseService;
+import com.serviceBack.fenix.Utils.ResponseService;
+import javax.validation.Valid;
 
 @RestController
 @CrossOrigin("*")
@@ -20,7 +21,7 @@ public class IngresoControllers {
     private IngresosInterfaces service;
 
     @PostMapping("/crearte_ingreso")//Iniciar una nueva session de usuario
-    public ResponseService createIngreso(@RequestBody Ingresos ingresos) {
+    public ResponseService createIngreso(@RequestBody @Valid Ingresos ingresos) {
         return service.createIngresos(ingresos);
     }
     

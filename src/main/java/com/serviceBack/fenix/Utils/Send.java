@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package com.serviceBack.fenix.Util;
+package com.serviceBack.fenix.Utils;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

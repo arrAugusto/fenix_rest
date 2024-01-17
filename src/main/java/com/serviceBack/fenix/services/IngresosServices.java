@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
-import com.serviceBack.fenix.Util.ResponseService;
+import com.serviceBack.fenix.Utils.ResponseService;
 import commons.StoredProcedures;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import org.springframework.dao.DataAccessException;
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
@@ -27,36 +29,64 @@ public class IngresosServices implements IngresosInterfaces {
         ResponseService response = new ResponseService();
 
         StoredProcedures stored = new StoredProcedures();
-        // Crear un objeto StringBuilder
-        StringBuilder queryString = new StringBuilder();
 
-        // Agregar cada parte de la cadena utilizando el método append
-        queryString.append(stored.CALL_UPDATE_INGRESO).append("('")
-                .append(ingreso.getUsuario()).append("',")
-                .append("").append(ingreso.getIdTransaccion()).append(",")
-                .append("'").append(ingreso.getNit()).append("',")
-                .append("'").append(ingreso.getCanalDigital()).append("',")
-                .append("'").append(ingreso.getFechaOperativa()).append("',")
-                .append("'").append(ingreso.getDocumento()).append("',")
-                .append("'").append(ingreso.getCodigoQR()).append("',")
-                .append("'").append(ingreso.getBultos()).append("',")
-                .append("'").append(ingreso.getCif()).append("',")
-                .append("'").append(ingreso.getImpuestos()).append("')");
+        String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        System.out.println("queryString> " + queryString.toString());
-        // Obtener la cadena final
-        try {
-            jdbcTemplate.update(queryString.toString());
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessException: " + e.getMessage());
-            e.printStackTrace();  // Imprime la traza completa del error para diagnóstico
+        try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, ingreso.getUsuario());
+            preparedStatement.setString(2, ingreso.getIdTransaccion());
+            preparedStatement.setString(3, ingreso.getNit());
+            preparedStatement.setString(4, ingreso.getCanalDigital());
+            preparedStatement.setString(5, ingreso.getFechaOperativa());
+            preparedStatement.setString(6, ingreso.getDocumento());
+            preparedStatement.setString(7, ingreso.getCodigoQR());
+            preparedStatement.setInt(8, ingreso.getBultos());
+            preparedStatement.setDouble(9, ingreso.getCif());
+            preparedStatement.setDouble(10, ingreso.getImpuestos());
+
+            boolean queryResult = preparedStatement.execute();
+
+            if (queryResult) {
+                try (ResultSet rs = preparedStatement.getResultSet()) {
+                    if (rs.next()) {
+                        String responseValue = rs.getString("response");
+                        switch (responseValue) {
+                            case "0":
+                                response.setCodeResponse("00");
+                                response.setMessageResponse("Ingreso creado exitosamente");
+                                response.setData("Ok");
+                                break;
+                            case "1":
+                                response.setCodeResponse("09");
+                                response.setMessageResponse("idTransaccion duplicado, por favor vuelva a intentar");
+                                response.setData("Error");
+                                break;
+                            default:
+                                response.setCodeResponse("09");
+                                response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
+                                response.setData("Error");
+                                break;
+                        }
+                    }
+                }
+            } else {
+                response.setCodeResponse("09");
+                response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
+                response.setData("Error");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            e.printStackTrace();
+            response.setCodeResponse("500");
+            response.setMessageResponse("Error interno en el servidor " + e.getMessage());
+            response.setData("Error");
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            e.printStackTrace();  // Imprime la traza completa del error para diagnóstico
+            e.printStackTrace();
+            response.setCodeResponse("500");
+            response.setMessageResponse("Error interno en el servidor " + e.getMessage());
+            response.setData("Error");
         }
-        response.setCodeResponse("00");
-        response.setMessageResponse("Ingreso creado exitosamente");
-        response.setData("Ok");
 
         return response;
     }
@@ -68,7 +98,7 @@ public class IngresosServices implements IngresosInterfaces {
         StoredProcedures stored = new StoredProcedures();
         // Crear un objeto StringBuilder
         StringBuilder queryString = new StringBuilder();
-        queryString.append(stored.CALL_INSERT_OTP_CODE).append("('").append(code_OTP.getIdTransaccion()).append("','").append(code_OTP.getArea()).append("')");
+        queryString.append(stored.STORE_PROCEDURE_CALL_INSERT_OTP_CODE).append("('").append(code_OTP.getIdTransaccion()).append("','").append(code_OTP.getArea()).append("')");
         System.out.println("queryString>> " + queryString.toString());
         response.setCodeResponse("00");
         response.setMessageResponse("Ingreso creado exitosamente");
