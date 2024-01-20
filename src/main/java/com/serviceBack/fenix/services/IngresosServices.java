@@ -9,6 +9,7 @@ import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.Utils.Send;
+import com.serviceBack.fenix.models.DetallesIngreso;
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +18,7 @@ import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
-
+    
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
 
@@ -26,14 +27,14 @@ public class IngresosServices implements IngresosInterfaces {
         this.jdbcTemplate = jdbcTemplate;
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
     }
-
+    
     @Override
     public ResponseService createIngresos(Ingresos ingreso) {
         ResponseService response = new ResponseService();
-
+        
         Send sendMail = new Send();
         String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+        
         try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
                 .prepareStatement(query)) {
             preparedStatement.setString(1, ingreso.getUsuario());
@@ -46,9 +47,10 @@ public class IngresosServices implements IngresosInterfaces {
             preparedStatement.setInt(8, ingreso.getBultos());
             preparedStatement.setDouble(9, ingreso.getCif());
             preparedStatement.setDouble(10, ingreso.getImpuestos());
-
+            LOGGER.info(preparedStatement.toString());
+            
             boolean queryResult = preparedStatement.execute();
-
+            
             ResponseService res = resultCheck(response, queryResult, preparedStatement);
             if (!res.getCodeResponse().equals("00")) {
                 return res;
@@ -72,9 +74,9 @@ public class IngresosServices implements IngresosInterfaces {
 
             // Registrar el error en el log
             LOGGER.info(errorMessage);
-
+            
         } catch (Exception e) {
-
+            
             response.setCodeResponse("500");
             response.setMessageResponse("Error interno en el servidor " + e.getMessage());
             response.setData("Error");
@@ -92,29 +94,19 @@ public class IngresosServices implements IngresosInterfaces {
             sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
             // Registrar el error en el log
             LOGGER.info(errorMessage);
-
+            
         }
-
+        
         return response;
     }
-
+    
     @Override
-    public String createOTPIng(Code_OTP code_OTP) {
-        ResponseService response = new ResponseService();
-
-        StoredProcedures stored = new StoredProcedures();
-        // Crear un objeto StringBuilder
-        StringBuilder queryString = new StringBuilder();
-        queryString.append(stored.STORE_PROCEDURE_CALL_INSERT_OTP_CODE).append("('").append(code_OTP.getIdTransaccion())
-                .append("','").append(code_OTP.getArea()).append("')");
-        System.out.println("queryString>> " + queryString.toString());
-        response.setCodeResponse("00");
-        response.setMessageResponse("Ingreso creado exitosamente");
-        response.setData("Ok");
-
+    public String crearItems(DetallesIngreso detalles) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(detalles.getBultos());
         return "hola";
     }
-
+    
     public ResponseService resultCheck(ResponseService response, boolean queryResult, PreparedStatement preparedStatement) throws SQLException {
         if (queryResult) {
             try (ResultSet rs = preparedStatement.getResultSet()) {
@@ -140,12 +132,12 @@ public class IngresosServices implements IngresosInterfaces {
                 }
             }
         } else {
-
+            
             response.setCodeResponse("09");
             response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
             response.setData("Error");
         }
-
+        
         return response;
     }
 }
