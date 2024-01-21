@@ -29,7 +29,7 @@ public class DetallesIngreso {
     private int bultos;
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String cliente;
-    private List<Items> items;
+    private List<Items> Items;
 
     public int getId() {
         return id;
@@ -72,11 +72,11 @@ public class DetallesIngreso {
     }
 
     public List<Items> getItems() {
-        return items;
+        return Items;
     }
 
-    public void setItems(List<Items> items) {
-        this.items = items;
+    public void setItems(List<Items> Items) {
+        this.Items = Items;
     }
 
 }

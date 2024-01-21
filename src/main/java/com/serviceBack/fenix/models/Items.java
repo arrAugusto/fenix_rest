@@ -18,7 +18,7 @@ public class Items {
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int bultos;
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
-    private String clientes;
+    private String cliente;
 
     public int getBultos() {
         return bultos;
@@ -28,12 +28,12 @@ public class Items {
         this.bultos = bultos;
     }
 
-    public String getClientes() {
-        return clientes;
+    public String getCliente() {
+        return cliente;
     }
 
-    public void setClientes(String clientes) {
-        this.clientes = clientes;
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
 }

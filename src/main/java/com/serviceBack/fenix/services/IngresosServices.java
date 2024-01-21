@@ -18,7 +18,7 @@ import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
-    
+
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
 
@@ -27,14 +27,14 @@ public class IngresosServices implements IngresosInterfaces {
         this.jdbcTemplate = jdbcTemplate;
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
     }
-    
+
     @Override
     public ResponseService createIngresos(Ingresos ingreso) {
         ResponseService response = new ResponseService();
-        
+
         Send sendMail = new Send();
         String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
                 .prepareStatement(query)) {
             preparedStatement.setString(1, ingreso.getUsuario());
@@ -48,10 +48,10 @@ public class IngresosServices implements IngresosInterfaces {
             preparedStatement.setDouble(9, ingreso.getCif());
             preparedStatement.setDouble(10, ingreso.getImpuestos());
             LOGGER.info(preparedStatement.toString());
-            
+
             boolean queryResult = preparedStatement.execute();
-            
-            ResponseService res = resultCheck(response, queryResult, preparedStatement);
+
+            ResponseService res = resultCheckIngreso(response, queryResult, preparedStatement);
             if (!res.getCodeResponse().equals("00")) {
                 return res;
             }
@@ -74,9 +74,9 @@ public class IngresosServices implements IngresosInterfaces {
 
             // Registrar el error en el log
             LOGGER.info(errorMessage);
-            
+
         } catch (Exception e) {
-            
+
             response.setCodeResponse("500");
             response.setMessageResponse("Error interno en el servidor " + e.getMessage());
             response.setData("Error");
@@ -94,20 +94,47 @@ public class IngresosServices implements IngresosInterfaces {
             sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
             // Registrar el error en el log
             LOGGER.info(errorMessage);
-            
+
         }
-        
+
         return response;
     }
-    
+
     @Override
     public String crearItems(DetallesIngreso detalles) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println(detalles.getBultos());
+        int bultosItems = 0;
+        for (int i = 0; i < detalles.getItems().size(); i++) {
+            bultosItems += detalles.getItems().get(i).getBultos();
+        }
+        if (bultosItems == detalles.getBultos()) {
+
+            String queryItems = stored.STORE_PROCEDURE_CALL_INSERT_ITEM + "(?,?,?,?)";
+            for (int i = 0; i < detalles.getItems().size(); i++) {
+                bultosItems = bultosItems + detalles.getItems().get(i).getBultos();
+
+                try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
+                        .prepareStatement(queryItems)) {
+                    preparedStatement.setInt(1, detalles.getIdIngreso());
+                    preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
+                    preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
+                    preparedStatement.setString(4, detalles.getItems().get(i).getCliente());
+                    LOGGER.info(preparedStatement.toString());
+
+                    int rowsAffected = preparedStatement.executeUpdate();
+                    System.out.println("Rows affected: " + rowsAffected);
+                } catch (Exception e) {
+
+                }
+                System.out.println(">> " + i);
+            }
+        } else {
+
+        }
+        System.out.println(detalles.getItems().toString());
         return "hola";
     }
-    
-    public ResponseService resultCheck(ResponseService response, boolean queryResult, PreparedStatement preparedStatement) throws SQLException {
+
+    public ResponseService resultCheckIngreso(ResponseService response, boolean queryResult, PreparedStatement preparedStatement) throws SQLException {
         if (queryResult) {
             try (ResultSet rs = preparedStatement.getResultSet()) {
                 if (rs.next()) {
@@ -132,12 +159,12 @@ public class IngresosServices implements IngresosInterfaces {
                 }
             }
         } else {
-            
+
             response.setCodeResponse("09");
             response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
             response.setData("Error");
         }
-        
+
         return response;
     }
 }
