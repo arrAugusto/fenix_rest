@@ -11,11 +11,14 @@ import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
 import com.serviceBack.fenix.models.DetallesIngreso;
+import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 
 @Service
@@ -199,5 +202,39 @@ public class IngresosServices implements IngresosInterfaces {
         }
 
         return response;
+    }
+
+    @Override
+    public GetDetalleIngreso getItems(String idTransaccion) {
+        GetDetalleIngreso getDetalleIngreso = new GetDetalleIngreso();
+        String queryGetItem = stored.STORE_PROCEDURE_CALL_GET_ITEMS + "(?)";
+        try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
+                .prepareStatement(queryGetItem)) {
+            preparedStatement.setInt(1, Integer.parseInt(idTransaccion));
+            boolean queryResult = preparedStatement.execute();
+            if (queryResult) {
+                try (ResultSet rs = preparedStatement.getResultSet()) {
+                    if (rs.next()) {
+                        System.out.println(preparedStatement.toString());
+
+                        getDetalleIngreso.setIdTrasaccionItem(rs.getString("idTransaccion"));
+                        getDetalleIngreso.setFechaOperativaItem(rs.getString("fecha_operativa"));
+                        getDetalleIngreso.setDocumentoItem(rs.getString("documento"));
+                        getDetalleIngreso.setCodigoQRItem(rs.getString("codigo_QR"));
+                        getDetalleIngreso.setTotalBultosItem(Integer.parseInt(rs.getString("total_bultos")));
+                        getDetalleIngreso.setTotalCifItem(Float.parseFloat(rs.getString("total_cif")));
+                        getDetalleIngreso.setTotalImpuestosItem(Float.parseFloat(rs.getString("total_impuestos")));
+                        getDetalleIngreso.getItems().setBultos(Integer.parseInt(rs.getString("bultos")));
+                        getDetalleIngreso.getItems().setCliente(rs.getString("cliente"));
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
+        return getDetalleIngreso;
     }
 }

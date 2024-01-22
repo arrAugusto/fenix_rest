@@ -19,6 +19,9 @@ public class StoredProcedures {
     //INSERTAR NUEVO ITEM DE INGRESO
     public final String STORE_PROCEDURE_CALL_INSERT_ITEM = "CALL INSERT_ITEM";
     
+    //MOSTRAR NUEVO ITEM DE INGRESO
+    public final String STORE_PROCEDURE_CALL_GET_ITEMS = "CALL GET_ITEMS_INGRESO";
+    
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
     public final String mailTO = "argomez120@gmail.com";
 

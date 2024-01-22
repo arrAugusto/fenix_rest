@@ -24,8 +24,6 @@ public class Items {
     public String toString() {
         return "Items{" + "bultos=" + bultos + ", cliente=" + cliente + '}';
     }
-
-    
     
     public int getBultos() {
         return bultos;
