@@ -20,6 +20,13 @@ public class Items {
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String cliente;
 
+    @Override
+    public String toString() {
+        return "Items{" + "bultos=" + bultos + ", cliente=" + cliente + '}';
+    }
+
+    
+    
     public int getBultos() {
         return bultos;
     }

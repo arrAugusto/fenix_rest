@@ -20,10 +20,10 @@ public class StoredProcedures {
     public final String STORE_PROCEDURE_CALL_INSERT_ITEM = "CALL INSERT_ITEM";
     
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
-    public final String mailTO = "";
+    public final String mailTO = "argomez120@gmail.com";
 
-    public final String mailFROM = "";
+    public final String mailFROM = "agomezc6@miumg.edu.gt";
 
-    public final String PWD = "";
+    public final String PWD = "zxvi pyfq vwrb qkab";
 
 }

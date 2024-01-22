@@ -15,36 +15,29 @@ import javax.validation.constraints.Pattern;
  */
 public class DetallesIngreso {
 
-    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int id;
-    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int idIngreso;
+    @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
+    private String idTransaccion;
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int idUsuarioOperativo;
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int bultos;
+    private int totalBultos;
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String cliente;
     private List<Items> Items;
 
-    public int getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "DetallesIngreso{" + "idTransaccion=" + idTransaccion + ", totalBultos=" + totalBultos + '}';
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getIdTransaccion() {
+        return idTransaccion;
     }
 
-    public int getIdIngreso() {
-        return idIngreso;
-    }
-
-    public void setIdIngreso(int idIngreso) {
-        this.idIngreso = idIngreso;
+    public void setIdTransaccion(String idTransaccion) {
+        this.idTransaccion = idTransaccion;
     }
 
     public int getIdUsuarioOperativo() {
@@ -55,12 +48,12 @@ public class DetallesIngreso {
         this.idUsuarioOperativo = idUsuarioOperativo;
     }
 
-    public int getBultos() {
-        return bultos;
+    public int getTotalBultos() {
+        return totalBultos;
     }
 
-    public void setBultos(int bultos) {
-        this.bultos = bultos;
+    public void setTotalBultos(int totalBultos) {
+        this.totalBultos = totalBultos;
     }
 
     public String getCliente() {

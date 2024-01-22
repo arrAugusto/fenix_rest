@@ -11,6 +11,7 @@ import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.models.DetallesIngreso;
+import com.serviceBack.fenix.models.ItemsFail;
 import javax.validation.Valid;
 
 @RestController
@@ -27,7 +28,7 @@ public class IngresoControllers {
     }
 
     @PostMapping("/items")//Iniciar una nueva session de usuario
-    public String crearOTPCode(@RequestBody @Valid DetallesIngreso detalles) {
+    public ItemsFail crearOTPCode(@RequestBody @Valid DetallesIngreso detalles) {
         return service.crearItems(detalles);
     }
 }
