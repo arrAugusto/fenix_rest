@@ -17,9 +17,9 @@ import commons.StoredProcedures;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
+import org.springframework.jdbc.core.RowMapper;
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
@@ -28,6 +28,7 @@ public class IngresosServices implements IngresosInterfaces {
     private final StoredProcedures stored; // Nueva variable de instancia
     private final Send sendMail;
     private final SendMailIngresos sendMailIng;
+    private final ResponseService response;
 
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
@@ -35,11 +36,12 @@ public class IngresosServices implements IngresosInterfaces {
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
         this.sendMail = new Send();
         this.sendMailIng = new SendMailIngresos();
+        this.response = new ResponseService();
     }
 
     @Override
     public ResponseService createIngresos(Ingresos ingreso) {
-        ResponseService response = new ResponseService();
+
         String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
@@ -204,37 +206,59 @@ public class IngresosServices implements IngresosInterfaces {
         return response;
     }
 
+    /*
+                           
+     */
     @Override
-    public GetDetalleIngreso getItems(String idTransaccion) {
-        GetDetalleIngreso getDetalleIngreso = new GetDetalleIngreso();
+    public List<GetDetalleIngreso> getItems(String idTransaccion) {
         String queryGetItem = stored.STORE_PROCEDURE_CALL_GET_ITEMS + "(?)";
-        try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-                .prepareStatement(queryGetItem)) {
-            preparedStatement.setInt(1, Integer.parseInt(idTransaccion));
-            boolean queryResult = preparedStatement.execute();
-            if (queryResult) {
-                try (ResultSet rs = preparedStatement.getResultSet()) {
-                    if (rs.next()) {
-                        System.out.println(preparedStatement.toString());
+        return jdbcTemplate.query(queryGetItem, new Object[]{idTransaccion}, new RowMapper<GetDetalleIngreso>() {
+            @Override
+            public GetDetalleIngreso mapRow(ResultSet rs, int rowNum) throws SQLException {
+                // Your mapping logic here to convert ResultSet to GetDetalleIngreso object
+                // For example:
 
-                        getDetalleIngreso.setIdTrasaccionItem(rs.getString("idTransaccion"));
-                        getDetalleIngreso.setFechaOperativaItem(rs.getString("fecha_operativa"));
-                        getDetalleIngreso.setDocumentoItem(rs.getString("documento"));
-                        getDetalleIngreso.setCodigoQRItem(rs.getString("codigo_QR"));
-                        getDetalleIngreso.setTotalBultosItem(Integer.parseInt(rs.getString("total_bultos")));
-                        getDetalleIngreso.setTotalCifItem(Float.parseFloat(rs.getString("total_cif")));
-                        getDetalleIngreso.setTotalImpuestosItem(Float.parseFloat(rs.getString("total_impuestos")));
-                        getDetalleIngreso.getItems().setBultos(Integer.parseInt(rs.getString("bultos")));
-                        getDetalleIngreso.getItems().setCliente(rs.getString("cliente"));
-                    }
+                try {
+                    GetDetalleIngreso detalleIngreso = new GetDetalleIngreso();
+                    detalleIngreso.setIdTrasaccionItem(rs.getString("idTransaccion"));
+                    detalleIngreso.setFechaOperativaItem(rs.getString("fecha_operativa"));
+                    detalleIngreso.setDocumentoItem(rs.getString("documento"));
+                    detalleIngreso.setCodigoQRItem(rs.getString("codigo_QR"));
+                    detalleIngreso.setTotalBultosItem(Integer.parseInt(rs.getString("total_bultos")));
+                    detalleIngreso.setTotalCifItem(Float.parseFloat(rs.getString("total_cif")));
+                    detalleIngreso.setTotalImpuestosItem(Float.parseFloat(rs.getString("total_impuestos")));
+
+                    detalleIngreso.setBultosItems(Integer.parseInt(rs.getString("bultos")));
+                    detalleIngreso.setCliente(rs.getString("cliente"));
+
+                    // Set other properties as needed
+                    return detalleIngreso;
                 } catch (Exception e) {
+                    LOGGER.error("Error al procesar el resultado del ResultSet", e);
+                    // Resto del código...
 
+                    response.setCodeResponse("500");
+                    response.setMessageResponse("Error interno en el servidor " + e.getMessage());
+                    response.setData("Error");
+                    // Obtener información sobre la clase y la línea
+                    StackTraceElement callerInfo = Thread.currentThread().getStackTrace()[1];
+                    String fileName = callerInfo.getFileName();
+                    String className = callerInfo.getClassName();
+                    int lineNumber = callerInfo.getLineNumber();
+
+                    // Construir el mensaje de error
+                    String errorMessage = "Error interno del servidor: [fileName: '" + fileName + "', className: '" + className
+                            + "', lineNumber: " + lineNumber + ", errorMessage: '" + e.getMessage() + "']";
+
+                    // Enviar correo electrónico de alerta
+                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
+                    // Registrar el error en el log
+                    LOGGER.info(errorMessage);
+
+                    return null;
                 }
             }
-        } catch (Exception e) {
+        });
 
-        }
-
-        return getDetalleIngreso;
     }
 }

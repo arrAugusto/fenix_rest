@@ -15,5 +15,5 @@ public interface IngresosInterfaces {
         public ItemsFail crearItems(DetallesIngreso detalles);
         
         //Mostrar Items de un ingreso
-        public GetDetalleIngreso getItems(String idTransaccion);
+        public List<GetDetalleIngreso> getItems(String idTransaccion);
 }

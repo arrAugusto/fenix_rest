@@ -19,7 +19,8 @@ public class GetDetalleIngreso {
     private int totalBultosItem;
     private float totalCifItem;
     private float totalImpuestosItem;
-    private Items items;
+    private int bultosItems;
+    private String cliente;
 
     public String getIdTrasaccionItem() {
         return idTrasaccionItem;
@@ -77,12 +78,20 @@ public class GetDetalleIngreso {
         this.totalImpuestosItem = totalImpuestosItem;
     }
 
-    public Items getItems() {
-        return items;
+    public int getBultosItems() {
+        return bultosItems;
     }
 
-    public void setItems(Items items) {
-        this.items = items;
+    public void setBultosItems(int bultosItems) {
+        this.bultosItems = bultosItems;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
 }

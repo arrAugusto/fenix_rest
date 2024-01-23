@@ -38,7 +38,7 @@ public class IngresoControllers {
     }
 
     @GetMapping("/items/{idTransaccion}")//Iniciar una nueva session de usuario
-    public GetDetalleIngreso getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
+    public List<GetDetalleIngreso> getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
         return service.getItems(idTransaccion);
     }
 }
