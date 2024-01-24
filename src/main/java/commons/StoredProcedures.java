@@ -21,7 +21,16 @@ public class StoredProcedures {
     
     //MOSTRAR NUEVO ITEM DE INGRESO
     public final String STORE_PROCEDURE_CALL_GET_ITEMS = "CALL GET_ITEMS_INGRESO";
+
+    //GET NIT {CALL GET_NIT('51611');}
+    public final String STORE_PROCEDURE_CALL_GET_NIT = "CALL GET_NIT";
+
+    //NUEVO NIT {CALL INSERT_NIT_CLIENT('2330675310101', 'CUI', 'LUIS MIGUEL CORADO', 'GUATEMALA VILLA NUEVA', 'agomezc6@miumg.edu.gt', 'A');}
+    public final String STORE_PROCEDURE_CALL_NEW_NIT = "CALL UPDATE_CLIENTE";
     
+    //MODIFICAR NIT {CALL INSERT_NIT_CLIENT('2330675310101', 'CUI', 'LUIS MIGUEL CORADO', 'GUATEMALA VILLA NUEVA', 'agomezc6@miumg.edu.gt', 'A');}
+    public final String STORE_PROCEDURE_CALL_UPDATE_NIT = "CALL GET_ITEMS_INGRESO";
+
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
     public final String mailTO = "argomez120@gmail.com";
 
