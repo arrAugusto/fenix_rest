@@ -36,12 +36,12 @@ public class ClientesController {
         return service.getNitService(id_nit);
     }
 
-    @PostMapping("/new_nit/{id_nit}")//CREAR NIT
+    @PostMapping("/new_nit")//CREAR NIT
     public String crearNit(@RequestBody @Valid NuevoCliente nuevoCliente) {
         return service.newClientService(nuevoCliente);
     }
 
-    @PostMapping("/update_nit/{id_nit}")//MODIFICAR NIT
+    @PostMapping("/update_nit")//MODIFICAR NIT
     public String updateNits(@RequestBody @Valid UpdateCliente updateCliente) {
         return service.updateClienteService(updateCliente);
     }

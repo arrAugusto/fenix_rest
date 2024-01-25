@@ -18,14 +18,17 @@ public class NuevoCliente {
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
     private String tipo_doc;
 
-    @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9 _\\-.:;,%$&]*$", message = "El campo debe no contener caracteres especiales")
     private String nombre;
 
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9 _\\-.:;,%$&]*$", message = "El campo debe no contener caracteres especiales")
     private String direccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "El campo debe no contener un email valido")
     private String email;
+
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
+    private String estado;
 
     public String getNit_cui() {
         return nit_cui;
@@ -65,6 +68,14 @@ public class NuevoCliente {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 }

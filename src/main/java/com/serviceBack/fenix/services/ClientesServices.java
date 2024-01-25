@@ -28,12 +28,12 @@ public class ClientesServices implements ClientesInterfaces {
 
     public ClientesServices(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
+        this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
     }
 
     @Override
     public List<GetNit> getNitService(String id_nit) {
-        String queryGet = stored.STORE_PROCEDURE_CALL_GET_NIT + "(?)";
+        String queryGet = stored.STORE_PROCEDURE_CALL_GET_NIT.concat("(?)");
         return jdbcTemplate.query(queryGet, new Object[]{id_nit}, new RowMapper<GetNit>() {
             @Override
             public GetNit mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -54,11 +54,35 @@ public class ClientesServices implements ClientesInterfaces {
 
     @Override
     public String newClientService(NuevoCliente nuevoCliente) {
+        String queryInsert = stored.STORE_PROCEDURE_CALL_NEW_NIT.concat("(?,?,?,?,?,?)");
+        Object[] params = new Object[]{
+            nuevoCliente.getNit_cui(),
+            nuevoCliente.getTipo_doc(),
+            nuevoCliente.getNombre(),
+            nuevoCliente.getDireccion(),
+            nuevoCliente.getEmail(),
+            nuevoCliente.getEstado()
+        };
+        int result = jdbcTemplate.update(queryInsert, params);
+        if (result > 0) {
+            System.out.println("Ok");
+        }
         return null;
     }
 
     @Override
     public String updateClienteService(UpdateCliente updateCliente) {
+        String queryInsert = stored.STORE_PROCEDURE_CALL_UPDATE_NIT.concat("(?,?,?,?)");
+        Object[] params = new Object[]{
+            updateCliente.getId_cliente(),
+            updateCliente.getNombre(),
+            updateCliente.getDireccion(),
+            updateCliente.getEmail()
+        };
+        int result = jdbcTemplate.update(queryInsert, params);
+        if (result > 0) {
+            System.out.println("Ok");
+        }
         return null;
     }
 

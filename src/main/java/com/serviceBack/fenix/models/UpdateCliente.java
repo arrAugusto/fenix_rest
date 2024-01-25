@@ -12,23 +12,23 @@ import javax.validation.constraints.Pattern;
  */
 public class UpdateCliente {
 
-    @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
-    private int id_cliente;
+    @Pattern(regexp = "", message = "El campo debe no contener caracteres especiales")
+    private String id_cliente;
 
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9 _\\-.:;,%$&]*$", message = "El campo debe no contener caracteres especiales")
     private String nombre;
 
-    @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9 _\\-.:;,%$&]*$", message = "El campo debe no contener caracteres especiales")
     private String direccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "El campo debe no contener un email valido")
     private String email;
 
-    public int getId_cliente() {
+    public String getId_cliente() {
         return id_cliente;
     }
 
-    public void setId_cliente(int id_cliente) {
+    public void setId_cliente(String id_cliente) {
         this.id_cliente = id_cliente;
     }
 
