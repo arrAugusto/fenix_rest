@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class ClientesServices implements ClientesInterfaces {
 
     private final JdbcTemplate jdbcTemplate;
-    private final StoredProcedures stored; // Nueva variable de instancia
+    private final StoredProcedures stored;
 
     public ClientesServices(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

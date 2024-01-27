@@ -9,7 +9,9 @@ package commons;
  * @author agr12
  */
 public class StoredProcedures {
-
+    //INICIO DE SESSION
+    public final String STORE_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";
+    
     //ACTUALIZACION DE INGRESOS OPERATIVA
     public final String STORE_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO";
 
@@ -30,7 +32,7 @@ public class StoredProcedures {
     
     //MODIFICAR NIT {CALL INSERT_NIT_CLIENT('2330675310101', 'CUI', 'LUIS MIGUEL CORADO', 'GUATEMALA VILLA NUEVA', 'agomezc6@miumg.edu.gt', 'A');}
     public final String STORE_PROCEDURE_CALL_UPDATE_NIT = "CALL UPDATE_CLIENTE";
-
+    
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
     public final String mailTO = "argomez120@gmail.com";
 
