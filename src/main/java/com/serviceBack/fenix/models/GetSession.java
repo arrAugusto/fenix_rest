@@ -15,10 +15,28 @@ public class GetSession {
     private String pass;
     private String timenow;
     private String timeExp;
+    private String jwt;
+    private String strSessionId;
 
     @Override
     public String toString() {
-        return "GetSession{" + "asIdUser=" + asIdUser + ", user=" + user + ", pass=" + pass + ", timenow=" + timenow + ", timeExp=" + timeExp + '}';
+        return "GetSession{" + "asIdUser=" + asIdUser + ", user=" + user + ", pass=" + pass + ", timenow=" + timenow + ", timeExp=" + timeExp + ", jwt=" + jwt + ", strSessionId=" + strSessionId + '}';
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    public String getStrSessionId() {
+        return strSessionId;
+    }
+
+    public void setStrSessionId(String strSessionId) {
+        this.strSessionId = strSessionId;
     }
 
     public String getAsIdUser() {

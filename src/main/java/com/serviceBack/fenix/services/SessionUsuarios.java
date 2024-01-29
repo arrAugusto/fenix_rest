@@ -10,14 +10,13 @@ import com.serviceBack.fenix.generateJWT.StrSessiones;
 import com.serviceBack.fenix.interfaces.UsuariosInterfaces;
 import com.serviceBack.fenix.models.GetSession;
 import com.serviceBack.fenix.models.NuevoUsuario;
-import com.serviceBack.fenix.models.SessionUser;
 import com.serviceBack.fenix.models.Usuarios;
 import commons.StoredProcedures;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import java.security.SecureRandom;
 
 @Service
 public class SessionUsuarios implements UsuariosInterfaces {
@@ -36,9 +35,9 @@ public class SessionUsuarios implements UsuariosInterfaces {
     }
 
     @Override
-    public String startSession(Usuarios usuarios) {
+    public List<GetSession> startSession(Usuarios usuarios) {
         // TODO Auto-generated method stub
-        jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
+        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
             @Override
             public GetSession mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -56,7 +55,7 @@ public class SessionUsuarios implements UsuariosInterfaces {
                     // Verificar la contraseña
                     if (usuarios.getUsuario().toUpperCase().equals("DEVAGOMEZ")
                             && BCrypt.checkpw("Cintra", "$2a$10$t/noj1Vjn1sWEM98G2aD1e5muK0FYaksyxP6xgwAk9hDAJ0OVfH.u")) {
-                        String jwt = "jwt: " + jwtService.generateToken(usuarios.getUsuario());
+                        String jwt = jwtService.generateToken(usuarios.getUsuario());
                         System.out.println(jwt);
                         String strSessionId = strSessiones.generateSessionId();
                         System.out.println("Token de sesión: " + strSessionId);
@@ -69,9 +68,9 @@ public class SessionUsuarios implements UsuariosInterfaces {
                         };
                         int result = jdbcTemplate.update(stored.STORE_PROCEDURE_CALL_LOG_USER, params);
                         if (result > 0) {
-                            SessionUser sessionUser = new SessionUser();
-                            sessionUser.setJwt(jwt);
-                            sessionUser.setStrSessionId(strSessionId);
+
+                            session.setJwt(jwt);
+                            session.setStrSessionId(strSessionId);
                         }
 
                     } else {
@@ -90,7 +89,6 @@ public class SessionUsuarios implements UsuariosInterfaces {
             }
 
         });
-        return null;
     }
 
     @Override

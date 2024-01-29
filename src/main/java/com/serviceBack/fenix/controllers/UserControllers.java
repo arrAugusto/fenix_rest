@@ -19,17 +19,17 @@ import java.util.List;
 @RequestMapping("/usuarios")
 public class UserControllers {
 
-	@Autowired
-	private UsuariosInterfaces service;
+    @Autowired
+    private UsuariosInterfaces service;
 
-	@PostMapping("/session")//Iniciar una nueva session de usuario
-	public String startSession(@RequestBody Usuarios usuarios) {
-		System.out.println(usuarios.getSecrete_pass());
-		return service.startSession(usuarios);
-	}
-	
-	@PostMapping("/create_user")//Crear un usuario nuevo
-	public String createUserCtr(@RequestBody NuevoUsuario nuevoUsuario) {
-		return service.createUser(nuevoUsuario);
-	}	
+    @PostMapping("/session")//Iniciar una nueva session de usuario
+    public List<GetSession> startSession(@RequestBody Usuarios usuarios) {
+        System.out.println(usuarios.getSecrete_pass());
+        return service.startSession(usuarios);
+    }
+
+    @PostMapping("/create_user")//Crear un usuario nuevo
+    public String createUserCtr(@RequestBody NuevoUsuario nuevoUsuario) {
+        return service.createUser(nuevoUsuario);
+    }
 }

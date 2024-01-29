@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface UsuariosInterfaces {
 
-	public String startSession(Usuarios usuarios);
+	public List<GetSession> startSession(Usuarios usuarios);
 	public String createUser(NuevoUsuario nuevoUsuario);
 }
