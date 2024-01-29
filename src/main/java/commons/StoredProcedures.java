@@ -9,6 +9,9 @@ package commons;
  * @author agr12
  */
 public class StoredProcedures {
+    //LOG INICIO DE SESSION
+    public final String STORE_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";
+    
     //INICIO DE SESSION
     public final String STORE_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";
     

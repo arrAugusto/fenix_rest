@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.generateJWT.JwtService;
 import com.serviceBack.fenix.interfaces.UsuariosInterfaces;
+import com.serviceBack.fenix.models.GetSession;
 import com.serviceBack.fenix.models.NuevoUsuario;
 import com.serviceBack.fenix.models.Usuarios;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
