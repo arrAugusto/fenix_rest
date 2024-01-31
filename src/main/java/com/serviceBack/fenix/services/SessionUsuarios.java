@@ -9,6 +9,7 @@ import com.serviceBack.fenix.generateJWT.JwtService;
 import com.serviceBack.fenix.generateJWT.StrSessiones;
 import com.serviceBack.fenix.interfaces.UsuariosInterfaces;
 import com.serviceBack.fenix.models.GetSession;
+import com.serviceBack.fenix.models.IdUser;
 import com.serviceBack.fenix.models.NuevoUsuario;
 import com.serviceBack.fenix.models.Usuarios;
 import commons.StoredProcedures;
@@ -40,17 +41,20 @@ public class SessionUsuarios implements UsuariosInterfaces {
         return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
             @Override
             public GetSession mapRow(ResultSet rs, int rowNum) throws SQLException {
-
                 GetSession session = new GetSession();
+                IdUser idUser = new IdUser();
                 try {
-                    session.setAsIdUser(rs.getString(1));
+                    idUser.setIdUser(rs.getString(1));
                     session.setUser(rs.getString(2));
-                    session.setPass(rs.getString(3));
                     session.setTimenow(rs.getString(4));
                     session.setTimeExp(rs.getString(5));
+                    session.setNombres(rs.getString(6));
+                    session.setApellidos(rs.getString(7));
+                    session.setPerfil(rs.getString(8));
+                    session.setId_almacen(rs.getString(9));
+
                     // Verificar la contraseña
                     System.out.println(session.getUser());
-                    System.out.println(session.getPass());
 
                     // Verificar la contraseña
                     if (usuarios.getUsuario().toUpperCase().equals("DEVAGOMEZ")
@@ -61,18 +65,18 @@ public class SessionUsuarios implements UsuariosInterfaces {
                         System.out.println("Token de sesión: " + strSessionId);
 
                         Object[] params = new Object[]{
-                            session.getAsIdUser(),
+                            idUser.getIdUser(),
                             session.getUser(),
                             "A",
                             strSessiones.generateSessionId()
                         };
                         int result = jdbcTemplate.update(stored.STORE_PROCEDURE_CALL_LOG_USER, params);
                         if (result > 0) {
-
                             session.setJwt(jwt);
                             session.setStrSessionId(strSessionId);
-                        }
 
+                        }
+                        
                     } else {
 
                     }

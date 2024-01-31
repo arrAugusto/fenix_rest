@@ -23,9 +23,9 @@ public class UserControllers {
     private UsuariosInterfaces service;
 
     @PostMapping("/session")//Iniciar una nueva session de usuario
-    public List<GetSession> startSession(@RequestBody Usuarios usuarios) {
+    public GetSession startSession(@RequestBody Usuarios usuarios) {
         System.out.println(usuarios.getSecrete_pass());
-        return service.startSession(usuarios);
+        return service.startSession(usuarios).get(0);
     }
 
     @PostMapping("/create_user")//Crear un usuario nuevo
