@@ -42,30 +42,26 @@ public class SessionUsuarios implements UsuariosInterfaces {
             @Override
             public GetSession mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetSession session = new GetSession();
-                IdUser idUser = new IdUser();
                 try {
-                    idUser.setIdUser(rs.getString(1));
                     session.setUser(rs.getString(2));
-                    session.setTimenow(rs.getString(4));
-                    session.setTimeExp(rs.getString(5));
-                    session.setNombres(rs.getString(6));
-                    session.setApellidos(rs.getString(7));
-                    session.setPerfil(rs.getString(8));
-                    session.setId_almacen(rs.getString(9));
-
-                    // Verificar la contraseña
-                    System.out.println(session.getUser());
 
                     // Verificar la contraseña
                     if (usuarios.getUsuario().toUpperCase().equals("DEVAGOMEZ")
                             && BCrypt.checkpw("Cintra", "$2a$10$t/noj1Vjn1sWEM98G2aD1e5muK0FYaksyxP6xgwAk9hDAJ0OVfH.u")) {
+                        session.setTimenow(rs.getString(4));
+                        session.setTimeExp(rs.getString(5));
+                        session.setNombres(rs.getString(6));
+                        session.setApellidos(rs.getString(7));
+                        session.setPerfil(rs.getString(8));
+                        session.setId_almacen(rs.getString(9));
+                        String idUser = rs.getString(1);
                         String jwt = jwtService.generateToken(usuarios.getUsuario());
                         System.out.println(jwt);
                         String strSessionId = strSessiones.generateSessionId();
                         System.out.println("Token de sesión: " + strSessionId);
 
                         Object[] params = new Object[]{
-                            idUser.getIdUser(),
+                            idUser,
                             session.getUser(),
                             "A",
                             strSessiones.generateSessionId()
@@ -74,13 +70,10 @@ public class SessionUsuarios implements UsuariosInterfaces {
                         if (result > 0) {
                             session.setJwt(jwt);
                             session.setStrSessionId(strSessionId);
-
                         }
-                        
                     } else {
 
                     }
-
                 } catch (SQLException e) {
                     e.printStackTrace(); // Imprime la excepción para depurar.
                     // Puedes lanzar una excepción personalizada o manejarla de alguna manera.

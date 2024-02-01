@@ -9,6 +9,7 @@ package commons;
  * @author agr12
  */
 public class StoredProcedures {
+    
     //LOG INICIO DE SESSION
     public final String STORE_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";
     
@@ -26,6 +27,9 @@ public class StoredProcedures {
     
     //MOSTRAR NUEVO ITEM DE INGRESO
     public final String STORE_PROCEDURE_CALL_GET_ITEMS = "CALL GET_ITEMS_INGRESO";
+    
+    //NEW PRODUCT
+    public final String STORED_PROCEDURE_CALL_INSERT_PRODUCT = "CALL INSERT_PRODUCT(?,?,?,?,?,?,?,?)";
 
     //GET NIT {CALL GET_NIT('51611');}
     public final String STORE_PROCEDURE_CALL_GET_NIT = "CALL GET_NIT";

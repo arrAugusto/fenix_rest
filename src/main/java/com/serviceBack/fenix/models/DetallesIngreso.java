@@ -17,12 +17,15 @@ public class DetallesIngreso {
 
     @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
     private String idTransaccion;
+
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int idUsuarioOperativo;
+
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int totalBultos;
+
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String cliente;
     private List<Items> Items;

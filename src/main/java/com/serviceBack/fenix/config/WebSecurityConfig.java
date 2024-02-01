@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.serviceBack.fenix.controllers.InterceptorMidleWare;
 
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {

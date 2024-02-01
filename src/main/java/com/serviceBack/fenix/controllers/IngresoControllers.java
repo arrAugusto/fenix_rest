@@ -13,6 +13,7 @@ import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.models.DetallesIngreso;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
+import com.serviceBack.fenix.models.Product;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -33,7 +34,7 @@ public class IngresoControllers {
     }
 
     @PostMapping("/items")//Iniciar una nueva session de usuario
-    public ItemsFail crearOTPCode(@RequestBody @Valid DetallesIngreso detalles) {
+    public ItemsFail createItems(@RequestBody @Valid DetallesIngreso detalles) {
         return service.crearItems(detalles);
     }
 
@@ -41,4 +42,10 @@ public class IngresoControllers {
     public List<GetDetalleIngreso> getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
         return service.getItems(idTransaccion);
     }
+
+    @PostMapping("/product")//Iniciar una nueva session de usuario
+    public String createProduct(@RequestBody Product product) {
+        return service.createProduct(product);
+    }
+
 }

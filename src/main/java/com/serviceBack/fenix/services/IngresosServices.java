@@ -1,6 +1,6 @@
 package com.serviceBack.fenix.services;
 
-import com.serviceBack.fenix.controllers.Code_OTP;
+import com.serviceBack.fenix.Utils.QRCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
+import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniqueCode;
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
 import com.serviceBack.fenix.models.DetallesIngreso;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
+import com.serviceBack.fenix.models.Product;
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -215,9 +217,6 @@ public class IngresosServices implements IngresosInterfaces {
         return jdbcTemplate.query(queryGetItem, new Object[]{idTransaccion}, new RowMapper<GetDetalleIngreso>() {
             @Override
             public GetDetalleIngreso mapRow(ResultSet rs, int rowNum) throws SQLException {
-                // Your mapping logic here to convert ResultSet to GetDetalleIngreso object
-                // For example:
-
                 try {
                     GetDetalleIngreso detalleIngreso = new GetDetalleIngreso();
                     detalleIngreso.setIdTrasaccionItem(rs.getString("idTransaccion"));
@@ -227,10 +226,8 @@ public class IngresosServices implements IngresosInterfaces {
                     detalleIngreso.setTotalBultosItem(Integer.parseInt(rs.getString("total_bultos")));
                     detalleIngreso.setTotalCifItem(Float.parseFloat(rs.getString("total_cif")));
                     detalleIngreso.setTotalImpuestosItem(Float.parseFloat(rs.getString("total_impuestos")));
-
                     detalleIngreso.setBultosItems(Integer.parseInt(rs.getString("bultos")));
                     detalleIngreso.setCliente(rs.getString("cliente"));
-
                     // Set other properties as needed
                     return detalleIngreso;
                 } catch (Exception e) {
@@ -259,6 +256,35 @@ public class IngresosServices implements IngresosInterfaces {
                 }
             }
         });
+    }
 
+    @Override
+    public String createProduct(Product product) {
+        String uniqueCode = generateUniqueCode();
+        Object[] params = new Object[]{
+            product.getIdItem(),
+            product.getIdUser(),
+            product.getUser(),
+            product.getBultosProd(),
+            product.getDescriptionProd(),
+            product.getTypeProd(),
+            product.getStatus(),
+            uniqueCode
+        };
+        int result = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_PRODUCT, params);
+        if (result > 0) {
+            System.out.println("uniqueCode> "+uniqueCode);
+            QRCodeGenerator qrCode = new QRCodeGenerator();
+
+            String filePath = "C:\\Users\\agr12\\Desktop\\codes/product_qrcode.png"; // Nombre del archivo de la imagen QR
+
+            int width = 300; // Ancho de la imagen QR
+            int height = 300; // Altura de la imagen QRs
+
+            qrCode.generateQRCode(uniqueCode, filePath, width, height);
+            System.out.println("Código QR generado con éxito en: " + filePath);
+            return "Ok";
+        }
+        return null;
     }
 }
