@@ -43,6 +43,9 @@ public class StoredProcedures {
     //MOSTRAR FORMULARIOS
     public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS()";
 
+    //MOSTRAR SIDE NAV
+    public final String STORED_PROCEDURE_CALL_GET_SIDE_NAV = "CALL GET_SIDE_NAV(?)";
+
     
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
     public final String mailTO = "argomez120@gmail.com";

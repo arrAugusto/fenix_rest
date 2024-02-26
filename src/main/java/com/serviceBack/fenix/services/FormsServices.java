@@ -9,6 +9,7 @@ import com.serviceBack.fenix.interfaces.FormsInterfaces;
 import com.serviceBack.fenix.models.GetForms;
 import com.serviceBack.fenix.models.GetNit;
 import com.serviceBack.fenix.models.NuevoCliente;
+import com.serviceBack.fenix.models.SideNav;
 import com.serviceBack.fenix.models.UpdateCliente;
 import commons.StoredProcedures;
 import java.sql.ResultSet;
@@ -53,6 +54,26 @@ public class FormsServices implements FormsInterfaces {
                 return getForms;
             }
         });
+    }
+
+    public List<SideNav> SideNavService() {
+        String queryGetSideNav = stored.STORED_PROCEDURE_CALL_GET_SIDE_NAV;
+        String usuario = "DEVAGOMEZ";
+
+        return jdbcTemplate.query(queryGetSideNav, new Object[]{usuario}, new RowMapper<SideNav>() {
+            @Override
+            public SideNav mapRow(ResultSet rs, int rowNum) throws SQLException {
+                SideNav sideNav = new SideNav();
+                sideNav.setId(rs.getString("id"));
+                sideNav.setNombre(rs.getString("nombre"));
+                sideNav.setStatus(rs.getString("status"));
+                sideNav.setDescription(rs.getString("descripcion"));
+                sideNav.setPaquete(rs.getString("paquete"));
+                return sideNav;
+            }
+
+        });
+
     }
 
 }

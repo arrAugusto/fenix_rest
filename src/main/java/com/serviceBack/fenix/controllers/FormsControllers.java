@@ -7,6 +7,7 @@ package com.serviceBack.fenix.controllers;
 import com.serviceBack.fenix.interfaces.FormsInterfaces;
 import com.serviceBack.fenix.models.GetForms;
 import com.serviceBack.fenix.models.Ingresos;
+import com.serviceBack.fenix.models.SideNav;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,4 +33,10 @@ public class FormsControllers {
     public List<GetForms>  getForms() {
         return service.FormsService();
     }
+
+    @PostMapping("/getSideNav")//Iniciar una nueva session de usuario
+    public List<SideNav>  getSideNav() {
+        return service.SideNavService();
+    }
+    
 }
