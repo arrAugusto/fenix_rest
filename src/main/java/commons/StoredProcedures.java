@@ -41,7 +41,7 @@ public class StoredProcedures {
     public final String STORE_PROCEDURE_CALL_UPDATE_NIT = "CALL UPDATE_CLIENTE";
 
     //MOSTRAR FORMULARIOS
-    public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS()";
+    public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS(?)";
 
     //MOSTRAR SIDE NAV
     public final String STORED_PROCEDURE_CALL_GET_SIDE_NAV = "CALL GET_SIDE_NAV(?)";

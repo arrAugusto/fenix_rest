@@ -35,9 +35,9 @@ public class FormsServices implements FormsInterfaces {
     }
 
     @Override
-    public List<GetForms> FormsService() {
+    public List<GetForms> FormsService(String id) {
         String queryGetForms = stored.STORED_PROCEDURE_CALL_GET_FORMS;
-        return jdbcTemplate.query(queryGetForms, new RowMapper<GetForms>() {
+        return jdbcTemplate.query(queryGetForms, new Object[]{id}, new RowMapper<GetForms>() {
             @Override
             public GetForms mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetForms getForms = new GetForms();
