@@ -12,7 +12,7 @@ public class Ingresos {
     private String usuario;
 
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
-    private String nit;
+    private String idNit;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
     private String canalDigital;
@@ -32,14 +32,43 @@ public class Ingresos {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "El valor debe ser mayor que {value}")
     @DecimalMax(value = "99999999.0", inclusive = false, message = "El valor debe ser menor que {value}")
-    private Double cif;
-
-    @DecimalMin(value = "0.0", inclusive = false, message = "El valor debe ser mayor que {value}")
-    @DecimalMax(value = "10000000.0", inclusive = false, message = "El valor debe ser menor que {value}")
-    private Double impuestos;
+    private Double montoTotal;
 
     @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
     private String idTransaccion;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String idImages;
+
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
+    private String fechaGarita;
+
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
+    private String fechaBodega;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String codigo_transaccion;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String area;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String documento_top_pay;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String document;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String nombre;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String boleta_de_pago;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String comments;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String auth_transaction;
 
     public String getUsuario() {
         return usuario;
@@ -49,12 +78,12 @@ public class Ingresos {
         this.usuario = usuario;
     }
 
-    public String getNit() {
-        return nit;
+    public String getIdNit() {
+        return idNit;
     }
 
-    public void setNit(String nit) {
-        this.nit = nit;
+    public void setIdNit(String idNit) {
+        this.idNit = idNit;
     }
 
     public String getCanalDigital() {
@@ -97,20 +126,12 @@ public class Ingresos {
         this.bultos = bultos;
     }
 
-    public Double getCif() {
-        return cif;
+    public Double getMontoTotal() {
+        return montoTotal;
     }
 
-    public void setCif(Double cif) {
-        this.cif = cif;
-    }
-
-    public Double getImpuestos() {
-        return impuestos;
-    }
-
-    public void setImpuestos(Double impuestos) {
-        this.impuestos = impuestos;
+    public void setMontoTotal(Double montoTotal) {
+        this.montoTotal = montoTotal;
     }
 
     public String getIdTransaccion() {
@@ -119,6 +140,94 @@ public class Ingresos {
 
     public void setIdTransaccion(String idTransaccion) {
         this.idTransaccion = idTransaccion;
+    }
+
+    public String getIdImages() {
+        return idImages;
+    }
+
+    public void setIdImages(String idImages) {
+        this.idImages = idImages;
+    }
+
+    public String getFechaGarita() {
+        return fechaGarita;
+    }
+
+    public void setFechaGarita(String fechaGarita) {
+        this.fechaGarita = fechaGarita;
+    }
+
+    public String getFechaBodega() {
+        return fechaBodega;
+    }
+
+    public void setFechaBodega(String fechaBodega) {
+        this.fechaBodega = fechaBodega;
+    }
+
+    public String getCodigo_transaccion() {
+        return codigo_transaccion;
+    }
+
+    public void setCodigo_transaccion(String codigo_transaccion) {
+        this.codigo_transaccion = codigo_transaccion;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getDocumento_top_pay() {
+        return documento_top_pay;
+    }
+
+    public void setDocumento_top_pay(String documento_top_pay) {
+        this.documento_top_pay = documento_top_pay;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getBoleta_de_pago() {
+        return boleta_de_pago;
+    }
+
+    public void setBoleta_de_pago(String boleta_de_pago) {
+        this.boleta_de_pago = boleta_de_pago;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getAuth_transaction() {
+        return auth_transaction;
+    }
+
+    public void setAuth_transaction(String auth_transaction) {
+        this.auth_transaction = auth_transaction;
     }
 
 }

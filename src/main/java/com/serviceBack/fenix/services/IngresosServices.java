@@ -50,14 +50,12 @@ public class IngresosServices implements IngresosInterfaces {
                 .prepareStatement(query)) {
             preparedStatement.setString(1, ingreso.getUsuario());
             preparedStatement.setString(2, ingreso.getIdTransaccion());
-            preparedStatement.setString(3, ingreso.getNit());
+            preparedStatement.setString(3, ingreso.getIdNit());
             preparedStatement.setString(4, ingreso.getCanalDigital());
             preparedStatement.setString(5, ingreso.getFechaOperativa());
             preparedStatement.setString(6, ingreso.getDocumento());
             preparedStatement.setString(7, ingreso.getCodigoQR());
             preparedStatement.setInt(8, ingreso.getBultos());
-            preparedStatement.setDouble(9, ingreso.getCif());
-            preparedStatement.setDouble(10, ingreso.getImpuestos());
             LOGGER.info(preparedStatement.toString());
 
             boolean queryResult = preparedStatement.execute();
