@@ -44,18 +44,33 @@ public class IngresosServices implements IngresosInterfaces {
     @Override
     public ResponseService createIngresos(Ingresos ingreso) {
 
-        String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO;
 
         try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
                 .prepareStatement(query)) {
-            preparedStatement.setString(1, ingreso.getUsuario());
-            preparedStatement.setString(2, ingreso.getIdTransaccion());
+            preparedStatement.setString(1, ingreso.getIdTransaccion());
+            preparedStatement.setString(2, ingreso.getUsuario());
             preparedStatement.setString(3, ingreso.getIdNit());
-            preparedStatement.setString(4, ingreso.getCanalDigital());
-            preparedStatement.setString(5, ingreso.getFechaOperativa());
-            preparedStatement.setString(6, ingreso.getDocumento());
-            preparedStatement.setString(7, ingreso.getCodigoQR());
-            preparedStatement.setInt(8, ingreso.getBultos());
+            preparedStatement.setString(4, ingreso.getIdImages());
+            preparedStatement.setString(5, ingreso.getCanalDigital());
+            preparedStatement.setString(6, ingreso.getFechaGarita());
+            preparedStatement.setString(7, ingreso.getFechaBodega());
+            preparedStatement.setString(8, ingreso.getFechaOperativa());
+            preparedStatement.setString(9, ingreso.getCodigo_transaccion());
+            preparedStatement.setString(10, ingreso.getDocumento());
+            preparedStatement.setString(11, ingreso.getCodigoQR());
+            preparedStatement.setInt(12, ingreso.getBultos());
+            preparedStatement.setDouble(13, ingreso.getMontoTotal());
+            preparedStatement.setString(14, ingreso.getArea());
+            preparedStatement.setString(15, "1321644131313");
+            preparedStatement.setString(16, "13216632322");
+            preparedStatement.setString(17, ingreso.getDocumento_top_pay());
+            preparedStatement.setString(18, ingreso.getDocument());
+            preparedStatement.setString(19, ingreso.getNombre());
+            preparedStatement.setString(20, ingreso.getBoleta_de_pago());
+            preparedStatement.setString(21, ingreso.getComments());
+            preparedStatement.setString(22, ingreso.getAuth_transaction());
+            System.out.println("preparedStatement> "+preparedStatement.toString());
             LOGGER.info(preparedStatement.toString());
 
             boolean queryResult = preparedStatement.execute();

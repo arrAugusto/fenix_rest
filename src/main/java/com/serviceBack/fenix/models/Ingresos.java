@@ -9,16 +9,28 @@ import javax.validation.constraints.DecimalMax;
 public class Ingresos {
 
     @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
+    private String idTransaccion;
+
+    @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
     private String usuario;
 
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El campo debe no contener caracteres especiales")
     private String idNit;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
-    private String canalDigital;
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String idImages;
+
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
+    private String fechaGarita;
+
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
+    private String fechaBodega;
 
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
     private String fechaOperativa;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
+    private String codigo_transaccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
     private String documento;
@@ -33,21 +45,6 @@ public class Ingresos {
     @DecimalMin(value = "0.0", inclusive = false, message = "El valor debe ser mayor que {value}")
     @DecimalMax(value = "99999999.0", inclusive = false, message = "El valor debe ser menor que {value}")
     private Double montoTotal;
-
-    @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
-    private String idTransaccion;
-
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
-    private String idImages;
-
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
-    private String fechaGarita;
-
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", message = "El campo debe no contener caracteres especiales")
-    private String fechaBodega;
-
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
-    private String codigo_transaccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
     private String area;
@@ -66,6 +63,9 @@ public class Ingresos {
 
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
     private String comments;
+
+    @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
+    private String canalDigital;
 
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "El campo debe no contener caracteres especiales")
     private String auth_transaction;
