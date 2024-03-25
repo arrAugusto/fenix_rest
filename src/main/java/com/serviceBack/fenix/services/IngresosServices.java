@@ -45,7 +45,8 @@ public class IngresosServices implements IngresosInterfaces {
     public ResponseService createIngresos(Ingresos ingreso) {
 
         String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO;
-
+        System.out.println(">>>>>>>> "+ingreso.getFechaGarita());
+        ingreso.setFechaGarita(null);
         try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
                 .prepareStatement(query)) {
             preparedStatement.setString(1, ingreso.getIdTransaccion());
