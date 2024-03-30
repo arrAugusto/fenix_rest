@@ -23,14 +23,14 @@ public class StoredProcedures {
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     
     //INSERTAR NUEVO ITEM DE INGRESO
-    public final String STORE_PROCEDURE_CALL_INSERT_ITEM = "CALL INSERT_ITEM";
+    public final String STORE_PROCEDURE_CALL_INSERT_ITEMS = "CALL INSERT_ITEMS(?,?,?,?,?,?,?,?,?,?,?)";
     
     //MOSTRAR NUEVO ITEM DE INGRESO
     public final String STORE_PROCEDURE_CALL_GET_ITEMS = "CALL GET_ITEMS_INGRESO";
     
     //NEW PRODUCT
     public final String STORED_PROCEDURE_CALL_INSERT_PRODUCT = "CALL INSERT_PRODUCT(?,?,?,?,?,?,?,?)";
-
+    
     //GET NIT {CALL GET_NIT('51611');}
     public final String STORE_PROCEDURE_CALL_GET_NIT = "CALL GET_NIT";
 

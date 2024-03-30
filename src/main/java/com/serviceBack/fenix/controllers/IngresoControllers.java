@@ -22,15 +22,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/ingresos")
+@RequestMapping("/actions_store")
 public class IngresoControllers {
 
     @Autowired
     private IngresosInterfaces service;
 
-    @PostMapping("/crearte_ingreso")//Iniciar una nueva session de usuario
+    @PostMapping("/income_withdrawal")//Iniciar una nueva session de usuario
     public ResponseService createIngreso(@RequestBody @Valid Ingresos ingresos) {
-        return service.createIngresos(ingresos);
+        return service.incomeWithdrawalService(ingresos);
     }
 
     @PostMapping("/items")//Iniciar una nueva session de usuario

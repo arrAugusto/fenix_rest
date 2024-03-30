@@ -9,8 +9,8 @@ import com.serviceBack.fenix.models.Product;
 import java.util.List;
 
 public interface IngresosInterfaces {
-        //Crear un ingeso
-	public ResponseService createIngresos(Ingresos ingresos);
+        //Crear un ingeso y/o retiro
+	public ResponseService incomeWithdrawalService(Ingresos ingresos);
         
         //Guardar Items
         public ItemsFail crearItems(DetallesIngreso detalles);
