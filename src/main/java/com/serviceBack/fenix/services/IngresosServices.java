@@ -2,7 +2,6 @@ package com.serviceBack.fenix.services;
 
 import com.serviceBack.fenix.Utils.QRCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
@@ -12,22 +11,26 @@ import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniq
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
 import com.serviceBack.fenix.models.DetallesIngreso;
+import com.serviceBack.fenix.models.ErrorInfo;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
 import com.serviceBack.fenix.models.Product;
-import com.serviceBack.fenix.models.Retiros;
+import commons.GenericResponse;
+import commons.JsonReader;
 
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 import org.springframework.jdbc.core.RowMapper;
 import sub_process.IncomeWithdrawal.Exceptions;
 import sub_process.IncomeWithdrawal.PrepareIncomeStatment;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.dao.DataAccessException;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
@@ -39,6 +42,7 @@ public class IngresosServices implements IngresosInterfaces {
     private final ResponseService response;
     private final PrepareIncomeStatment prepareIncomeStatment;
     private final Exceptions exceptions;
+    private final GenericResponse generiResponse;
 
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
@@ -49,8 +53,12 @@ public class IngresosServices implements IngresosInterfaces {
         this.response = new ResponseService();
         this.prepareIncomeStatment = new PrepareIncomeStatment(this.jdbcTemplate); // Inicializa prepare directamente aquí
         this.exceptions = new Exceptions();
+        this.generiResponse = new GenericResponse();
     }
 
+    /*
+        * INGRESOS Y RETIROS REGISTRO DE TRANSACCIONES
+     */
     @Override
     public ResponseService incomeWithdrawalService(Ingresos ingreso) {
 
@@ -74,29 +82,50 @@ public class IngresosServices implements IngresosInterfaces {
 
     @Override
     public ItemsFail crearItems(DetallesIngreso detalles) {
+        String totalBultos = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_TRANSACCION_INGRESO_INF, detalles.getIdTransaccion(), "total_bultos");
+        String totalBultosItems = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_ITEMS_TOTAL_BULTOS, detalles.getIdTransaccion(), "bultos");
+
         ItemsFail itemsResponse = new ItemsFail();
+
+        if (Integer.parseInt(totalBultosItems) != Integer.parseInt(totalBultos)) {
+            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
+        } else {
+            genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", "ITEMS REGISTRADOS CORRECTAMENTE.");
+            String key = "SVRFTVMgUkVHSVNUUkFET1MgQU5URVJJT1JNRU5URQ==";
+            return generiResponse.GenericResponsError(key);
+        }
+        if (totalBultos.equals("NODATA")) {
+            String key = "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==";
+            return generiResponse.GenericResponsError(key);
+
+        }
+
         int errores = 0;
         int bultosItems = 0;
         for (int i = 0; i < detalles.getItems().size(); i++) {
             bultosItems += detalles.getItems().get(i).getBultos();
         }
         String messageItemsOk = "";
-        if (bultosItems == detalles.getTotalBultos()) {
+        if (Integer.parseInt(totalBultos) == bultosItems) {
 
-            String queryItems = stored.STORE_PROCEDURE_CALL_INSERT_ITEMS;
             for (int i = 0; i < detalles.getItems().size(); i++) {
                 bultosItems = bultosItems + detalles.getItems().get(i).getBultos();
 
                 try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-                        .prepareStatement(queryItems)) {
+                        .prepareStatement(stored.STORE_PROCEDURE_CALL_INSERT_ITEMS)) {
                     preparedStatement.setInt(1, Integer.parseInt(detalles.getIdTransaccion()));
                     preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
-                    preparedStatement.setInt(4, detalles.getBultosFaltantes());
-                    preparedStatement.setInt(5, detalles.getBultosSobrantes());
-                    preparedStatement.setString(6, detalles.getItems().get(i).getCliente());
-                    preparedStatement.setString(7, detalles.getItems().get(i).getDetalle());
-                    
-                    LOGGER.info(preparedStatement.toString());
+                    preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
+                    preparedStatement.setInt(4, detalles.getItems().get(i).getBultosFaltantes());
+                    preparedStatement.setInt(5, detalles.getItems().get(i).getBultosSobrantes());
+                    preparedStatement.setInt(6, detalles.getItems().get(i).getBultos());
+                    preparedStatement.setString(7, detalles.getItems().get(i).getCliente());
+                    preparedStatement.setString(8, detalles.getItems().get(i).getDetalle());
+                    preparedStatement.setString(9, "A");
+                    preparedStatement.setString(10, "A");
+
+                    System.out.println(">>>>>> " + preparedStatement.toString());
+                    LOGGER.info(">> " + preparedStatement.toString());
 
                     int rowsAffected = preparedStatement.executeUpdate();
                     if (rowsAffected == 0) {
@@ -108,20 +137,22 @@ public class IngresosServices implements IngresosInterfaces {
                     }
                     System.out.println("Rows affected: " + rowsAffected);
                 } catch (Exception e) {
-
+                    System.out.println("error " + e);
                 }
             }
             if (errores > 0) {
+                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
                 String messageItemsFail = "";
                 for (int i = 0; i < itemsResponse.getItemsFail().size(); i++) {
                     messageItemsFail += "\n" + (i + 1) + " : " + itemsResponse.getItemsFail().get(i).toString();
                 }
                 // Construir el mensaje de error
-                String errorMessage = "Se hizo insercción en la base de datos pero algunos items no fueron cargados exitosamente.\nData : \n\n" + detalles.toString() + "\n" + messageItemsFail + "";
+                String errorMessage = "Los items no fueron registrados en la base datos, corriga e intente de nuevo.\nData : \n\n" + detalles.toString() + "\n" + messageItemsFail + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
                 LOGGER.info("Send mail" + errorMessage);
 
             } else {
+                genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", "ITEMS REGISTRADOS");
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
                 LOGGER.info("Send mail" + messageItemsLoads);
@@ -130,9 +161,8 @@ public class IngresosServices implements IngresosInterfaces {
             itemsResponse.setMessageResponse("Ok");
 
         } else {
-            itemsResponse.setCodeResponse("09");
-            itemsResponse.setMessageResponse("La suma de bultos no coincide con el total de bultos.");
-
+            String key = "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==.";
+            return generiResponse.GenericResponsError(key);
         }
         System.out.println(detalles.getItems().toString());
         return itemsResponse;
@@ -250,5 +280,27 @@ public class IngresosServices implements IngresosInterfaces {
             return "Ok";
         }
         return null;
+    }
+
+    public String getIncomeBasic(String query, String idTransaccion, String nameColumn) {
+        return jdbcTemplate.query(query, new Object[]{idTransaccion}, new ResultSetExtractor<String>() {
+            @Override
+            public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+                if (rs.next()) {
+                    return rs.getString(nameColumn);
+                }
+                return "NODATA"; // O maneja el caso donde no hay resultados
+            }
+        });
+    }
+
+    public int genericincomeItems(String query, String id) {
+        int rowsAffected = jdbcTemplate.update(query, id);
+        return rowsAffected;
+    }
+
+    public int genericTransactionIncome(String query, String id, String codeResp, String messageResp) {
+        int rowsAffected = jdbcTemplate.update(query, id, codeResp, messageResp);
+        return rowsAffected;
     }
 }

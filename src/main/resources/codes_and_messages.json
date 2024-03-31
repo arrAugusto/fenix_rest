@@ -1,0 +1,19 @@
+{
+    "RVJST1IgSU5URVJOTyBFTiBFTCBTRVJWSURPUg==": {
+        "code": "01",
+        "message": "ERROR INTERNO EN EL SERVIDOR."
+    },
+    "SVRFTVMgUkVHSVNUUkFET1MgQU5URVJJT1JNRU5URS4=": {
+        "code": "02",
+        "message": "ITEMS REGISTRADOS ANTERIORMENTE."
+    },
+    "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==": {
+        "code": "03",
+        "message": "INGRESO NO REGISTRADO."
+    },
+    "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==.": {
+        "code": "03",
+        "message": "EL TOTAL DE BULTOS DEBE COINCIDIR CON EL TOTAL DE BULTOS INDIVIDUALES POR ITEMS."
+    }
+
+}

@@ -4,6 +4,7 @@
  */
 package sub_process.IncomeWithdrawal;
 
+import com.serviceBack.fenix.models.DetallesIngreso;
 import com.serviceBack.fenix.models.Ingresos;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -50,7 +51,11 @@ public class PrepareIncomeStatment {
         return preparedStatement;
 
     }
-
+    public void ItemsSQLPrepare(String query, DetallesIngreso detalles){
+        
+    }
+            
+            
     private boolean isEmptyOrNull(String str) {
         return str == null || str.isEmpty();
     }

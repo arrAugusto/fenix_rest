@@ -10,7 +10,6 @@ import commons.StoredProcedures;
 import java.sql.SQLException;
 import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
