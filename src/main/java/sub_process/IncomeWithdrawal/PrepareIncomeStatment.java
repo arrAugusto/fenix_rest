@@ -51,10 +51,6 @@ public class PrepareIncomeStatment {
         return preparedStatement;
 
     }
-    public void ItemsSQLPrepare(String query, DetallesIngreso detalles){
-        
-    }
-            
             
     private boolean isEmptyOrNull(String str) {
         return str == null || str.isEmpty();

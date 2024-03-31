@@ -17,6 +17,7 @@ import com.serviceBack.fenix.models.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import commons.GenericResponse;
 import commons.JsonReader;
+import commons.MessageControll;
 
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
@@ -43,6 +44,7 @@ public class IngresosServices implements IngresosInterfaces {
     private final PrepareIncomeStatment prepareIncomeStatment;
     private final Exceptions exceptions;
     private final GenericResponse generiResponse;
+    private final MessageControll messageControll;
 
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
@@ -54,6 +56,7 @@ public class IngresosServices implements IngresosInterfaces {
         this.prepareIncomeStatment = new PrepareIncomeStatment(this.jdbcTemplate); // Inicializa prepare directamente aquí
         this.exceptions = new Exceptions();
         this.generiResponse = new GenericResponse();
+        this.messageControll = new MessageControll();
     }
 
     /*
@@ -80,6 +83,9 @@ public class IngresosServices implements IngresosInterfaces {
         return response;
     }
 
+    /*
+            * CREAR ITEMS INCOME
+     */
     @Override
     public ItemsFail crearItems(DetallesIngreso detalles) {
         String totalBultos = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_TRANSACCION_INGRESO_INF, detalles.getIdTransaccion(), "total_bultos");
@@ -90,14 +96,11 @@ public class IngresosServices implements IngresosInterfaces {
         if (Integer.parseInt(totalBultosItems) != Integer.parseInt(totalBultos)) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
         } else {
-            genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", "ITEMS REGISTRADOS CORRECTAMENTE.");
-            String key = "SVRFTVMgUkVHSVNUUkFET1MgQU5URVJJT1JNRU5URQ==";
-            return generiResponse.GenericResponsError(key);
+            genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", messageControll.MESSAGE_FENIX_DEFAULT);
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
         }
         if (totalBultos.equals("NODATA")) {
-            String key = "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==";
-            return generiResponse.GenericResponsError(key);
-
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
         }
 
         int errores = 0;
@@ -107,38 +110,33 @@ public class IngresosServices implements IngresosInterfaces {
         }
         String messageItemsOk = "";
         if (Integer.parseInt(totalBultos) == bultosItems) {
-
             for (int i = 0; i < detalles.getItems().size(); i++) {
                 bultosItems = bultosItems + detalles.getItems().get(i).getBultos();
-
-                try (PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-                        .prepareStatement(stored.STORE_PROCEDURE_CALL_INSERT_ITEMS)) {
-                    preparedStatement.setInt(1, Integer.parseInt(detalles.getIdTransaccion()));
-                    preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
-                    preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
-                    preparedStatement.setInt(4, detalles.getItems().get(i).getBultosFaltantes());
-                    preparedStatement.setInt(5, detalles.getItems().get(i).getBultosSobrantes());
-                    preparedStatement.setInt(6, detalles.getItems().get(i).getBultos());
-                    preparedStatement.setString(7, detalles.getItems().get(i).getCliente());
-                    preparedStatement.setString(8, detalles.getItems().get(i).getDetalle());
-                    preparedStatement.setString(9, "A");
-                    preparedStatement.setString(10, "A");
-
-                    System.out.println(">>>>>> " + preparedStatement.toString());
-                    LOGGER.info(">> " + preparedStatement.toString());
-
-                    int rowsAffected = preparedStatement.executeUpdate();
-                    if (rowsAffected == 0) {
-                        itemsResponse.setItemsFail(detalles.getItems());
-                    } else {
-                        errores += errores;
-
-                        messageItemsOk += "\n" + (i + 1) + " : " + detalles.getItems().get(i).toString();
-                    }
-                    System.out.println("Rows affected: " + rowsAffected);
-                } catch (Exception e) {
-                    System.out.println("error " + e);
-                }
+                try (
+                        PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
+                                .prepareStatement(stored.STORE_PROCEDURE_CALL_INSERT_ITEMS)) {
+                            preparedStatement.setInt(1, Integer.parseInt(detalles.getIdTransaccion()));
+                            preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
+                            preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
+                            preparedStatement.setInt(4, detalles.getItems().get(i).getBultosFaltantes());
+                            preparedStatement.setInt(5, detalles.getItems().get(i).getBultosSobrantes());
+                            preparedStatement.setInt(6, detalles.getItems().get(i).getBultos());
+                            preparedStatement.setString(7, detalles.getItems().get(i).getCliente());
+                            preparedStatement.setString(8, detalles.getItems().get(i).getDetalle());
+                            preparedStatement.setString(9, "A");
+                            preparedStatement.setString(10, "A");
+                            LOGGER.info(preparedStatement.toString());
+                            int rowsAffected = preparedStatement.executeUpdate();
+                            if (rowsAffected == 0) {
+                                itemsResponse.setItemsFail(detalles.getItems());
+                            } else {
+                                errores += errores;
+                                messageItemsOk += "\n" + (i + 1) + " : " + detalles.getItems().get(i).toString();
+                            }
+                            LOGGER.info("Rows affected: " + rowsAffected);
+                        } catch (Exception e) {
+                            LOGGER.info("error " + e);
+                        }
             }
             if (errores > 0) {
                 genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
@@ -147,25 +145,21 @@ public class IngresosServices implements IngresosInterfaces {
                     messageItemsFail += "\n" + (i + 1) + " : " + itemsResponse.getItemsFail().get(i).toString();
                 }
                 // Construir el mensaje de error
-                String errorMessage = "Los items no fueron registrados en la base datos, corriga e intente de nuevo.\nData : \n\n" + detalles.toString() + "\n" + messageItemsFail + "";
+                String errorMessage = "LOS ITEMS NO FUERON REGISTRADOS EN LA BASE DATOS, CORRIGA E INTENTE DE NUEVO.\nData : \n\n" + detalles.toString() + "\n" + messageItemsFail;
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
                 LOGGER.info("Send mail" + errorMessage);
-
+                return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_05, errorMessage);
             } else {
                 genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", "ITEMS REGISTRADOS");
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
                 LOGGER.info("Send mail" + messageItemsLoads);
+                return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageItemsLoads);
             }
-            itemsResponse.setCodeResponse("00");
-            itemsResponse.setMessageResponse("Ok");
 
         } else {
-            String key = "SU5HUkVTTyBOTyBSRUdJU1RSQURPLg==.";
-            return generiResponse.GenericResponsError(key);
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_04, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        System.out.println(detalles.getItems().toString());
-        return itemsResponse;
     }
 
     public ResponseService resultCheckIngreso(ResponseService response, boolean queryResult, PreparedStatement preparedStatement) throws SQLException {
@@ -175,28 +169,19 @@ public class IngresosServices implements IngresosInterfaces {
                     String responseValue = rs.getString("response");
                     switch (responseValue) {
                         case "0":
-                            response.setCodeResponse("00");
-                            response.setMessageResponse("Ingreso creado exitosamente");
-                            response.setData("Ok");
+                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
                             break;
                         case "1":
-                            response.setCodeResponse("09");
-                            response.setMessageResponse("idTransaccion duplicado, por favor vuelva a intentar");
-                            response.setData("Error");
+                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_07, messageControll.MESSAGE_FENIX_DEFAULT);
                             break;
                         default:
-                            response.setCodeResponse("09");
-                            response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
-                            response.setData("Error");
+                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_08, messageControll.MESSAGE_FENIX_DEFAULT);
                             break;
                     }
                 }
             }
         } else {
-
-            response.setCodeResponse("09");
-            response.setMessageResponse("Error al intentar guardar la información intente de nuevo");
-            response.setData("Error");
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_06, messageControll.MESSAGE_FENIX_DEFAULT);
         }
 
         return response;

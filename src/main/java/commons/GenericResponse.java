@@ -13,11 +13,15 @@ import com.serviceBack.fenix.models.ItemsFail;
  */
 public class GenericResponse {
 
-    public ItemsFail GenericResponsError(String key) {
+    public ItemsFail GenericResponsError(String key, String messageDefault) {
         ItemsFail itemsResponse = new ItemsFail();
         ErrorInfo errorInfo = JsonReader.findErrorInfo(key);
         itemsResponse.setCodeResponse(errorInfo.getCode());
-        itemsResponse.setMessageResponse(errorInfo.getMessage());
+        if (messageDefault.equals("DEFAULT")) {
+            itemsResponse.setMessageResponse(errorInfo.getMessage());
+        } else {
+            itemsResponse.setMessageResponse(messageDefault);
+        }
         return itemsResponse;
 
     }
