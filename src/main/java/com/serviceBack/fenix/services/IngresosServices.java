@@ -11,12 +11,10 @@ import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniq
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
 import com.serviceBack.fenix.models.DetallesIngreso;
-import com.serviceBack.fenix.models.ErrorInfo;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import commons.GenericResponse;
-import commons.JsonReader;
 import commons.MessageControll;
 
 import commons.StoredProcedures;
@@ -87,7 +85,7 @@ public class IngresosServices implements IngresosInterfaces {
             * CREAR ITEMS INCOME
      */
     @Override
-    public ItemsFail crearItems(DetallesIngreso detalles) {
+    public ItemsFail incomeItemsService(DetallesIngreso detalles) {
         String totalBultos = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_TRANSACCION_INGRESO_INF, detalles.getIdTransaccion(), "total_bultos");
         String totalBultosItems = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_ITEMS_TOTAL_BULTOS, detalles.getIdTransaccion(), "bultos");
 

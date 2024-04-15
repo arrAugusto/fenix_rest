@@ -34,16 +34,20 @@ public class IngresoControllers {
     }
 
     @PostMapping("/items")//Iniciar una nueva session de usuario
-    public ItemsFail createItems(@RequestBody @Valid DetallesIngreso detalles) {
-        return service.crearItems(detalles);
+    public ItemsFail incomeItems(@RequestBody @Valid DetallesIngreso detalles) {
+        return service.incomeItemsService(detalles);
     }
 
+    @PostMapping("/items_detail")//Iniciar una nueva session de usuario
+    public ItemsFail incomeDetail(@RequestBody @Valid DetallesIngreso detalles) {
+        return service.incomeItemsService(detalles);
+    }
+
+    
     @GetMapping("/items/{idTransaccion}")//Iniciar una nueva session de usuario
     public List<GetDetalleIngreso> getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
         return service.getItems(idTransaccion);
     }
-
-    @PostMapping("/product")//Iniciar una nueva session de usuario
     public String createProduct(@RequestBody Product product) {
         return service.createProduct(product);
     }

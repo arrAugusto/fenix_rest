@@ -13,7 +13,7 @@ public interface IngresosInterfaces {
 	public ResponseService incomeWithdrawalService(Ingresos ingresos);
         
         //Guardar Items
-        public ItemsFail crearItems(DetallesIngreso detalles);
+        public ItemsFail incomeItemsService(DetallesIngreso detalles);
         
         //Mostrar Items de un ingreso
         public List<GetDetalleIngreso> getItems(String idTransaccion);
