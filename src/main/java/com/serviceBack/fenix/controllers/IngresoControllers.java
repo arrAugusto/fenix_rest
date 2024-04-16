@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
 import com.serviceBack.fenix.models.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
+import com.serviceBack.fenix.models.Detalle_Mercancias;
 import com.serviceBack.fenix.models.DetallesIngreso;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
@@ -39,8 +40,8 @@ public class IngresoControllers {
     }
 
     @PostMapping("/items_detail")//Iniciar una nueva session de usuario
-    public ItemsFail incomeDetail(@RequestBody @Valid DetallesIngreso detalles) {
-        return service.incomeItemsService(detalles);
+    public ItemsFail incomeDetail(@RequestBody @Valid Detalle_Mercancias arribo_detalles) {
+        return service.incomeDetailsService(arribo_detalles);
     }
 
     

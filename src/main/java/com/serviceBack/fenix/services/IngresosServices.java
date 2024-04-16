@@ -10,6 +10,7 @@ import com.serviceBack.fenix.Utils.ResponseService;
 import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniqueCode;
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
+import com.serviceBack.fenix.models.Detalle_Mercancias;
 import com.serviceBack.fenix.models.DetallesIngreso;
 import com.serviceBack.fenix.models.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ItemsFail;
@@ -183,6 +184,30 @@ public class IngresosServices implements IngresosInterfaces {
         }
 
         return response;
+    }
+
+    //Ingreso de detalle de mercaderias
+    @Override
+    public ItemsFail incomeDetailsService(Detalle_Mercancias arribo_detalles) {
+        //Creando objeto de inserccion
+        Object[] params = {
+            arribo_detalles.getIdItem(),
+            arribo_detalles.getBultos(),
+            arribo_detalles.getFechaRegistro(),
+            arribo_detalles.getDetalle(),
+            arribo_detalles.getAverias(),
+            arribo_detalles.getArea(),
+            arribo_detalles.getCodigolectura(),
+            true
+        };
+        //Insertando el detalle de mercaderia
+        int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_DETAILS_ARRIBO_BODEGA, params);
+        //Si no se inserto el registro retornar error
+        if (filasAfectadas == 0) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_09, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+        //Retorno de exito
+        return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
     }
 
     /*
