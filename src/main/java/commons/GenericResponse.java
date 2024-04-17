@@ -5,7 +5,7 @@
 package commons;
 
 import com.serviceBack.fenix.models.ErrorInfo;
-import com.serviceBack.fenix.models.ItemsFail;
+import com.serviceBack.fenix.models.ingresos.ItemsFail;
 
 /**
  *

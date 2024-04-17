@@ -4,8 +4,8 @@
  */
 package sub_process.IncomeWithdrawal;
 
-import com.serviceBack.fenix.models.DetallesIngreso;
-import com.serviceBack.fenix.models.Ingresos;
+import com.serviceBack.fenix.models.ingresos.DetallesIngreso;
+import com.serviceBack.fenix.models.ingresos.Ingresos;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;

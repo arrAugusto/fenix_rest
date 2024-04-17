@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.serviceBack.fenix.models;
+package com.serviceBack.fenix.models.ingresos;
 
 import com.serviceBack.fenix.Utils.ResponseService;
-import com.serviceBack.fenix.models.Items;
+import com.serviceBack.fenix.models.ingresos.Items;
 import java.util.List;
 
 /**

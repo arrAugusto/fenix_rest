@@ -1,4 +1,4 @@
-package com.serviceBack.fenix.models;
+package com.serviceBack.fenix.models.ingresos;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.DecimalMin;

@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
-import com.serviceBack.fenix.models.Ingresos;
+import com.serviceBack.fenix.models.ingresos.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
-import com.serviceBack.fenix.models.Detalle_Mercancias;
-import com.serviceBack.fenix.models.DetallesIngreso;
-import com.serviceBack.fenix.models.GetDetalleIngreso;
-import com.serviceBack.fenix.models.ItemsFail;
+import com.serviceBack.fenix.models.ingresos.Detalle_Mercancias;
+import com.serviceBack.fenix.models.ingresos.DetallesIngreso;
+import com.serviceBack.fenix.models.ingresos.GeoUbicacion;
+import com.serviceBack.fenix.models.ingresos.GetDetalleIngreso;
+import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import java.util.List;
 import javax.validation.Valid;
@@ -44,11 +45,16 @@ public class IngresoControllers {
         return service.incomeDetailsService(arribo_detalles);
     }
 
-    
+    @PostMapping("/items_geo_ubicacion")//Iniciar una nueva session de usuario
+    public ItemsFail incomeGeoUbicacion(@RequestBody @Valid GeoUbicacion geoUbicacion) {
+        return service.incomeGeoUbicacionService(geoUbicacion);
+    }
+
     @GetMapping("/items/{idTransaccion}")//Iniciar una nueva session de usuario
     public List<GetDetalleIngreso> getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
         return service.getItems(idTransaccion);
     }
+
     public String createProduct(@RequestBody Product product) {
         return service.createProduct(product);
     }

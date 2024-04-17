@@ -5,15 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
-import com.serviceBack.fenix.models.Ingresos;
+import com.serviceBack.fenix.models.ingresos.Ingresos;
 import com.serviceBack.fenix.Utils.ResponseService;
 import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniqueCode;
 import com.serviceBack.fenix.Utils.Send;
 import com.serviceBack.fenix.Utils.SendMailIngresos;
-import com.serviceBack.fenix.models.Detalle_Mercancias;
-import com.serviceBack.fenix.models.DetallesIngreso;
-import com.serviceBack.fenix.models.GetDetalleIngreso;
-import com.serviceBack.fenix.models.ItemsFail;
+import com.serviceBack.fenix.models.ingresos.Detalle_Mercancias;
+import com.serviceBack.fenix.models.ingresos.DetallesIngreso;
+import com.serviceBack.fenix.models.ingresos.GeoUbicacion;
+import com.serviceBack.fenix.models.ingresos.GetDetalleIngreso;
+import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import commons.GenericResponse;
 import commons.MessageControll;
@@ -202,6 +203,27 @@ public class IngresosServices implements IngresosInterfaces {
         };
         //Insertando el detalle de mercaderia
         int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_DETAILS_ARRIBO_BODEGA, params);
+        //Si no se inserto el registro retornar error
+        if (filasAfectadas == 0) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_09, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+        //Retorno de exito
+        return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
+    }
+
+    //Ingreso de detalle de mercaderias
+    @Override
+    public ItemsFail incomeGeoUbicacionService(GeoUbicacion geoUbicacion) {
+        //Creando objeto de inserccion
+        Object[] params = {
+            geoUbicacion.getP_id_arribo(),
+            geoUbicacion.getP_pasicionx(),
+            geoUbicacion.getP_posiciony(),
+            geoUbicacion.getP_geoposicion(),
+            geoUbicacion.getP_codigo_lectura()
+        };
+        //Insertando el detalle de mercaderia
+        int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_GEOPOSICION_UBICACION, params);
         //Si no se inserto el registro retornar error
         if (filasAfectadas == 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_09, messageControll.MESSAGE_FENIX_DEFAULT);

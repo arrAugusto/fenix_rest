@@ -6,7 +6,7 @@ package com.serviceBack.fenix.controllers;
 
 import com.serviceBack.fenix.interfaces.FormsInterfaces;
 import com.serviceBack.fenix.models.GetForms;
-import com.serviceBack.fenix.models.Ingresos;
+import com.serviceBack.fenix.models.ingresos.Ingresos;
 import com.serviceBack.fenix.models.SideNav;
 import java.util.List;
 import javax.validation.Valid;
