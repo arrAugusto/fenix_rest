@@ -23,6 +23,9 @@ public interface IngresosInterfaces {
         //Guardar geoposicion
         public ItemsFail incomeGeoUbicacionService(GeoUbicacion geoUbicacion);
         
+        //Guardar geoposicion
+        public ItemsFail incomeModGeoUbicacionService(GeoUbicacion geoUbicacion);
+        
         //Mostrar Items de un ingreso
         public List<GetDetalleIngreso> getItems(String idTransaccion);
         

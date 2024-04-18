@@ -50,6 +50,11 @@ public class IngresoControllers {
         return service.incomeGeoUbicacionService(geoUbicacion);
     }
 
+    @PostMapping("/items_mod_geo_ubicacion")//Iniciar una nueva session de usuario
+    public ItemsFail incomeModGeoUbicacion(@RequestBody @Valid GeoUbicacion geoUbicacion) {
+        return service.incomeModGeoUbicacionService(geoUbicacion);
+    }
+    
     @GetMapping("/items/{idTransaccion}")//Iniciar una nueva session de usuario
     public List<GetDetalleIngreso> getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
         return service.getItems(idTransaccion);

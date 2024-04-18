@@ -211,7 +211,7 @@ public class IngresosServices implements IngresosInterfaces {
         return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
     }
 
-    //Ingreso de detalle de mercaderias
+    //NUEVA GEOPOSICION
     @Override
     public ItemsFail incomeGeoUbicacionService(GeoUbicacion geoUbicacion) {
         //Creando objeto de inserccion
@@ -224,6 +224,34 @@ public class IngresosServices implements IngresosInterfaces {
         };
         //Insertando el detalle de mercaderia
         int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_GEOPOSICION_UBICACION, params);
+        //Si no se inserto el registro retornar error
+        if (filasAfectadas == 0) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_09, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+        //Retorno de exito
+        return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
+    }
+
+    //MODIFICAR DE GEOUBICACION
+    @Override
+    public ItemsFail incomeModGeoUbicacionService(GeoUbicacion geoUbicacion) {
+        String id_arribo = "";
+        if (Integer.toString(geoUbicacion.getP_id_arribo()).isEmpty()) {
+            id_arribo = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_ID_GEO_UBICACION, geoUbicacion.getP_codigo_lectura(), "id");
+
+        } else {
+            id_arribo = Integer.toString(geoUbicacion.getP_id_arribo());
+        }
+
+        //Creando objeto de inserccion
+        Object[] params = {
+            id_arribo,
+            geoUbicacion.getP_pasicionx(),
+            geoUbicacion.getP_posiciony(),
+            geoUbicacion.getP_geoposicion()
+        };
+        //Insertando el detalle de mercaderia
+        int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION, params);
         //Si no se inserto el registro retornar error
         if (filasAfectadas == 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_09, messageControll.MESSAGE_FENIX_DEFAULT);
