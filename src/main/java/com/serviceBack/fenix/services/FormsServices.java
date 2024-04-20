@@ -6,6 +6,7 @@ package com.serviceBack.fenix.services;
 
 import com.serviceBack.fenix.interfaces.ClientesInterfaces;
 import com.serviceBack.fenix.interfaces.FormsInterfaces;
+import com.serviceBack.fenix.models.GetFormUser;
 import com.serviceBack.fenix.models.GetForms;
 import com.serviceBack.fenix.models.GetNit;
 import com.serviceBack.fenix.models.NuevoCliente;
@@ -35,7 +36,7 @@ public class FormsServices implements FormsInterfaces {
     }
 
     @Override
-    public List<GetForms> FormsService(String id) {
+    public List<GetForms> MenuService(String id) {
         String queryGetForms = stored.STORED_PROCEDURE_CALL_GET_FORMS;
         return jdbcTemplate.query(queryGetForms, new Object[]{id}, new RowMapper<GetForms>() {
             @Override
@@ -56,6 +57,7 @@ public class FormsServices implements FormsInterfaces {
         });
     }
 
+    @Override
     public List<SideNav> SideNavService() {
         String queryGetSideNav = stored.STORED_PROCEDURE_CALL_GET_SIDE_NAV;
         String usuario = "DEVAGOMEZ";
@@ -72,6 +74,40 @@ public class FormsServices implements FormsInterfaces {
                 return sideNav;
             }
 
+        });
+
+    }
+
+    @Override
+    public List<GetFormUser> FormUserService(String id_form) {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_STORED_GROUP_FORM, new Object[]{id_form}, new RowMapper<GetFormUser>() {
+            @Override
+            public GetFormUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+                GetFormUser getFormUser = new GetFormUser();
+
+                // Suponiendo que tienes un ResultSet rs con los resultados de una consulta
+                // Selecciona el nombre de la columna en la base de datos que coincide con el nombre del atributo en getFormUser
+                // Ejemplo de cómo establecer el valor del atributo "id"
+                getFormUser.setId(rs.getInt("id"));
+
+                // Ejemplo de cómo establecer el valor del atributo "stored_group"
+                getFormUser.setStored_group(rs.getString("stored_group"));
+
+                // Continúa para establecer los valores de los demás atributos...
+                getFormUser.setId_icon(rs.getString("id_icon"));
+                getFormUser.setType(rs.getString("type"));
+                getFormUser.setTag(rs.getString("tag"));
+                getFormUser.setLabel(rs.getString("label"));
+                getFormUser.setIcon(rs.getString("icon"));
+                getFormUser.setSize(rs.getString("size"));
+                getFormUser.setRequired(rs.getString("required"));
+                getFormUser.setDisabled(rs.getString("disabled"));
+                getFormUser.setPattern(rs.getString("pattern"));
+                getFormUser.setVisible(rs.getString("visible"));
+                getFormUser.setRead_only(rs.getString("read_only"));
+                getFormUser.setEditable(rs.getString("editable"));
+                return getFormUser;
+            }
         });
 
     }

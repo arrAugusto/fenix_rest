@@ -65,10 +65,8 @@ public class IngresosServices implements IngresosInterfaces {
     @Override
     public ResponseService incomeWithdrawalService(Ingresos ingreso) {
 
-        String query = stored.STORE_PROCEDURE_CALL_INSERT_INGRESO;
-
         try {
-            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(query, ingreso);
+            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORE_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
             boolean queryResult = preparedStatement.execute();
             ResponseService res = resultCheckIngreso(response, queryResult, preparedStatement);
             if (!res.getCodeResponse().equals("00")) {

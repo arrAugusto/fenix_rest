@@ -5,6 +5,7 @@
 package com.serviceBack.fenix.controllers;
 
 import com.serviceBack.fenix.interfaces.FormsInterfaces;
+import com.serviceBack.fenix.models.GetFormUser;
 import com.serviceBack.fenix.models.GetForms;
 import com.serviceBack.fenix.models.ingresos.Ingresos;
 import com.serviceBack.fenix.models.SideNav;
@@ -31,15 +32,20 @@ public class FormsControllers {
 
     @Autowired
     FormsInterfaces service;
-    
+
     @GetMapping("/getForms/{id}")//Iniciar una nueva session de usuario
-    public List<GetForms>  getForms(@PathVariable String id) {
-        return service.FormsService(id);
+    public List<GetForms> getMenu(@PathVariable String id) {
+        return service.MenuService(id);
+    }
+
+    @GetMapping("/getFormulario/{id_form}")//Iniciar una nueva session de usuario
+    public List<GetFormUser> getFormUser(@PathVariable String id_form) {
+        return service.FormUserService(id_form);
     }
 
     @PostMapping("/getSideNav")//Iniciar una nueva session de usuario
-    public List<SideNav>  getSideNav() {
+    public List<SideNav> getSideNav() {
         return service.SideNavService();
     }
-    
+
 }
