@@ -10,11 +10,12 @@ package commons;
  */
 public class StoredProcedures {
     
-    //LOG INICIO DE SESSION
-    public final String STORE_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";
-    
     //INICIO DE SESSION
-    public final String STORE_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";
+    public final String STORED_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";//Login
+
+    //LOG INICIO DE SESSION
+    public final String STORE_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";//Crear usuarios
+    
     
     //ACTUALIZACION DE INGRESOS OPERATIVA
     public final String STORE_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";

@@ -38,7 +38,7 @@ public class SessionUsuarios implements UsuariosInterfaces {
     @Override
     public List<GetSession> startSession(Usuarios usuarios) {
         // TODO Auto-generated method stub
-        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
             @Override
             public GetSession mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetSession session = new GetSession();
