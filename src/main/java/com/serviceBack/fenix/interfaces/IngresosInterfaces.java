@@ -1,6 +1,6 @@
 package com.serviceBack.fenix.interfaces;
 
-import com.serviceBack.fenix.models.ingresos.Ingresos;
+import com.serviceBack.fenix.models.ingresos.IncomeAndWithDrawal;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.models.ingresos.Detalle_Mercancias;
 import com.serviceBack.fenix.models.ingresos.DetallesIngreso;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IngresosInterfaces {
         //Crear un ingeso y/o retiro
-	public ResponseService incomeWithdrawalService(Ingresos ingresos);
+	public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingresos);
         
         //Guardar Items
         public ItemsFail incomeItemsService(DetallesIngreso detalles);

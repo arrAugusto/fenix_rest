@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
-import com.serviceBack.fenix.models.ingresos.Ingresos;
+import com.serviceBack.fenix.models.ingresos.IncomeAndWithDrawal;
 import com.serviceBack.fenix.Utils.ResponseService;
 import static com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator.generateUniqueCode;
 import com.serviceBack.fenix.Utils.Send;
@@ -63,15 +63,21 @@ public class IngresosServices implements IngresosInterfaces {
         * INGRESOS Y RETIROS REGISTRO DE TRANSACCIONES
      */
     @Override
-    public ResponseService incomeWithdrawalService(Ingresos ingreso) {
-
+    public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingreso) {
+        String cantidad_registros = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME, ingreso.getP_numero_factura(), "cantidad_registros");
+        if (Integer.parseInt(cantidad_registros) > 0) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_10, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
         try {
-            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORE_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
-            boolean queryResult = preparedStatement.execute();
-            ResponseService res = resultCheckIngreso(response, queryResult, preparedStatement);
-            if (!res.getCodeResponse().equals("00")) {
-                return res;
+            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected == 0) {
+                return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_11, messageControll.MESSAGE_FENIX_DEFAULT);
             }
+            
+            genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, Integer.toString(ingreso.getP_id_transaccion()));            
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
+
         } catch (SQLException e) {
             exceptions.handleSQLException(e);
         } catch (Exception e) {
@@ -158,31 +164,6 @@ public class IngresosServices implements IngresosInterfaces {
         } else {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_04, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-    }
-
-    public ResponseService resultCheckIngreso(ResponseService response, boolean queryResult, PreparedStatement preparedStatement) throws SQLException {
-        if (queryResult) {
-            try (ResultSet rs = preparedStatement.getResultSet()) {
-                if (rs.next()) {
-                    String responseValue = rs.getString("response");
-                    switch (responseValue) {
-                        case "0":
-                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
-                            break;
-                        case "1":
-                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_07, messageControll.MESSAGE_FENIX_DEFAULT);
-                            break;
-                        default:
-                            generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_08, messageControll.MESSAGE_FENIX_DEFAULT);
-                            break;
-                    }
-                }
-            }
-        } else {
-            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_06, messageControll.MESSAGE_FENIX_DEFAULT);
-        }
-
-        return response;
     }
 
     //Ingreso de detalle de mercaderias

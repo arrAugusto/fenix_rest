@@ -66,7 +66,7 @@ public class SessionUsuarios implements UsuariosInterfaces {
                             "A",
                             strSessiones.generateSessionId()
                         };
-                        int result = jdbcTemplate.update(stored.STORE_PROCEDURE_CALL_LOG_USER, params);
+                        int result = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_LOG_USER, params);
                         if (result > 0) {
                             session.setJwt(jwt);
                             session.setStrSessionId(strSessionId);

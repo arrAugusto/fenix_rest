@@ -4,7 +4,7 @@
  */
 package sub_process.IncomeWithdrawal;
 
-import com.serviceBack.fenix.models.ingresos.Ingresos;
+import com.serviceBack.fenix.models.ingresos.IncomeAndWithDrawal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class PrepareIncomeStatment {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-public PreparedStatement IncomeSQLPrepare(String query, Ingresos ingreso) throws SQLException {
+public PreparedStatement IncomeSQLPrepare(String query, IncomeAndWithDrawal ingreso) throws SQLException {
     PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection().prepareStatement(query);
     preparedStatement.setInt(1, ingreso.getP_cliente_id());
     preparedStatement.setInt(2, ingreso.getP_usuario_id());

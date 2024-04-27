@@ -10,7 +10,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class Ingresos {
+public class IncomeAndWithDrawal {
     
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
@@ -25,7 +25,7 @@ public class Ingresos {
     private int p_id_bodega;
 
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
+    @Max(value = 100000000, message = "El valor debe ser igual o menor que {value}")
     private int p_id_transaccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")

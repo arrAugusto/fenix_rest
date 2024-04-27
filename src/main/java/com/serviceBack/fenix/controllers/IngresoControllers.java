@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.serviceBack.fenix.interfaces.IngresosInterfaces;
-import com.serviceBack.fenix.models.ingresos.Ingresos;
+import com.serviceBack.fenix.models.ingresos.IncomeAndWithDrawal;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.models.ingresos.Detalle_Mercancias;
 import com.serviceBack.fenix.models.ingresos.DetallesIngreso;
@@ -31,7 +31,7 @@ public class IngresoControllers {
     private IngresosInterfaces service;
 
     @PostMapping("/income_withdrawal")//Iniciar una nueva session de usuario
-    public ResponseService createIngreso(@RequestBody @Valid Ingresos ingresos) {
+    public ResponseService createIngreso(@RequestBody @Valid IncomeAndWithDrawal ingresos) {
         return service.incomeWithdrawalService(ingresos);
     }
 

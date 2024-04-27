@@ -14,11 +14,18 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";//Login
 
     //LOG INICIO DE SESSION
-    public final String STORE_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";//Crear usuarios
+    public final String STORED_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";//Crear usuarios
     
-    //ACTUALIZACION DE INGRESOS OPERATIVA
-    public final String STORE_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    //INGRESOS
+    public final String STORED_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//Crear ingresos
 
+    //CHECKAR TRANSACCION INGRESO
+    public final String STORED_PROCEDURE_CALL_CHECK_INCOME = "CALL CHECK_INCOME(?)";//Validación de ingresos
+
+    //ACTUALIZACION DE INGRESOS EXITOSOS
+    public final String STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO = "CALL UPDATE_INGRESO_EXITOSO(?)";//Actualización de ingresos exitosos
+    
+    
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     
