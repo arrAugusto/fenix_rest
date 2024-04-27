@@ -95,12 +95,6 @@ public class IncomeAndWithDrawal {
     private String p_generica_8;
     
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
-    private String p_codigo_respuesta;
-    
-    @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
-    private String p_mensaje_respuesta;
-    
-    @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")
     private String p_codigo_transaccion;
     
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$", message = "El campo debe no contener caracteres especiales")

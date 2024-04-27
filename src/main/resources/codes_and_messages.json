@@ -46,5 +46,10 @@
     "FENIX_11": {
         "code": "11",
         "message": "INGRESO NO CREADO INTENTE DE NUEVO."
+    },
+    "FENIX_12": {
+        "code": "12",
+        "message": "Id_Transaccion existe, intente con un nuevo id_transaccion"
     }
+
 }

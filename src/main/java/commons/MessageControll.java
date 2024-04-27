@@ -35,5 +35,7 @@ public class MessageControll {
     public final String MESSAGE_FENIX_10 = "FENIX_10";
     //ERROR
     public final String MESSAGE_FENIX_11 = "FENIX_11";
+    //ERROR
+    public final String MESSAGE_FENIX_12 = "FENIX_12";
 
 }

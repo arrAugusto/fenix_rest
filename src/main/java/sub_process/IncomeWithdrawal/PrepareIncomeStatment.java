@@ -51,16 +51,14 @@ public PreparedStatement IncomeSQLPrepare(String query, IncomeAndWithDrawal ingr
     preparedStatement.setString(24, isEmptyOrNull(ingreso.getP_generica_6()) ? null : ingreso.getP_generica_6());
     preparedStatement.setString(25, isEmptyOrNull(ingreso.getP_generica_7()) ? null : ingreso.getP_generica_7());
     preparedStatement.setString(26, isEmptyOrNull(ingreso.getP_generica_8()) ? null : ingreso.getP_generica_8());
-    preparedStatement.setString(27, isEmptyOrNull(ingreso.getP_codigo_respuesta()) ? null : ingreso.getP_codigo_respuesta());
-    preparedStatement.setString(28, isEmptyOrNull(ingreso.getP_mensaje_respuesta()) ? null : ingreso.getP_mensaje_respuesta());
-    preparedStatement.setString(29, isEmptyOrNull(ingreso.getP_codigo_transaccion()) ? null : ingreso.getP_codigo_transaccion());
-    preparedStatement.setString(30, isEmptyOrNull(ingreso.getP_idImages()) ? null : ingreso.getP_idImages());
-    preparedStatement.setString(31, isEmptyOrNull(ingreso.getP_area()) ? null : ingreso.getP_area());
-    preparedStatement.setString(32, isEmptyOrNull(ingreso.getP_documento_top_pay()) ? null : ingreso.getP_documento_top_pay());
-    preparedStatement.setString(33, isEmptyOrNull(ingreso.getP_p_documento()) ? null : ingreso.getP_p_documento());
-    preparedStatement.setString(34, isEmptyOrNull(ingreso.getP_nombre()) ? null : ingreso.getP_nombre());
-    preparedStatement.setString(35, isEmptyOrNull(ingreso.getP_boleta_de_pago()) ? null : ingreso.getP_boleta_de_pago());
-    preparedStatement.setString(36, isEmptyOrNull(ingreso.getP_comments()) ? null : ingreso.getP_comments());
+    preparedStatement.setString(27, isEmptyOrNull(ingreso.getP_codigo_transaccion()) ? null : ingreso.getP_codigo_transaccion());
+    preparedStatement.setString(28, isEmptyOrNull(ingreso.getP_idImages()) ? null : ingreso.getP_idImages());
+    preparedStatement.setString(29, isEmptyOrNull(ingreso.getP_area()) ? null : ingreso.getP_area());
+    preparedStatement.setString(30, isEmptyOrNull(ingreso.getP_documento_top_pay()) ? null : ingreso.getP_documento_top_pay());
+    preparedStatement.setString(31, isEmptyOrNull(ingreso.getP_p_documento()) ? null : ingreso.getP_p_documento());
+    preparedStatement.setString(32, isEmptyOrNull(ingreso.getP_nombre()) ? null : ingreso.getP_nombre());
+    preparedStatement.setString(33, isEmptyOrNull(ingreso.getP_boleta_de_pago()) ? null : ingreso.getP_boleta_de_pago());
+    preparedStatement.setString(34, isEmptyOrNull(ingreso.getP_comments()) ? null : ingreso.getP_comments());
     return preparedStatement;
 }
 
