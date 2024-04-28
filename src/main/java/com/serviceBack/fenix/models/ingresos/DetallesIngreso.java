@@ -20,7 +20,7 @@ import lombok.ToString;
 public class DetallesIngreso {
 
     @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
-    private String idTransaccion;
+    private String id_ingreso;
 
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")

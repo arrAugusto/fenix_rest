@@ -100,15 +100,14 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public ItemsFail incomeItemsService(DetallesIngreso detalles) {
-        String totalBultos = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_TRANSACCION_INGRESO_INF, detalles.getIdTransaccion(), "total_bultos");
-        String totalBultosItems = getIncomeBasic(stored.STORE_PROCEDURE_CALL_GET_ITEMS_TOTAL_BULTOS, detalles.getIdTransaccion(), "bultos");
+        String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");;//Bultos Ingreso
+        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_itesm");//bultos items
 
         ItemsFail itemsResponse = new ItemsFail();
 
         if (Integer.parseInt(totalBultosItems) != Integer.parseInt(totalBultos)) {
-            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
+            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
         } else {
-            genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", messageControll.MESSAGE_FENIX_DEFAULT);
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
         }
         if (totalBultos.equals("NODATA")) {
@@ -126,8 +125,8 @@ public class IngresosServices implements IngresosInterfaces {
                 bultosItems = bultosItems + detalles.getItems().get(i).getBultos();
                 try (
                         PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-                                .prepareStatement(stored.STORE_PROCEDURE_CALL_INSERT_ITEMS)) {
-                            preparedStatement.setInt(1, Integer.parseInt(detalles.getIdTransaccion()));
+                                .prepareStatement(stored.STORED_PROCEDURE_CALL_INSERT_ITEMS)) {
+                            preparedStatement.setInt(1, Integer.parseInt(detalles.getId_ingreso()));
                             preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
                             preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
                             preparedStatement.setInt(4, detalles.getItems().get(i).getBultosFaltantes());
@@ -151,7 +150,7 @@ public class IngresosServices implements IngresosInterfaces {
                         }
             }
             if (errores > 0) {
-                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getIdTransaccion());
+                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
                 String messageItemsFail = "";
                 for (int i = 0; i < itemsResponse.getItemsFail().size(); i++) {
                     messageItemsFail += "\n" + (i + 1) + " : " + itemsResponse.getItemsFail().get(i).toString();
@@ -162,7 +161,7 @@ public class IngresosServices implements IngresosInterfaces {
                 LOGGER.info("Send mail" + errorMessage);
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_05, errorMessage);
             } else {
-                genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getIdTransaccion(), "01", "ITEMS REGISTRADOS");
+                genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getId_ingreso(), "01", "ITEMS REGISTRADOS");
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
                 LOGGER.info("Send mail" + messageItemsLoads);
