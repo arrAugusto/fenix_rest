@@ -30,14 +30,14 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_CHECK_ID_TRANSACCION = "CALL CHECK_ID_TRANSACCION(?)";//Validar id_transaccion
 
 
-    //INSERTAR NUEVO ITEM DE INGRESO
-    public final String STORED_PROCEDURE_CALL_INSERT_ITEMS = "CALL INSERT_ITEM(?,?,?,?,?,?,?,?)";//Insertar nuevo itetm de ingreso
+    //INSERTAR NUEVO ITEM DE INGRESO {{ CALL INSERT_ITEM(3, 1, 'Producto A', 'Caja', '10.00', 'Sin comentarios', 'Activo'); }}
+    public final String STORED_PROCEDURE_CALL_INSERT_ITEMS = "CALL INSERT_ITEM(?,?,?,?,?,?,?)";//Insertar nuevo itetm de ingreso 
     
     //VALIDAR INFORMACION DEL INGRESO
     public final String STORED_PROCEDURE_CALL_CHECK_INCOME_VALID = "CALL CHECK_INCOME_VALID(?)";//Validar info ingreso
     
     //VALIDAR LA SUMA TOTAL DE BULTOS
-    public final String STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS = "CALL CHECK_INCOME_VALID(?)";//Suma total de bultos items
+    public final String STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS = "CALL CHECK_TOTAL_BULTOS_ITEMS(?)";//Suma total de bultos items
     
     //ROLLBACK O DELETE SI EXISTE UN ERROR EN EL INSERT DE LOS DATOS
     public final String STORE_PROCEDURE_DELETE_ITEMS_INCOME = "CALL DELETE_ITEMS_INCOME(?)";//Delete items id_ingreso

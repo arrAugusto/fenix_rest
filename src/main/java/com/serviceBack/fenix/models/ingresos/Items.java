@@ -21,19 +21,15 @@ public class Items {
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int bultos;
-    
-    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int bultosFaltantes;
 
-    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int bultosSobrantes;
-    
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String cliente;
-    
+
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*]+$", message = "El campo debe no contener caracteres especiales")
     private String detalle;
+
+    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
+    @Max(value = 1000000, message = "El valor debe ser igual o menor que {value}")
+    private double valorUnitario;
 
 }

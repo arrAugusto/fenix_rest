@@ -101,17 +101,21 @@ public class IngresosServices implements IngresosInterfaces {
     @Override
     public ItemsFail incomeItemsService(DetallesIngreso detalles) {
         String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");;//Bultos Ingreso
-        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_itesm");//bultos items
+        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");//bultos items
 
         ItemsFail itemsResponse = new ItemsFail();
 
-        if (Integer.parseInt(totalBultosItems) != Integer.parseInt(totalBultos)) {
+        if (totalBultos.equals("NODATA")) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+        
+        System.out.println("totalBultosItems> "+totalBultosItems);
+        System.out.println("totalBultos> "+totalBultos);
+        
+        if (totalBultosItems.equals(totalBultos)) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
         } else {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
-        }
-        if (totalBultos.equals("NODATA")) {
-            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
         }
 
         int errores = 0;
@@ -128,14 +132,11 @@ public class IngresosServices implements IngresosInterfaces {
                                 .prepareStatement(stored.STORED_PROCEDURE_CALL_INSERT_ITEMS)) {
                             preparedStatement.setInt(1, Integer.parseInt(detalles.getId_ingreso()));
                             preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
-                            preparedStatement.setInt(3, detalles.getItems().get(i).getBultos());
-                            preparedStatement.setInt(4, detalles.getItems().get(i).getBultosFaltantes());
-                            preparedStatement.setInt(5, detalles.getItems().get(i).getBultosSobrantes());
-                            preparedStatement.setInt(6, detalles.getItems().get(i).getBultos());
-                            preparedStatement.setString(7, detalles.getItems().get(i).getCliente());
-                            preparedStatement.setString(8, detalles.getItems().get(i).getDetalle());
-                            preparedStatement.setString(9, "A");
-                            preparedStatement.setString(10, "A");
+                            preparedStatement.setString(3, detalles.getItems().get(i).getCliente());
+                            preparedStatement.setInt(4, detalles.getItems().get(i).getBultos());
+                            preparedStatement.setDouble(5, detalles.getItems().get(i).getValorUnitario());
+                            preparedStatement.setString(6, detalles.getItems().get(i).getDetalle());
+                            preparedStatement.setString(7, "A");
                             LOGGER.info(preparedStatement.toString());
                             int rowsAffected = preparedStatement.executeUpdate();
                             if (rowsAffected == 0) {
