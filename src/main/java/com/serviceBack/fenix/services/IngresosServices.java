@@ -75,7 +75,7 @@ public class IngresosServices implements IngresosInterfaces {
         if (Integer.parseInt(id_transaccion) > 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_12, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        
+
         try {
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -100,31 +100,40 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public ItemsFail incomeItemsService(DetallesIngreso detalles) {
-        String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");;//Bultos Ingreso
-        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");//bultos items
+    	String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");
+    	String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");
+    	    int totalBultosValue = 0;
+    	    int totalBultosItemsValue = 0;
+
+        try {
+    	    totalBultosValue = (int) Double.parseDouble(totalBultos.trim());
+    	    totalBultosItemsValue = (int) Double.parseDouble(totalBultosItems.trim());
+    	    
+    	    System.out.println("totalBultos: " + totalBultosValue);
+    	    System.out.println("totalBultosItems: " + totalBultosItemsValue);
+    	} catch (NumberFormatException e) {
+    	    System.err.println("Error al analizar la entrada: " + e.getMessage());
+    	}
 
         ItemsFail itemsResponse = new ItemsFail();
 
-        if (totalBultos.equals("NODATA")) {
-            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
-        }
-        
-        System.out.println("totalBultosItems> "+totalBultosItems);
-        System.out.println("totalBultos> "+totalBultos);
-        
-        if (totalBultosItems.equals(totalBultos)) {
+
+        if (totalBultosItemsValue != totalBultosValue) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
         } else {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-
+        if (totalBultosValue==0) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+        
         int errores = 0;
         int bultosItems = 0;
         for (int i = 0; i < detalles.getItems().size(); i++) {
             bultosItems += detalles.getItems().get(i).getBultos();
         }
         String messageItemsOk = "";
-        if (Integer.parseInt(totalBultos) == bultosItems) {
+        if (totalBultosValue == bultosItems) {
             for (int i = 0; i < detalles.getItems().size(); i++) {
                 bultosItems = bultosItems + detalles.getItems().get(i).getBultos();
                 try (
@@ -162,7 +171,7 @@ public class IngresosServices implements IngresosInterfaces {
                 LOGGER.info("Send mail" + errorMessage);
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_05, errorMessage);
             } else {
-                genericTransactionIncome(stored.STORED_PROCEDURE_UPDATE_TRANSACTION_INCOME, detalles.getId_ingreso(), "01", "ITEMS REGISTRADOS");
+                genericincomeItems(stored.STORED_PROCEDURE_UPDATE_ITEMS_INCOME, detalles.getId_ingreso());
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
                 LOGGER.info("Send mail" + messageItemsLoads);
