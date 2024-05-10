@@ -190,12 +190,10 @@ public class IngresosServices implements IngresosInterfaces {
         Object[] params = {
             arribo_detalles.getIdItem(),
             arribo_detalles.getBultos(),
-            arribo_detalles.getFechaRegistro(),
             arribo_detalles.getDetalle(),
             arribo_detalles.getAverias(),
             arribo_detalles.getArea(),
-            arribo_detalles.getCodigolectura(),
-            true
+            arribo_detalles.getCodigolectura()
         };
         //Insertando el detalle de mercaderia
         int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_DETAILS_ARRIBO_BODEGA, params);
