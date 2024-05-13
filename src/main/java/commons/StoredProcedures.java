@@ -49,8 +49,18 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_INSERT_DETAILS_ARRIBO_BODEGA = "CALL INSERT_DETAILS_ARRIBO_BODEGA(?,?,?,?,?,?)";//Insertar detalles en arribo
     
     //MOSTRAR NUEVO UBICACION DE INGRESO
-    public final String STORED_PROCEDURE_CALL_INSERT_GEOPOSICION_UBICACION = "CALL INSERT_GEO_UBICACION(?,?,?,?,?,?,?,?)"; //Ubicacion inicial de mercaderia
+    public final String STORED_PROCEDURE_CALL_INSERT_GEOPOSICION_UBICACION = "CALL INSERT_GEO_UBICACION(?,?,?,?,?,?,?)"; //Ubicación inicial de mercaderia
 
+    //MODIFICAR NUEVO UBICACION DE INGRESO
+    public final String STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION = "CALL UPDATE_GEO_UBICACION(?,?,?,?,?,?)";//Cambio de ubicación
+    
+    //MODIFICAR NUEVO UBICACION DE INGRESO
+    public final String STORED_PROCEDURE_CALL_GET_REQUIRED_ASIST = "CALL GET_REQUIRED_ASIST(?)";//Revisar si necesita asistencia humana
+    
+    public final String STORED_PROCEDURE_CALL_GET_ALL_DATA_ARRIBO = "CALL GET_ALL_DATA_ARRIBO(?)";//All data de arribo para errores o mostrar mas data especifica del ingreso y detalles
+
+    public String STORED_PROCEDURE_CALL_GET_ID_ARRIBO = "CALL GET_ID_ARRIBO(?)";//Id de arribo
+    
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     
@@ -63,8 +73,6 @@ public class StoredProcedures {
     
     
 
-    //MODIFICAR NUEVO UBICACION DE INGRESO
-    public final String STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION = "CALL UPDATE_GEO_UBICACION(?,?,?,?)";
 
     //GET ID INGRESO
     public final String STORED_PROCEDURE_CALL_GET_ID_INGRESO = "CALL GET_ID_INGRESO(?)";

@@ -16,6 +16,7 @@ import com.serviceBack.fenix.models.ingresos.GeoUbicacion;
 import com.serviceBack.fenix.models.ingresos.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
+import com.serviceBack.fenix.models.ingresos.GetDataIngresoArribo;
 import commons.GenericResponse;
 import commons.MessageControll;
 
@@ -32,6 +33,7 @@ import org.springframework.dao.DataAccessException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,33 +102,32 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public ItemsFail incomeItemsService(DetallesIngreso detalles) {
-    	String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");
-    	String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");
-    	    int totalBultosValue = 0;
-    	    int totalBultosItemsValue = 0;
+        String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");
+        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");
+        int totalBultosValue = 0;
+        int totalBultosItemsValue = 0;
 
         try {
-    	    totalBultosValue = (int) Double.parseDouble(totalBultos.trim());
-    	    totalBultosItemsValue = (int) Double.parseDouble(totalBultosItems.trim());
-    	    
-    	    System.out.println("totalBultos: " + totalBultosValue);
-    	    System.out.println("totalBultosItems: " + totalBultosItemsValue);
-    	} catch (NumberFormatException e) {
-    	    System.err.println("Error al analizar la entrada: " + e.getMessage());
-    	}
+            totalBultosValue = (int) Double.parseDouble(totalBultos.trim());
+            totalBultosItemsValue = (int) Double.parseDouble(totalBultosItems.trim());
+
+            System.out.println("totalBultos: " + totalBultosValue);
+            System.out.println("totalBultosItems: " + totalBultosItemsValue);
+        } catch (NumberFormatException e) {
+            System.err.println("Error al analizar la entrada: " + e.getMessage());
+        }
 
         ItemsFail itemsResponse = new ItemsFail();
-
 
         if (totalBultosItemsValue != totalBultosValue) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
         } else {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        if (totalBultosValue==0) {
+        if (totalBultosValue == 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        
+
         int errores = 0;
         int bultosItems = 0;
         for (int i = 0; i < detalles.getItems().size(); i++) {
@@ -214,7 +215,10 @@ public class IngresosServices implements IngresosInterfaces {
             geoUbicacion.getP_pasicionx(),
             geoUbicacion.getP_posiciony(),
             geoUbicacion.getP_geoposicion(),
-            geoUbicacion.getP_codigo_lectura()
+            geoUbicacion.getP_codigo_lectura(),
+            geoUbicacion.getP_descripcion(),
+            geoUbicacion.getP_caracteristicas()
+
         };
         //Insertando el detalle de mercaderia
         int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_GEOPOSICION_UBICACION, params);
@@ -229,22 +233,32 @@ public class IngresosServices implements IngresosInterfaces {
     //MODIFICAR DE GEOUBICACION
     @Override
     public ItemsFail incomeModGeoUbicacionService(GeoUbicacion geoUbicacion) {
-        String id_arribo = "";
-        if (Integer.toString(geoUbicacion.getP_id_arribo()).isEmpty()) {
-            id_arribo = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_ID_GEO_UBICACION, geoUbicacion.getP_codigo_lectura(), "id");
+        String asistencia = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_REQUIRED_ASIST, geoUbicacion.getP_codigo_lectura(), "asistencia");
 
-        } else {
-            id_arribo = Integer.toString(geoUbicacion.getP_id_arribo());
+        System.out.println("asistencia> " + asistencia);
+        if (Integer.parseInt(asistencia) > 1) {
+            String id_arribo = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_ID_ARRIBO, geoUbicacion.getP_codigo_lectura(), "id");
+            if (!id_arribo.equals("NODATA")) {
+                //getAllDataIngreso
+                List<GetDataIngresoArribo> allData = getAllDataIngreso(Integer.parseInt(id_arribo));
+                String errorMessage = "REVISA LAS TAREAS DE UBICACION Y CONFIRMA APROBANDO EL CAMBIO.\nData : \n\n" + allData.toString();
+                System.out.println("errorMessage> " + errorMessage);
+                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
+                LOGGER.info("Send mail" + errorMessage);
+            }
         }
-
         //Creando objeto de inserccion
         Object[] params = {
-            id_arribo,
             geoUbicacion.getP_pasicionx(),
             geoUbicacion.getP_posiciony(),
-            geoUbicacion.getP_geoposicion()
+            geoUbicacion.getP_geoposicion(),
+            geoUbicacion.getP_descripcion(),
+            geoUbicacion.getP_caracteristicas(),
+            geoUbicacion.getP_codigo_lectura()
         };
         //Insertando el detalle de mercaderia
+        System.out.println("stored.STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION> " + stored.STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION);
+        System.out.println("params > " + params.toString());
         int filasAfectadas = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_UPDATE_GEO_UBICACION, params);
         //Si no se inserto el registro retornar error
         if (filasAfectadas == 0) {
@@ -354,5 +368,33 @@ public class IngresosServices implements IngresosInterfaces {
     public int genericTransactionIncome(String query, String id, String codeResp, String messageResp) {
         int rowsAffected = jdbcTemplate.update(query, id, codeResp, messageResp);
         return rowsAffected;
+    }
+
+    public List<GetDataIngresoArribo> getAllDataIngreso(int id_arribo) {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_ALL_DATA_ARRIBO, new Object[]{id_arribo}, new ResultSetExtractor<List<GetDataIngresoArribo>>() {
+            @Override
+            public List<GetDataIngresoArribo> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                List<GetDataIngresoArribo> dataList = new ArrayList<>();
+
+                while (rs.next()) {
+                    GetDataIngresoArribo data = new GetDataIngresoArribo();
+                    data.setNombre_empresa(rs.getString("nombre_empresa"));
+                    data.setNumero_factura(rs.getString("numero_factura"));
+                    data.setFecha_ingreso_bodega(rs.getString("fecha_ingreso_bodega"));
+                    data.setItem(rs.getString("item"));
+                    data.setBultos(rs.getString("bultos"));
+                    data.setDetalle(rs.getString("detalle"));
+                    data.setAverias(rs.getString("averias"));
+                    data.setCodigo_lectura(rs.getString("codigo_lectura"));
+                    data.setPosicion_X(rs.getString("posicion_X"));
+                    data.setPosicion_Y(rs.getString("posicion_Y"));
+                    data.setCoordenadas(rs.getString("coordenadas"));
+                    data.setDescripcion(rs.getString("descripcion"));
+                    data.setFecha_actualizacion(rs.getString("fecha_actualizacion"));
+                    dataList.add(data);
+                }
+                return dataList;
+            }
+        });
     }
 }

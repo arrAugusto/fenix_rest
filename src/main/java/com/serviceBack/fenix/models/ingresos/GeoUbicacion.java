@@ -33,4 +33,10 @@ public class GeoUbicacion {
     @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*\\s.'\\[\\]]*$", message = "El campo no debe contener caracteres especiales")
     private String p_codigo_lectura;
 
+    @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*\\s.'\\[\\]]*$", message = "El campo no debe contener caracteres especiales")
+    private String p_descripcion;
+
+    @Pattern(regexp = "^[a-zA-Z0-9!#$%&/()=¿?¡_\\-:;,{}+*\\s.'\\[\\]]*$", message = "El campo no debe contener caracteres especiales")
+    private String p_caracteristicas;
+
 }

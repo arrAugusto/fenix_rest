@@ -50,6 +50,11 @@
     "FENIX_12": {
         "code": "12",
         "message": "Id_Transaccion existe, intente con un nuevo id_transaccion"
+    },
+    "FENIX_13": {
+        "code": "13",
+        "message": "ESTA TRANSACCION REQUIERE DE INTEVESION"
     }
+
 
 }
