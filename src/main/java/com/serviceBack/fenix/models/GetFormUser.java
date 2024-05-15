@@ -16,9 +16,10 @@ import lombok.ToString;
 public class GetFormUser {
 
     private int id;
-    private String stored_group;
-    private String id_icon;
-    private String type;
+    private String id_bodega_afiliada;
+    private String id_group_view;
+    private String id_get_formulario;
+    private String type_input;
     private String tag;
     private String label;
     private String icon;
@@ -29,4 +30,9 @@ public class GetFormUser {
     private String visible;
     private String read_only;
     private String editable;
+    private String id_icon;
+    private String type;
+    private String estado;
+
+
 }

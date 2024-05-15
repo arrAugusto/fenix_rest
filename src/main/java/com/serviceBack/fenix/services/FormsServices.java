@@ -90,12 +90,13 @@ public class FormsServices implements FormsInterfaces {
                 // Ejemplo de cómo establecer el valor del atributo "id"
                 getFormUser.setId(rs.getInt("id"));
 
-                // Ejemplo de cómo establecer el valor del atributo "stored_group"
-                getFormUser.setStored_group(rs.getString("stored_group"));
+                // Ejemplo de cómo establecer el valor del atributo "id_bodega_afiliada"
+                getFormUser.setId_bodega_afiliada(rs.getString("id_bodega_afiliada"));
 
                 // Continúa para establecer los valores de los demás atributos...
-                getFormUser.setId_icon(rs.getString("id_icon"));
-                getFormUser.setType(rs.getString("type"));
+                getFormUser.setId_group_view(rs.getString("id_group_view"));
+                getFormUser.setId_get_formulario(rs.getString("id_get_formulario"));
+                getFormUser.setType_input(rs.getString("type_input"));
                 getFormUser.setTag(rs.getString("tag"));
                 getFormUser.setLabel(rs.getString("label"));
                 getFormUser.setIcon(rs.getString("icon"));
@@ -106,6 +107,10 @@ public class FormsServices implements FormsInterfaces {
                 getFormUser.setVisible(rs.getString("visible"));
                 getFormUser.setRead_only(rs.getString("read_only"));
                 getFormUser.setEditable(rs.getString("editable"));
+                getFormUser.setId_icon(rs.getString("id_icon"));
+                getFormUser.setType(rs.getString("type"));
+                getFormUser.setEstado(rs.getString("estado"));
+
                 return getFormUser;
             }
         });
