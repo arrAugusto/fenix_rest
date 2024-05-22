@@ -12,7 +12,6 @@ import java.util.Properties;
 public class Send {
 
     public void alertas(String receptor_mail, String mail_send, String pass, String smsMessage) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
         // Configuración para enviar correos electrónicos (SMTP)
         final String username = mail_send;//mail del correo creado para alertas
         final String password = pass;//contraseña del correo creado para alertas

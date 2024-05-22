@@ -101,9 +101,9 @@ public class IngresosServices implements IngresosInterfaces {
             * CREAR ITEMS INCOME
      */
     @Override
-    public ItemsFail incomeItemsService(DetallesIngreso detalles) {
-        String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_ingreso(), "bultos");
-        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_ingreso(), "total_bultos_items");
+    public ItemsFail incomeItemsService(DetallesIngreso detalles) {        
+        String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_transaccion(), "bultos");
+        String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_transaccion(), "total_bultos_items");
         int totalBultosValue = 0;
         int totalBultosItemsValue = 0;
 
@@ -120,7 +120,7 @@ public class IngresosServices implements IngresosInterfaces {
         ItemsFail itemsResponse = new ItemsFail();
 
         if (totalBultosItemsValue != totalBultosValue) {
-            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
+            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
         } else {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
         }
@@ -140,7 +140,7 @@ public class IngresosServices implements IngresosInterfaces {
                 try (
                         PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
                                 .prepareStatement(stored.STORED_PROCEDURE_CALL_INSERT_ITEMS)) {
-                            preparedStatement.setInt(1, Integer.parseInt(detalles.getId_ingreso()));
+                            preparedStatement.setInt(1, Integer.parseInt(detalles.getId_transaccion()));
                             preparedStatement.setInt(2, detalles.getIdUsuarioOperativo());
                             preparedStatement.setString(3, detalles.getItems().get(i).getCliente());
                             preparedStatement.setInt(4, detalles.getItems().get(i).getBultos());
@@ -161,7 +161,7 @@ public class IngresosServices implements IngresosInterfaces {
                         }
             }
             if (errores > 0) {
-                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_ingreso());
+                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
                 String messageItemsFail = "";
                 for (int i = 0; i < itemsResponse.getItemsFail().size(); i++) {
                     messageItemsFail += "\n" + (i + 1) + " : " + itemsResponse.getItemsFail().get(i).toString();
@@ -172,7 +172,7 @@ public class IngresosServices implements IngresosInterfaces {
                 LOGGER.info("Send mail" + errorMessage);
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_05, errorMessage);
             } else {
-                genericincomeItems(stored.STORED_PROCEDURE_UPDATE_ITEMS_INCOME, detalles.getId_ingreso());
+                genericincomeItems(stored.STORED_PROCEDURE_UPDATE_ITEMS_INCOME, detalles.getId_transaccion());
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
                 sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
                 LOGGER.info("Send mail" + messageItemsLoads);
@@ -189,7 +189,7 @@ public class IngresosServices implements IngresosInterfaces {
     public ItemsFail incomeDetailsService(Detalle_Mercancias arribo_detalles) {
         //Creando objeto de inserccion
         Object[] params = {
-            arribo_detalles.getIdItem(),
+            arribo_detalles.getId_transaction(),
             arribo_detalles.getBultos(),
             arribo_detalles.getDetalle(),
             arribo_detalles.getAverias(),

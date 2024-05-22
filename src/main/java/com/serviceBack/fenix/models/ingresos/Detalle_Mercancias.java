@@ -16,9 +16,8 @@ import lombok.Data;
 @Data
 public class Detalle_Mercancias {
 
-    @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
-    @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
-    private int idItem;
+    @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales")
+    private String id_transaction;
 
     @Min(value = 0, message = "El valor debe ser igual o mayor que {value}")
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
