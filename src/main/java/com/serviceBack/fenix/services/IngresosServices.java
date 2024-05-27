@@ -104,6 +104,10 @@ public class IngresosServices implements IngresosInterfaces {
     public ItemsFail incomeItemsService(DetallesIngreso detalles) {        
         String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_transaccion(), "bultos");
         String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_transaccion(), "total_bultos_items");
+        System.out.println("detalles.getId_transaccion()> "+detalles.getId_transaccion());
+        System.out.println("totalBultos> "+totalBultos);
+        System.out.println("totalBultosItems > "+totalBultosItems);
+        
         int totalBultosValue = 0;
         int totalBultosItemsValue = 0;
 
@@ -119,10 +123,12 @@ public class IngresosServices implements IngresosInterfaces {
 
         ItemsFail itemsResponse = new ItemsFail();
 
-        if (totalBultosItemsValue != totalBultosValue) {
+        if ((totalBultosItemsValue != totalBultosValue)) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
         } else {
-            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
+            if (totalBultosItemsValue==0.00) {
+                return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
+            }
         }
         if (totalBultosValue == 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_03, messageControll.MESSAGE_FENIX_DEFAULT);
