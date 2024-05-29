@@ -42,16 +42,16 @@ public class FormsServices implements FormsInterfaces {
             @Override
             public GetForms mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetForms getForms = new GetForms();
-                getForms.setProfile(rs.getString("profile"));
+                getForms.setId(rs.getString("id"));
+                getForms.setNombre(rs.getString("nombre"));
                 getForms.setStatus(rs.getString("status"));
-                getForms.setTypeTRX(rs.getString("type_transaction"));
-                getForms.setAyuda(rs.getString("ayuda"));
-                getForms.setLevel(rs.getString("level"));
-                getForms.setType(rs.getString("type"));
-                getForms.setNameModule(rs.getString("name_module"));
                 getForms.setDescription(rs.getString("description"));
-                getForms.setUrl(rs.getString("url"));
+                getForms.setAyuda(rs.getString("ayuda"));
+                getForms.setFecha(rs.getString("fecha"));
+                getForms.setGrupo(rs.getString("group"));
+                getForms.setUrl(rs.getString("URL"));
                 getForms.setImage(rs.getString("image"));
+                
                 return getForms;
             }
         });
@@ -59,18 +59,18 @@ public class FormsServices implements FormsInterfaces {
 
     @Override
     public List<SideNav> SideNavService() {
-        String queryGetSideNav = stored.STORED_PROCEDURE_CALL_GET_SIDE_NAV;
         String usuario = "DEVAGOMEZ";
 
-        return jdbcTemplate.query(queryGetSideNav, new Object[]{usuario}, new RowMapper<SideNav>() {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_SIDE_NAV, new Object[]{usuario}, new RowMapper<SideNav>() {
             @Override
             public SideNav mapRow(ResultSet rs, int rowNum) throws SQLException {
                 SideNav sideNav = new SideNav();
                 sideNav.setId(rs.getString("id"));
                 sideNav.setNombre(rs.getString("nombre"));
                 sideNav.setStatus(rs.getString("status"));
-                sideNav.setDescription(rs.getString("descripcion"));
+                sideNav.setDescription(rs.getString("description"));
                 sideNav.setPaquete(rs.getString("paquete"));
+                sideNav.setGrupo(rs.getString("group"));
                 return sideNav;
             }
 

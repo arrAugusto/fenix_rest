@@ -64,6 +64,14 @@ public class StoredProcedures {
     //MOSTRAR FORMULARIO DE ACCIONES EN INGRESOS
     public final String STORED_PROCEDURE_CALL_GET_STORED_GROUP_FORM = "CALL GET_STORED_GROUP_FORM(?)";//Required forms
     
+    //MOSTRAR SIDE NAV
+    public final String STORED_PROCEDURE_CALL_GET_SIDE_NAV = "CALL GET_SIDE_NAV(?)";//OBTENER MENU SIDENAV
+    
+    //MOSTRAR FORMULARIOS
+    public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS(?)";//Obtener grupos de formularios
+    
+    
+    
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     
@@ -101,12 +109,9 @@ public class StoredProcedures {
     //MODIFICAR NIT {CALL INSERT_NIT_CLIENT('2330675310101', 'CUI', 'LUIS MIGUEL CORADO', 'GUATEMALA VILLA NUEVA', 'agomezc6@miumg.edu.gt', 'A');}
     public final String STORE_PROCEDURE_CALL_UPDATE_NIT = "CALL UPDATE_CLIENTE";
 
-    //MOSTRAR FORMULARIOS
-    public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS(?)";
 
     
-    //MOSTRAR SIDE NAV
-    public final String STORED_PROCEDURE_CALL_GET_SIDE_NAV = "CALL GET_SIDE_NAV(?)";
+
 
     
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas

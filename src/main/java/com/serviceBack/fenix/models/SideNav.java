@@ -15,6 +15,12 @@ public class SideNav {
     private String status;
     private String description;
     private String paquete;
+    private String grupo;
+
+    @Override
+    public String toString() {
+        return "SideNav{" + "id=" + id + ", nombre=" + nombre + ", status=" + status + ", description=" + description + ", paquete=" + paquete + ", grupo=" + grupo + '}';
+    }
 
     public String getId() {
         return id;
@@ -54,6 +60,14 @@ public class SideNav {
 
     public void setPaquete(String paquete) {
         this.paquete = paquete;
+    }
+
+    public String getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
     }
 
 }

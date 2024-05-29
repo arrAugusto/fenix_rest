@@ -43,7 +43,7 @@ public class FormsControllers {
         return service.FormUserService(id_form);
     }
 
-    @PostMapping("/getSideNav")//Iniciar una nueva session de usuario
+    @GetMapping("/getSideNav")//Iniciar una nueva session de usuario
     public List<SideNav> getSideNav() {
         return service.SideNavService();
     }

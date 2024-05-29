@@ -10,39 +10,44 @@ package com.serviceBack.fenix.models;
  */
 public class GetForms {
 
-    private String profile;
-    private String status;
-    private String typeTRX;
-    private String ayuda;
-    private String level;
-    private String type;
-    private String nameModule;
+    private String id;
+    private String nombre;
     private String description;
+    private String ayuda;
+    private String status;
+    private String level;
+    private String fecha;
+    private String grupo;
     private String url;
     private String image;
 
-    public String getProfile() {
-        return profile;
+    @Override
+    public String toString() {
+        return "GetForms{" + "id=" + id + ", nombre=" + nombre + ", description=" + description + ", ayuda=" + ayuda + ", status=" + status + ", level=" + level + ", fecha=" + fecha + ", grupo=" + grupo + ", url=" + url + ", image=" + image + '}';
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public String getId() {
+        return id;
     }
 
-    public String getStatus() {
-        return status;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getTypeTRX() {
-        return typeTRX;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setTypeTRX(String typeTRX) {
-        this.typeTRX = typeTRX;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAyuda() {
@@ -53,6 +58,14 @@ public class GetForms {
         this.ayuda = ayuda;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getLevel() {
         return level;
     }
@@ -61,28 +74,20 @@ public class GetForms {
         this.level = level;
     }
 
-    public String getType() {
-        return type;
+    public String getFecha() {
+        return fecha;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 
-    public String getNameModule() {
-        return nameModule;
+    public String getGrupo() {
+        return grupo;
     }
 
-    public void setNameModule(String nameModule) {
-        this.nameModule = nameModule;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
     }
 
     public String getUrl() {
