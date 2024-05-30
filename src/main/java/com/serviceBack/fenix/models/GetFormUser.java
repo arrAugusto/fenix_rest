@@ -24,8 +24,8 @@ public class GetFormUser {
     private String label;
     private String icon;
     private String size;
-    private String required;
-    private String disabled;
+    private boolean required;
+    private boolean disabled;
     private String pattern;
     private String visible;
     private String read_only;

@@ -101,8 +101,8 @@ public class FormsServices implements FormsInterfaces {
                 getFormUser.setLabel(rs.getString("label"));
                 getFormUser.setIcon(rs.getString("icon"));
                 getFormUser.setSize(rs.getString("size"));
-                getFormUser.setRequired(rs.getString("required"));
-                getFormUser.setDisabled(rs.getString("disabled"));
+                getFormUser.setRequired(rs.getBoolean("required"));
+                getFormUser.setDisabled(rs.getBoolean("disabled"));
                 getFormUser.setPattern(rs.getString("pattern"));
                 getFormUser.setVisible(rs.getString("visible"));
                 getFormUser.setRead_only(rs.getString("read_only"));
