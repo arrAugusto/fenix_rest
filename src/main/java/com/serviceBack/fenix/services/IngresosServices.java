@@ -69,15 +69,15 @@ public class IngresosServices implements IngresosInterfaces {
     @Override
     public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingreso) {
         //revisando si existe la transaccion
-        String cantidad_registros = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME, ingreso.getP_numero_factura(), "cantidad_registros");
+        String cantidad_registros = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME, ingreso.getNumero_factura(), "cantidad_registros");
         if (Integer.parseInt(cantidad_registros) > 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_10, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        String id_transaccion = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_ID_TRANSACCION, Integer.toString(ingreso.getP_id_transaccion()), "cantId_transaccion");
+        String id_transaccion = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_ID_TRANSACCION, ingreso.getId_transaccion(), "cantId_transaccion");
         if (Integer.parseInt(id_transaccion) > 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_12, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         try {
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -85,7 +85,7 @@ public class IngresosServices implements IngresosInterfaces {
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_11, messageControll.MESSAGE_FENIX_DEFAULT);
             }
 
-            genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, Integer.toString(ingreso.getP_id_transaccion()));
+            genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 
         } catch (SQLException e) {
