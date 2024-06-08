@@ -33,19 +33,18 @@ public class ClientesServices implements ClientesInterfaces {
 
     @Override
     public List<GetNit> getNitService(String id_nit) {
-        String queryGet = stored.STORE_PROCEDURE_CALL_GET_NIT.concat("(?)");
-        return jdbcTemplate.query(queryGet, new Object[]{id_nit}, new RowMapper<GetNit>() {
+        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_NIT, new Object[]{id_nit}, new RowMapper<GetNit>() {
             @Override
             public GetNit mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetNit nit = new GetNit();
                 nit.setId_nit(Integer.parseInt(rs.getString("id")));
                 nit.setNit(rs.getString("nit"));
-                nit.setTipo(rs.getString("nit"));
-                nit.setNombre(rs.getString("nit"));
-                nit.setDireccion(rs.getString("nit"));
-                nit.setEmail(rs.getString("nit"));
-                nit.setFechaRegistro(rs.getString("nit"));
-                nit.setEstado(rs.getString("nit"));
+                nit.setNombreEmpresa(rs.getString("nombre_empresa"));
+                nit.setDireccion(rs.getString("direccion"));
+                nit.setTipoDocumento(rs.getString("tipo_documento"));
+                nit.setEmail(rs.getString("email"));
+                nit.setFechaRegistro(rs.getString("fecha_registro"));
+                nit.setEstado(rs.getString("estado"));
                 return nit;
             }
 

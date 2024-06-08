@@ -70,6 +70,8 @@ public class StoredProcedures {
     //MOSTRAR FORMULARIOS
     public final String STORED_PROCEDURE_CALL_GET_FORMS = "CALL GET_CARDS_FORMS(?)";//Obtener grupos de formularios
     
+    //GET NIT {CALL GET_NIT('51611');}
+    public final String STORE_PROCEDURE_CALL_GET_NIT = "CALL GET_NIT(?)";//Get nit
     
     
     //REGISTRAR NUEVO OTP CODIGO
@@ -100,8 +102,6 @@ public class StoredProcedures {
     //NEW PRODUCT
     public final String STORED_PROCEDURE_CALL_INSERT_PRODUCT = "CALL INSERT_PRODUCT(?,?,?,?,?,?,?,?)";
     
-    //GET NIT {CALL GET_NIT('51611');}
-    public final String STORE_PROCEDURE_CALL_GET_NIT = "CALL GET_NIT";
 
     //NUEVO NIT {CALL INSERT_NIT_CLIENT('2330675310101', 'CUI', 'LUIS MIGUEL CORADO', 'GUATEMALA VILLA NUEVA', 'agomezc6@miumg.edu.gt', 'A');}
     public final String STORE_PROCEDURE_CALL_NEW_NIT = "CALL INSERT_NIT_CLIENT";
