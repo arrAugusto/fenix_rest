@@ -10,6 +10,7 @@ import com.serviceBack.fenix.models.GetFormUser;
 import com.serviceBack.fenix.models.GetForms;
 import com.serviceBack.fenix.models.GetNit;
 import com.serviceBack.fenix.models.NuevoCliente;
+import com.serviceBack.fenix.models.Options_view_kimbo;
 import com.serviceBack.fenix.models.SideNav;
 import com.serviceBack.fenix.models.UpdateCliente;
 import commons.StoredProcedures;
@@ -51,7 +52,7 @@ public class FormsServices implements FormsInterfaces {
                 getForms.setGrupo(rs.getString("group"));
                 getForms.setUrl(rs.getString("URL"));
                 getForms.setImage(rs.getString("image"));
-                
+
                 return getForms;
             }
         });
@@ -78,18 +79,21 @@ public class FormsServices implements FormsInterfaces {
 
     }
 
+    //Formularios vistas view
     @Override
     public List<GetFormUser> FormUserService(String id_form) {
         return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_STORED_GROUP_FORM, new Object[]{id_form}, new RowMapper<GetFormUser>() {
             @Override
             public GetFormUser mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetFormUser getFormUser = new GetFormUser();
-
                 // Suponiendo que tienes un ResultSet rs con los resultados de una consulta
                 // Selecciona el nombre de la columna en la base de datos que coincide con el nombre del atributo en getFormUser
                 // Ejemplo de cómo establecer el valor del atributo "id"
                 getFormUser.setId(rs.getInt("id"));
-
+                System.out.println("rs.getInt(\"type\")> " + rs.getString("type"));
+                if (rs.getString("type").toUpperCase().equals("SELECT")) {
+                    getFormUser.setOptions_view_kimbo(findOptions(getFormUser.getId()));
+                }
                 // Ejemplo de cómo establecer el valor del atributo "id_bodega_afiliada"
                 getFormUser.setId_bodega_afiliada(rs.getString("id_bodega_afiliada"));
 
@@ -117,4 +121,16 @@ public class FormsServices implements FormsInterfaces {
 
     }
 
+    public List<Options_view_kimbo> findOptions(int id_kimbo_view) {
+        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO, new Object[]{id_kimbo_view}, new RowMapper<Options_view_kimbo>() {
+            public Options_view_kimbo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Options_view_kimbo option = new Options_view_kimbo();
+                option.setId(rs.getInt("id"));
+                option.setId_view_kimbo(rs.getInt("id_view_kimbo"));
+                option.setValueOption(rs.getString("valueOf"));
+                option.setTextValue(rs.getString("text_value"));
+                return option;
+            }
+        });
+    }
 }

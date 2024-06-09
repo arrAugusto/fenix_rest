@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.models;
 
+import java.util.List;
 import lombok.Data;
 import lombok.ToString;
 
@@ -33,6 +34,6 @@ public class GetFormUser {
     private String id_icon;
     private String type;
     private String estado;
-
+    private List<Options_view_kimbo> options_view_kimbo;
 
 }

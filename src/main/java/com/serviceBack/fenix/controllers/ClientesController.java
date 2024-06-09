@@ -33,6 +33,8 @@ public class ClientesController {
 
     @GetMapping("/get_nit/{id_nit}")//GET NIT
     public List<GetNit> getNit(@PathVariable String id_nit) {
+        System.out.println("service.validateNit(id_nit)> " + service.validateNit(id_nit));
+        System.out.println("service.validateCUI(id_nit)" + service.validateCUI(id_nit));
         return service.getNitService(id_nit);
     }
 

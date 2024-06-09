@@ -85,4 +85,89 @@ public class ClientesServices implements ClientesInterfaces {
         return null;
     }
 
+    @Override
+    public boolean validateNit(String nit) {
+        if (nit == null || nit.isEmpty()) {
+            return true;
+        }
+
+        String nitRegExp = "^[0-9]+(-?[0-9kK])?$";
+
+        if (!nit.matches(nitRegExp)) {
+            return false;
+        }
+
+        nit = nit.replace("-", "");
+        int lastChar = nit.length() - 1;
+        String number = nit.substring(0, lastChar);
+        String expectedChecker = nit.substring(lastChar).toLowerCase();
+
+        int factor = number.length() + 1;
+        int total = 0;
+
+        for (int i = 0; i < number.length(); i++) {
+            char character = number.charAt(i);
+            int digit = Character.getNumericValue(character);
+
+            total += (digit * factor);
+            factor--;
+        }
+
+        int modulus = (11 - (total % 11)) % 11;
+        String computedChecker = (modulus == 10 ? "k" : Integer.toString(modulus));
+
+        return expectedChecker.equals(computedChecker);
+    }
+    
+    @Override
+    public boolean validateCUI(String cui) {
+        if (cui == null || cui.isEmpty()) {
+            System.out.println("CUI vacío");
+            return true;
+        }
+
+        String cuiRegExp = "^[0-9]{4}\\s?[0-9]{5}\\s?[0-9]{4}$";
+
+        if (!cui.matches(cuiRegExp)) {
+            System.out.println("CUI con formato inválido");
+            return false;
+        }
+
+        cui = cui.replace(" ", "");
+        int depto = Integer.parseInt(cui.substring(9, 11));
+        int muni = Integer.parseInt(cui.substring(11, 13));
+        String numero = cui.substring(0, 8);
+        int verificador = Integer.parseInt(cui.substring(8, 9));
+
+        int[] munisPorDepto = {
+            17, 8, 16, 16, 13, 14, 19, 8, 24, 21, 9,
+            30, 32, 21, 8, 17, 14, 5, 11, 11, 7, 17
+        };
+
+        if (depto == 0 || muni == 0) {
+            System.out.println("CUI con código de municipio o departamento inválido.");
+            return false;
+        }
+
+        if (depto > munisPorDepto.length) {
+            System.out.println("CUI con código de departamento inválido.");
+            return false;
+        }
+
+        if (muni > munisPorDepto[depto - 1]) {
+            System.out.println("CUI con código de municipio inválido.");
+            return false;
+        }
+
+        int total = 0;
+        for (int i = 0; i < numero.length(); i++) {
+            total += Character.getNumericValue(numero.charAt(i)) * (i + 2);
+        }
+
+        int modulo = total % 11;
+        System.out.println("CUI con módulo: " + modulo);
+
+        return modulo == verificador;
+    }
+
 }

@@ -10,4 +10,6 @@ public interface ClientesInterfaces {
     public List<GetNit> getNitService(String id_nit);
     public String newClientService(NuevoCliente nuevoCliente);
     public String updateClienteService(UpdateCliente updateCliente);
+    public boolean validateNit(String nit);
+    public boolean validateCUI(String cui);
 }
