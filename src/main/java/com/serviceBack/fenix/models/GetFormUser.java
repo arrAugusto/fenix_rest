@@ -28,12 +28,13 @@ public class GetFormUser {
     private boolean required;
     private boolean disabled;
     private String pattern;
-    private String visible;
-    private String read_only;
-    private String editable;
+    private boolean visible;
+    private boolean read_only;
+    private boolean editable;
     private String id_icon;
     private String type;
     private String estado;
+    private String value_default;
     private List<Options_view_kimbo> options_view_kimbo;
 
 }
