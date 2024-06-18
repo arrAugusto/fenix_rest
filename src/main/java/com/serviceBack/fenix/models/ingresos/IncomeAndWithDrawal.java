@@ -22,8 +22,8 @@ public class IncomeAndWithDrawal {
     @Max(value = 100000, message = "El valor debe ser igual o menor que {value}")
     private int id_bodega;
 
-@Pattern(regexp = "^[0-9]+$", message = "El campo debe contener solo dígitos del 0 al 9")
-private String id_transaccion;
+    @Pattern(regexp = "^[0-9]+$", message = "El campo debe contener solo dígitos del 0 al 9")
+    private String id_transaccion;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
     private String referencia_almacen;
@@ -42,7 +42,7 @@ private String id_transaccion;
 
     @Pattern(regexp = "^(|\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})$", message = "El campo debe estar vacío o tener el formato 'yyyy-MM-dd HH:mm:ss'")
     private String fecha;
-    
+
     @Pattern(regexp = "^(|\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})$", message = "El campo debe estar vacío o tener el formato 'yyyy-MM-dd HH:mm:ss'")
     private String fecha_operativa;
 

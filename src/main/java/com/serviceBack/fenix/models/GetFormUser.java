@@ -28,7 +28,7 @@ public class GetFormUser {
     private boolean required;
     private boolean disabled;
     private String pattern;
-    private boolean visible;
+    private String visible;
     private boolean read_only;
     private boolean editable;
     private String id_icon;
