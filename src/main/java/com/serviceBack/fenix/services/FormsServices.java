@@ -52,6 +52,8 @@ public class FormsServices implements FormsInterfaces {
                 getForms.setGrupo(rs.getString("group"));
                 getForms.setUrl(rs.getString("URL"));
                 getForms.setImage(rs.getString("image"));
+                getForms.setFormulario(rs.getString("formulario"));
+                getForms.setIcon(rs.getString("icon"));
 
                 return getForms;
             }
@@ -82,7 +84,7 @@ public class FormsServices implements FormsInterfaces {
     //Formularios vistas view
     @Override
     public List<GetFormUser> FormUserService(String id_form) {
-        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_STORED_GROUP_FORM, new Object[]{id_form}, new RowMapper<GetFormUser>() {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_GROUP_FORM, new Object[]{id_form}, new RowMapper<GetFormUser>() {
             @Override
             public GetFormUser mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetFormUser getFormUser = new GetFormUser();

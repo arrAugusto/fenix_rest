@@ -37,6 +37,18 @@ public class ClientesController {
         System.out.println("service.validateCUI(id_nit)" + service.validateCUI(id_nit));
         return service.getNitService(id_nit);
     }
+    @GetMapping("/get_nit_validar/{id_nit}/{tipo_documento}")//GET NIT
+    public List<GetNit> getNit(@PathVariable String id_nit, @PathVariable String tipo_documento) {
+        System.out.println("service.validateNit(id_nit)> " + service.validateNit(id_nit));
+        System.out.println("service.validateCUI(id_nit)" + service.validateCUI(id_nit));
+        if (tipo_documento.equals("CUI")) {
+            service.validateNit(id_nit);
+        }else{
+            service.validateCUI(id_nit);
+            
+        }
+        return service.getNitService(id_nit);
+    }
 
     @PostMapping("/new_nit")//CREAR NIT
     public String crearNit(@RequestBody @Valid NuevoCliente nuevoCliente) {

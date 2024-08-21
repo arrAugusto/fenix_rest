@@ -25,6 +25,7 @@ public class GetForms {
     private String grupo;
     private String url;
     private String image;
-
+    private String formulario;
+    private String icon;
 
 }

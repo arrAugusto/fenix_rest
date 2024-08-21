@@ -62,7 +62,7 @@ public class StoredProcedures {
     public String STORED_PROCEDURE_CALL_GET_ID_ARRIBO = "CALL GET_ID_ARRIBO(?)";//Id de arribo
     
     //MOSTRAR FORMULARIO DE ACCIONES EN INGRESOS
-    public final String STORED_PROCEDURE_CALL_GET_STORED_GROUP_FORM = "CALL GET_STORED_GROUP_FORM(?)";//Required forms
+    public final String STORED_PROCEDURE_CALL_GET_GROUP_FORM = "CALL GET_GROUP_FORM(?)";//Required forms
     
     //MOSTRAR SIDE NAV
     public final String STORED_PROCEDURE_CALL_GET_SIDE_NAV = "CALL GET_SIDE_NAV(?)";//OBTENER MENU SIDENAV
