@@ -1,0 +1,60 @@
+{
+    "FENIX_00": {
+        "code": "00",
+        "message": "TRANSSACCIÓN EXITOSA"
+    },
+    "FENIX_01": {
+        "code": "01",
+        "message": "ERROR INTERNO EN EL SERVIDOR."
+    },
+    "FENIX_02": {
+        "code": "02",
+        "message": "ITEMS REGISTRADOS ANTERIORMENTE."
+    },
+    "FENIX_03": {
+        "code": "03",
+        "message": "INGRESO NO REGISTRADO."
+    },
+    "FENIX_04": {
+        "code": "04",
+        "message": "EL TOTAL DE BULTOS DEBE COINCIDIR CON EL TOTAL DE BULTOS INDIVIDUALES POR ITEMS."
+    },
+    "FENIX_05": {
+        "code": "05",
+        "message": "LOS ITEMS NO FUERON REGISTRADOS EN LA BASE DATOS, CORRIGA E INTENTE DE NUEVO."
+    },
+    "FENIX_06": {
+        "code": "06",
+        "message": "ERROR AL INTENTAR GUARDAR LA INFORMACIÓN INTENTE DE NUEVO."
+    },
+    "FENIX_07": {
+        "code": "07",
+        "message": "idTransaccion DUPLICADO, POR FAVOR VUELVA A INTENTAR"
+    },
+    "FENIX_08": {
+        "code": "08",
+        "message": "ERROR AL INTENTAR GUARDAR EL INGRESO INTENTE DE NUEVO"
+    },
+    "FENIX_09": {
+        "code": "09",
+        "message": "DETALLE DE MERCADERIA NO SE INGRESO INTENTE DE NUEVO"
+    },
+    "FENIX_10": {
+        "code": "10",
+        "message": "TRANSACCION YA EXISTE"
+    },
+    "FENIX_11": {
+        "code": "11",
+        "message": "INGRESO NO CREADO INTENTE DE NUEVO."
+    },
+    "FENIX_12": {
+        "code": "12",
+        "message": "Id_Transaccion existe, intente con un nuevo id_transaccion"
+    },
+    "FENIX_13": {
+        "code": "13",
+        "message": "ESTA TRANSACCION REQUIERE DE INTEVESION"
+    }
+
+
+}

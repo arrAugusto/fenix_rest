@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "e21b2633-14d7-4ec0-9e06-e7a0d692d91f",
+		"name": "Fenix_Rest_Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18631414"
+	},
+	"item": [
+		{
+			"name": "INICIO DE SESSION",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuario\": \"devagomez\",\r\n    \"secrete_pass\": \"Contra$20\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8340/fenix_service/api/usuarios/session",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8340",
+					"path": [
+						"fenix_service",
+						"api",
+						"usuarios",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NUEVO USUARIO",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJERVZBR09NRVoiLCJpYXQiOjE3MDQwNzg1MTUsImV4cCI6MTcwNDA4MjExNX0.VUtolEmQmV1sjv__rKKHLQFQqNe8zxe7GPmkhutYpQEe3rfioc6Fq8uWhkcaYm7PHQ1p8ochqDr1sy0IBAYhoA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombres\": \"augusto ruper\",\r\n    \"apellidos\":\"gomez florencio\",\r\n    \"codigoEmpleado\": \"8564\",\r\n    \"perfil\": \"A\",\r\n    \"status\": \"A\",\r\n    \"usuario\": \"DESAWDEVGOMEZ\",\r\n    \"secrete_pass\": \"Cintra\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8340/fenix_service/api/usuarios/crear_usuario",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8340",
+					"path": [
+						"fenix_service",
+						"api",
+						"usuarios",
+						"crear_usuario"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREAR INGRESOS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJERVZBR09NRVoiLCJpYXQiOjE3MDQwNzg1MTUsImV4cCI6MTcwNDA4MjExNX0.VUtolEmQmV1sjv__rKKHLQFQqNe8zxe7GPmkhutYpQEe3rfioc6Fq8uWhkcaYm7PHQ1p8ochqDr1sy0IBAYhoA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usuario\": \"1\",\r\n    \"nit\": 1,\r\n    \"canalDigital\": \"APPLICATION_MOVIL\",\r\n    \"fechaOperativa\": \"2024-01-01 19:47:00\",\r\n    \"documento\": \"3002504663\",\r\n    \"codigoQR\": \"kjhgtfrdeswa255363333\",\r\n    \"bultos\": 6,\r\n    \"cif\": 55113.36,\r\n    \"impuestos\": 2133.63,\r\n    \"idTransaccion\": \"1231567896\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8340/fenix_service/api/ingresos/crearte_ingreso",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8340",
+					"path": [
+						"fenix_service",
+						"api",
+						"ingresos",
+						"crearte_ingreso"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREAR ITEMS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"idIngreso\": 1,\r\n  \"idUsuarioOperativo\": 1,\r\n  \"items\": [\r\n    {\r\n      \"bultos\": 6,\r\n      \"cliente\": \"FRIENDSHIP\"\r\n    },\r\n    {\r\n      \"bultos\": 4,\r\n      \"cliente\": \"AMAZON WEBSERVICE\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8340/fenix_service/api/ingresos/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8340",
+					"path": [
+						"fenix_service",
+						"api",
+						"ingresos",
+						"items"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

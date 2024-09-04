@@ -96,7 +96,7 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
     private String idImages;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-Z0-9_\\-\\s]+$", message = "El campo debe no contener caracteres especiales")
     private String area;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
@@ -108,7 +108,7 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
     private String boleta_de_pago;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "^[a-zA-Z0-9_\\-\\s]+$", message = "El campo debe no contener caracteres especiales")
     private String comments;
 
 }
