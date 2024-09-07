@@ -23,7 +23,6 @@ import commons.MessageControll;
 import commons.StoredProcedures;
 import java.sql.PreparedStatement;
 import java.util.List;
-import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
 import org.springframework.jdbc.core.RowMapper;
 import sub_process.IncomeWithdrawal.Exceptions;
 import sub_process.IncomeWithdrawal.PrepareIncomeStatment;
@@ -34,31 +33,32 @@ import org.springframework.dao.DataAccessException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Service
 public class IngresosServices implements IngresosInterfaces {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
     private final Send sendMail;
-    private final SendMailIngresos sendMailIng;
+
     private final ResponseService response;
     private final PrepareIncomeStatment prepareIncomeStatment;
-    private final Exceptions exceptions;
     private final GenericResponse generiResponse;
     private final MessageControll messageControll;
+    @Autowired
+    private Exceptions exceptions;
+    private SendMailIngresos sendMailIng;
 
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
         this.sendMail = new Send();
-        this.sendMailIng = new SendMailIngresos();
         this.response = new ResponseService();
         this.prepareIncomeStatment = new PrepareIncomeStatment(this.jdbcTemplate); // Inicializa prepare directamente aquí
-        this.exceptions = new Exceptions();
         this.generiResponse = new GenericResponse();
         this.messageControll = new MessageControll();
     }
@@ -94,6 +94,9 @@ public class IngresosServices implements IngresosInterfaces {
             }
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
+            // Enviar correo electrónico de alerta
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, "Ingreso Creado exitosamente"+ingreso.getNumero_factura(), "INGRESO EXITOSO");
+            
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 
         } catch (SQLException e) {
@@ -182,13 +185,13 @@ public class IngresosServices implements IngresosInterfaces {
                 }
                 // Construir el mensaje de error
                 String errorMessage = "LOS ITEMS NO FUERON REGISTRADOS EN LA BASE DATOS, CORRIGA E INTENTE DE NUEVO.\nData : \n\n" + detalles.toString() + "\n" + messageItemsFail;
-                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
+                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR");
                 LOGGER.info("Send mail" + errorMessage);
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_05, errorMessage);
             } else {
                 genericincomeItems(stored.STORED_PROCEDURE_UPDATE_ITEMS_INCOME, detalles.getId_transaccion());
                 String messageItemsLoads = "Se insertaron todos los itmes exitosamente." + "\nData : \n\n" + detalles.toString() + "\n" + messageItemsOk + "";
-                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads);
+                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, messageItemsLoads, "ERROR");
                 LOGGER.info("Send mail" + messageItemsLoads);
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageItemsLoads);
             }
@@ -257,7 +260,7 @@ public class IngresosServices implements IngresosInterfaces {
                 List<GetDataIngresoArribo> allData = getAllDataIngreso(Integer.parseInt(id_arribo));
                 String errorMessage = "REVISA LAS TAREAS DE UBICACION Y CONFIRMA APROBANDO EL CAMBIO.\nData : \n\n" + allData.toString();
                 System.out.println("errorMessage> " + errorMessage);
-                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
+                sendMailIng.sendMail(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR");
                 LOGGER.info("Send mail" + errorMessage);
             }
         }
@@ -322,7 +325,7 @@ public class IngresosServices implements IngresosInterfaces {
                             + "', lineNumber: " + lineNumber + ", errorMessage: '" + e.getMessage() + "']";
 
                     // Enviar correo electrónico de alerta
-                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage);
+                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR INTERNO");
                     // Registrar el error en el log
                     LOGGER.info(errorMessage);
 

@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Send {
 
-    public void alertas(String receptor_mail, String mail_send, String pass, String smsMessage) {
+    public void alertas(String receptor_mail, String mail_send, String pass, String smsMessage, String subj) {
         // Configuración para enviar correos electrónicos (SMTP)
         final String username = mail_send;//mail del correo creado para alertas
         final String password = pass;//contraseña del correo creado para alertas
@@ -33,7 +33,7 @@ public class Send {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receptor_mail));
-            message.setSubject("ERROR");
+            message.setSubject(subj);
             message.setText(smsMessage.toString());
 
             // Enviar el correo electrónico

@@ -1,27 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.serviceBack.fenix.Utils;
 
-import static org.hibernate.bytecode.BytecodeLogging.LOGGER;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- *
- * @author agr12
- */
+@Component
 public class SendMailIngresos {
 
     private final Send sendMail;
 
-    public SendMailIngresos() {
-        this.sendMail = new Send();
+    @Autowired
+    public SendMailIngresos(Send sendMail) {
+        this.sendMail = sendMail;
     }
 
-    public void sendMail(String mailTO, String mailFROM, String PWD, String messageItemsLoads) {
-        sendMail.alertas(mailTO, mailFROM, PWD, messageItemsLoads);
-        // Registrar el error en el log
-        LOGGER.info("Menssage send in mail"+messageItemsLoads);
-
+    public void sendMail(String mailTO, String mailFROM, String PWD, String messageItemsLoads, String subj) {
+        sendMail.alertas(mailTO, mailFROM, PWD, messageItemsLoads, subj);
+        // Registrar el mensaje en la salida estándar
+        System.out.println("Message sent in mail: " + messageItemsLoads);
     }
 }
