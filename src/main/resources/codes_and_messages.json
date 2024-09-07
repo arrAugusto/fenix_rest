@@ -54,6 +54,10 @@
     "FENIX_13": {
         "code": "13",
         "message": "ESTA TRANSACCION REQUIERE DE INTEVESION"
+    },
+    "FENIX_14": {
+        "code": "14",
+        "message": "EL NUMERO DE INGRESO YA FUE REGISTRADO ANTERIORMENTE"
     }
 
 

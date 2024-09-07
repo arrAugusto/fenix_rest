@@ -68,6 +68,14 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingreso) {
+        String count_trx = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_COUNT_TRX_KIMBO, ingreso.getNumero_factura(), "cantTrx");
+
+        System.out.println("count_trx> " + count_trx);
+
+        if (!count_trx.equals("0")) {
+            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_14, messageControll.MESSAGE_FENIX_DEFAULT);
+        }
+
         //revisando si existe la transaccion
         String cantidad_registros = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME, ingreso.getNumero_factura(), "cantidad_registros");
         if (Integer.parseInt(cantidad_registros) > 0) {
@@ -101,13 +109,13 @@ public class IngresosServices implements IngresosInterfaces {
             * CREAR ITEMS INCOME
      */
     @Override
-    public ItemsFail incomeItemsService(DetallesIngreso detalles) {        
+    public ItemsFail incomeItemsService(DetallesIngreso detalles) {
         String totalBultos = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_INCOME_VALID, detalles.getId_transaccion(), "bultos");
         String totalBultosItems = getIncomeBasic(stored.STORED_PROCEDURE_CALL_CHECK_TOTAL_BULTOS_ITEMS, detalles.getId_transaccion(), "total_bultos_items");
-        System.out.println("detalles.getId_transaccion()> "+detalles.getId_transaccion());
-        System.out.println("totalBultos> "+totalBultos);
-        System.out.println("totalBultosItems > "+totalBultosItems);
-        
+        System.out.println("detalles.getId_transaccion()> " + detalles.getId_transaccion());
+        System.out.println("totalBultos> " + totalBultos);
+        System.out.println("totalBultosItems > " + totalBultosItems);
+
         int totalBultosValue = 0;
         int totalBultosItemsValue = 0;
 
@@ -126,7 +134,7 @@ public class IngresosServices implements IngresosInterfaces {
         if ((totalBultosItemsValue != totalBultosValue)) {
             genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
         } else {
-            if (totalBultosItemsValue==0.00) {
+            if (totalBultosItemsValue == 0.00) {
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
             }
         }

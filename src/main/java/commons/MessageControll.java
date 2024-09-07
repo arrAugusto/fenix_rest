@@ -39,5 +39,7 @@ public class MessageControll {
     public final String MESSAGE_FENIX_12 = "FENIX_12";
     //ERROR
     public final String MESSAGE_FENIX_13 = "FENIX_13";
+    //Transaccion existe
+    public final String MESSAGE_FENIX_14 = "FENIX_14";
 
 }
