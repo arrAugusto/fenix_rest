@@ -17,6 +17,7 @@ import com.serviceBack.fenix.models.ingresos.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import com.serviceBack.fenix.models.ingresos.GetDataIngresoArribo;
+import com.serviceBack.fenix.models.ingresos.IngresosPendientes;
 import commons.GenericResponse;
 import commons.MessageControll;
 
@@ -36,9 +37,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Service
 public class IngresosServices implements IngresosInterfaces {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
@@ -48,9 +49,10 @@ public class IngresosServices implements IngresosInterfaces {
     private final PrepareIncomeStatment prepareIncomeStatment;
     private final GenericResponse generiResponse;
     private final MessageControll messageControll;
-    @Autowired
     private Exceptions exceptions;
+    @Autowired
     private SendMailIngresos sendMailIng;
+
 
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
@@ -61,6 +63,8 @@ public class IngresosServices implements IngresosInterfaces {
         this.prepareIncomeStatment = new PrepareIncomeStatment(this.jdbcTemplate); // Inicializa prepare directamente aquí
         this.generiResponse = new GenericResponse();
         this.messageControll = new MessageControll();
+        this.exceptions = exceptions; // Inyección a través del constructor
+        
     }
 
     /*
@@ -95,8 +99,8 @@ public class IngresosServices implements IngresosInterfaces {
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
             // Enviar correo electrónico de alerta
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, "Ingreso Creado exitosamente"+ingreso.getNumero_factura(), "INGRESO EXITOSO");
-            
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, "Ingreso Creado exitosamente" + ingreso.getNumero_factura(), "INGRESO EXITOSO");
+
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 
         } catch (SQLException e) {
@@ -245,6 +249,30 @@ public class IngresosServices implements IngresosInterfaces {
         }
         //Retorno de exito
         return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
+    }
+
+    //GET INGRESOS
+    @Override
+    public List<IngresosPendientes> getIngresosPendientes() {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_INGRESOS_INIT_PENDIENTES, new RowMapper<IngresosPendientes>() {
+            @Override
+            public IngresosPendientes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                IngresosPendientes ingresoPendiente = new IngresosPendientes();
+                try {
+                    // Mapeando los valores del ResultSet a los atributos del objeto IngresosPendientes
+                    ingresoPendiente.setNumeroFactura(rs.getString("numero_factura"));
+                    ingresoPendiente.setFecha(rs.getString("fecha"));  // O usa `rs.getDate()` si el campo es una fecha
+                    ingresoPendiente.setBultos(rs.getInt("bultos"));
+                    ingresoPendiente.setValor(rs.getDouble("valor"));
+                    ingresoPendiente.setEstado(rs.getString("estado"));
+
+                } catch (SQLException e) {
+                    // Manejo de excepción
+                    e.printStackTrace();  // Puedes usar un logger en lugar de imprimir el stack trace
+                }
+                return ingresoPendiente; // Retornar el objeto mapeado
+            }
+        });
     }
 
     //MODIFICAR DE GEOUBICACION

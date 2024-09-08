@@ -16,6 +16,7 @@ import com.serviceBack.fenix.models.ingresos.GeoUbicacion;
 import com.serviceBack.fenix.models.ingresos.GetDetalleIngreso;
 import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
+import com.serviceBack.fenix.models.ingresos.IngresosPendientes;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -60,6 +61,11 @@ public class IngresoControllers {
         return service.getItems(idTransaccion);
     }
 
+    @GetMapping("/ingresos_pendientes")//Iniciar una nueva session de usuario
+    public List<IngresosPendientes> getItemsIng() {
+        return service.getIngresosPendientes();
+    }
+    
     public String createProduct(@RequestBody Product product) {
         return service.createProduct(product);
     }

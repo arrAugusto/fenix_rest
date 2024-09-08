@@ -14,6 +14,8 @@ import java.sql.SQLException;
 public class Exceptions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
+    private static final String INTERNAL_ERROR_CODE = "500";
+    private static final String INTERNAL_ERROR_MSG = "Error interno en el servidor: ";
 
     private final ResponseService response;
     private final StoredProcedures stored;
@@ -26,30 +28,62 @@ public class Exceptions {
         this.sendMail = sendMail;
     }
 
+    /**
+     * Maneja excepciones de SQL.
+     *
+     * @param e La excepción de tipo SQLException.
+     */
     public void handleSQLException(SQLException e) {
-        response.setCodeResponse("500");
-        response.setMessageResponse("Error interno en el servidor: " + e.getMessage());
-        response.setData("Error");
-        logAndSendAlert(e);
+        handleException(e, "SQL Exception");
     }
 
+    /**
+     * Maneja excepciones genéricas.
+     *
+     * @param e La excepción de tipo Exception.
+     */
     public void handleGenericException(Exception e) {
-        response.setCodeResponse("500");
-        response.setMessageResponse("Error interno en el servidor: " + e.getMessage());
-        response.setData("Error");
-        logAndSendAlert(e);
+        handleException(e, "Generic Exception");
     }
 
-    private void logAndSendAlert(Exception e) {
-        StackTraceElement callerInfo = Thread.currentThread().getStackTrace()[2]; // Ajuste para el nivel de llamada correcto
+    /**
+     * Método privado para manejar todas las excepciones.
+     *
+     * @param e           La excepción capturada.
+     * @param errorPrefix El prefijo que describe el tipo de error.
+     */
+    private void handleException(Exception e, String errorPrefix) {
+        response.setCodeResponse(INTERNAL_ERROR_CODE);
+        response.setMessageResponse(INTERNAL_ERROR_MSG + e.getMessage());
+        response.setData("Error");
+        logAndSendAlert(e, errorPrefix);
+    }
+
+    /**
+     * Registra el error y envía una alerta por correo electrónico.
+     *
+     * @param e           La excepción que se está manejando.
+     * @param errorPrefix Prefijo que describe el error.
+     */
+    private void logAndSendAlert(Exception e, String errorPrefix) {
+        StackTraceElement callerInfo = Thread.currentThread().getStackTrace()[2]; // Obtener la información de la llamada anterior
         String fileName = callerInfo.getFileName();
         String className = callerInfo.getClassName();
         int lineNumber = callerInfo.getLineNumber();
 
-        String errorMessage = "Error interno del servidor: [fileName: '" + fileName + "', className: '" + className
-                + "', lineNumber: " + lineNumber + ", errorMessage: '" + e.getMessage() + "']";
+        String errorMessage = String.format("Error interno del servidor: [fileName: '%s', className: '%s', lineNumber: %d, errorMessage: '%s']",
+                fileName, className, lineNumber, e.getMessage());
 
-        sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR INTERNO");
+        String alertSubject = errorPrefix + ": ERROR INTERNO";
+        
+        // Validar que los valores críticos no sean nulos antes de enviar el correo
+        if (stored.mailTO != null && stored.mailFROM != null && stored.PWD != null) {
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, alertSubject);
+        } else {
+            LOGGER.warn("No se pudo enviar el correo de alerta. Faltan valores en stored: mailTO, mailFROM o PWD.");
+        }
+
+        // Registrar en los logs de error
         LOGGER.error(errorMessage, e);
     }
 }
