@@ -53,7 +53,6 @@ public class IngresosServices implements IngresosInterfaces {
     @Autowired
     private SendMailIngresos sendMailIng;
 
-
     @Autowired
     public IngresosServices(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -64,7 +63,7 @@ public class IngresosServices implements IngresosInterfaces {
         this.generiResponse = new GenericResponse();
         this.messageControll = new MessageControll();
         this.exceptions = exceptions; // Inyección a través del constructor
-        
+
     }
 
     /*
@@ -251,28 +250,43 @@ public class IngresosServices implements IngresosInterfaces {
         return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
     }
 
-    //GET INGRESOS
+// GET INGRESOS
     @Override
-    public List<IngresosPendientes> getIngresosPendientes() {
-        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_INGRESOS_INIT_PENDIENTES, new RowMapper<IngresosPendientes>() {
-            @Override
-            public IngresosPendientes mapRow(ResultSet rs, int rowNum) throws SQLException {
-                IngresosPendientes ingresoPendiente = new IngresosPendientes();
-                try {
-                    // Mapeando los valores del ResultSet a los atributos del objeto IngresosPendientes
+    public ResponseService getIngresosPendientes() {
+        ResponseService response = new ResponseService();
+
+        try {
+            // Ejecutar la consulta y mapear los resultados a una lista de IngresosPendientes
+            List<IngresosPendientes> ingresosPendientes = jdbcTemplate.query(
+                    stored.STORED_PROCEDURE_CALL_GET_INGRESOS_INIT_PENDIENTES,
+                    new RowMapper<IngresosPendientes>() {
+                @Override
+                public IngresosPendientes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    IngresosPendientes ingresoPendiente = new IngresosPendientes();
                     ingresoPendiente.setNumeroFactura(rs.getString("numero_factura"));
-                    ingresoPendiente.setFecha(rs.getString("fecha"));  // O usa `rs.getDate()` si el campo es una fecha
+                    ingresoPendiente.setFecha(rs.getString("fecha")); // O usa `rs.getDate()` si el campo es una fecha
                     ingresoPendiente.setBultos(rs.getInt("bultos"));
                     ingresoPendiente.setValor(rs.getDouble("valor"));
-                    ingresoPendiente.setEstado(rs.getString("estado"));
+                    ingresoPendiente.setEstado(rs.getString("estado") != null ? rs.getString("estado") : "Pendiente");
 
-                } catch (SQLException e) {
-                    // Manejo de excepción
-                    e.printStackTrace();  // Puedes usar un logger en lugar de imprimir el stack trace
+                    return ingresoPendiente;
                 }
-                return ingresoPendiente; // Retornar el objeto mapeado
             }
-        });
+            );
+
+            // Establecer la lista de ingresos pendientes en la respuesta
+            response.setData(ingresosPendientes);
+            response.setCodeResponse("00"); // Código de éxito
+            response.setMessageResponse("Consulta exitosa");
+
+        } catch (DataAccessException e) {
+            // Manejo de excepción de acceso a datos
+            response.setCodeResponse("99"); // Código de error
+            response.setMessageResponse("Error al consultar ingresos pendientes: " + e.getMessage());
+            e.printStackTrace(); // Opcional: imprimir la traza de la excepción para depuración
+        }
+
+        return response; // Retornar la respuesta con los datos mapeados o el error
     }
 
     //MODIFICAR DE GEOUBICACION
@@ -341,7 +355,6 @@ public class IngresosServices implements IngresosInterfaces {
 
                     response.setCodeResponse("500");
                     response.setMessageResponse("Error interno en el servidor " + e.getMessage());
-                    response.setData("Error");
                     // Obtener información sobre la clase y la línea
                     StackTraceElement callerInfo = Thread.currentThread().getStackTrace()[1];
                     String fileName = callerInfo.getFileName();

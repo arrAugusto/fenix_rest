@@ -4,39 +4,20 @@
  */
 package com.serviceBack.fenix.Utils;
 
+import java.util.List;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  *
  * @author agr12
  */
-public class ResponseService {
+@Data
+@ToString
+public class ResponseService<T> {
 
     private String codeResponse;
     private String messageResponse;
-    private String data;
-
-    public String getCodeResponse() {
-        return codeResponse;
-    }
-
-    public void setCodeResponse(String codeResponse) {
-        this.codeResponse = codeResponse;
-    }
-
-    public String getMessageResponse() {
-        return messageResponse;
-    }
-
-    public void setMessageResponse(String messageResponse) {
-        this.messageResponse = messageResponse;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
+    private List<T> data;
 
 }

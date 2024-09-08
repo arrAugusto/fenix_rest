@@ -6,7 +6,6 @@ package com.serviceBack.fenix.config;
 
 import com.serviceBack.fenix.Utils.ResponseService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,18 +20,21 @@ public class GlobalExceptionHandlerValid {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseService handleValidationException(MethodArgumentNotValidException ex) {
+        // Obtener los mensajes de error de los campos
         List<String> errorMessages = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> {
                     String fieldName = error.getField();
-                    String rejectedValue = String.valueOf(error.getRejectedValue());
+                    String rejectedValue = error.getRejectedValue() != null ? error.getRejectedValue().toString() : "null";
                     return String.format("Campo '%s': valor rechazado [%s] - %s", fieldName, rejectedValue, error.getDefaultMessage());
                 })
                 .collect(Collectors.toList());
 
-        ResponseService tr = new ResponseService();
-        tr.setCodeResponse("09");
-        tr.setCodeResponse("EL OBJETO ENVIADO NO CUMPLE CON EL FORMATO ESTABLECIDO");
-        tr.setData(ResponseEntity.badRequest().body("Error de validación: " + String.join(", ", errorMessages)).toString());
-        return tr;
+        // Crear la respuesta de error
+        ResponseService response = new ResponseService();
+        response.setCodeResponse("09"); // Código de error de validación
+        response.setMessageResponse("EL OBJETO ENVIADO NO CUMPLE CON EL FORMATO ESTABLECIDO"); // Mensaje de error
+        response.setData(errorMessages); // Establecer una lista de mensajes de error
+
+        return response;
     }
 }

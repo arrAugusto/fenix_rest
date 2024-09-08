@@ -62,7 +62,7 @@ public class IngresoControllers {
     }
 
     @GetMapping("/ingresos_pendientes")//Iniciar una nueva session de usuario
-    public List<IngresosPendientes> getItemsIng() {
+    public ResponseService getItemsIng() {
         return service.getIngresosPendientes();
     }
     

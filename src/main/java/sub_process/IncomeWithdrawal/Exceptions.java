@@ -49,20 +49,19 @@ public class Exceptions {
     /**
      * Método privado para manejar todas las excepciones.
      *
-     * @param e           La excepción capturada.
+     * @param e La excepción capturada.
      * @param errorPrefix El prefijo que describe el tipo de error.
      */
     private void handleException(Exception e, String errorPrefix) {
         response.setCodeResponse(INTERNAL_ERROR_CODE);
         response.setMessageResponse(INTERNAL_ERROR_MSG + e.getMessage());
-        response.setData("Error");
         logAndSendAlert(e, errorPrefix);
     }
 
     /**
      * Registra el error y envía una alerta por correo electrónico.
      *
-     * @param e           La excepción que se está manejando.
+     * @param e La excepción que se está manejando.
      * @param errorPrefix Prefijo que describe el error.
      */
     private void logAndSendAlert(Exception e, String errorPrefix) {
@@ -75,7 +74,7 @@ public class Exceptions {
                 fileName, className, lineNumber, e.getMessage());
 
         String alertSubject = errorPrefix + ": ERROR INTERNO";
-        
+
         // Validar que los valores críticos no sean nulos antes de enviar el correo
         if (stored.mailTO != null && stored.mailFROM != null && stored.PWD != null) {
             sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, alertSubject);

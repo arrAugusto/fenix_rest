@@ -35,6 +35,6 @@ public interface IngresosInterfaces {
     public String createProduct(Product product);
 
     //Ingresos Pendientes
-    public List<IngresosPendientes> getIngresosPendientes();
+    public ResponseService getIngresosPendientes();
     
 }
