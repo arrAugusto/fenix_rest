@@ -263,6 +263,7 @@ public class IngresosServices implements IngresosInterfaces {
                 @Override
                 public IngresosPendientes mapRow(ResultSet rs, int rowNum) throws SQLException {
                     IngresosPendientes ingresoPendiente = new IngresosPendientes();
+                    ingresoPendiente.setId_transaccion(rs.getString("id_transaccion"));
                     ingresoPendiente.setNumeroFactura(rs.getString("numero_factura"));
                     ingresoPendiente.setFecha(rs.getString("fecha")); // O usa `rs.getDate()` si el campo es una fecha
                     ingresoPendiente.setBultos(rs.getInt("bultos"));

@@ -61,7 +61,7 @@ public class IngresoControllers {
         return service.getItems(idTransaccion);
     }
 
-    @GetMapping("/ingresos_pendientes")//Iniciar una nueva session de usuario
+    @GetMapping("/get_pendding_income")//Iniciar una nueva session de usuario
     public ResponseService getItemsIng() {
         return service.getIngresosPendientes();
     }

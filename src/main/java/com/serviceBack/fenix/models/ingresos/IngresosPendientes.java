@@ -17,9 +17,11 @@ import lombok.ToString;
 
 public class IngresosPendientes {
 
+    private String id_transaccion;
     private String numeroFactura;
     private String fecha;
     private int bultos;
     private double valor;
     private String estado;
+
 }
