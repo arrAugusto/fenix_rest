@@ -4,15 +4,11 @@
  */
 package com.serviceBack.fenix.services;
 
-import com.serviceBack.fenix.interfaces.ClientesInterfaces;
 import com.serviceBack.fenix.interfaces.FormsInterfaces;
 import com.serviceBack.fenix.models.GetFormUser;
 import com.serviceBack.fenix.models.GetForms;
-import com.serviceBack.fenix.models.GetNit;
-import com.serviceBack.fenix.models.NuevoCliente;
 import com.serviceBack.fenix.models.Options_view_kimbo;
 import com.serviceBack.fenix.models.SideNav;
-import com.serviceBack.fenix.models.UpdateCliente;
 import commons.StoredProcedures;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,7 +50,11 @@ public class FormsServices implements FormsInterfaces {
                 getForms.setImage(rs.getString("image"));
                 getForms.setFormulario(rs.getString("formulario"));
                 getForms.setIcon(rs.getString("icon"));
-
+                getForms.setSub_form_two(rs.getString("sub_form_two"));
+                getForms.setSub_form_three(rs.getString("sub_form_three"));
+                getForms.setSub_form_four(rs.getString("sub_form_four"));
+                getForms.setSub_form_five(rs.getString("sub_form_five"));
+                
                 return getForms;
             }
         });

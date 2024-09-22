@@ -59,6 +59,8 @@ public PreparedStatement IncomeSQLPrepare(String query, IncomeAndWithDrawal ingr
     preparedStatement.setString(32, isEmptyOrNull(ingreso.getNombre()) ? null : ingreso.getNombre());
     preparedStatement.setString(33, isEmptyOrNull(ingreso.getBoleta_de_pago()) ? null : ingreso.getBoleta_de_pago());
     preparedStatement.setString(34, isEmptyOrNull(ingreso.getComments()) ? null : ingreso.getComments());
+    preparedStatement.setString(35, isEmptyOrNull(ingreso.getId_transaccion_foreing()) ? null : ingreso.getId_transaccion_foreing());
+   
     return preparedStatement;
 }
 

@@ -88,7 +88,7 @@ public class IngresosServices implements IngresosInterfaces {
         if (Integer.parseInt(id_transaccion) > 0) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_12, messageControll.MESSAGE_FENIX_DEFAULT);
         }
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(ingreso.toString());
         try {
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
             int rowsAffected = preparedStatement.executeUpdate();
