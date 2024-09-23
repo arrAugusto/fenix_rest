@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.Data;
 import lombok.ToString;
@@ -35,6 +36,13 @@ public class GetFormUser {
     private String type;
     private String estado;
     private String value_default;
+
+    @JsonIgnore // Ignorado por defecto en JSON
+    private String sub_name_column;
+
+    @JsonIgnore // Ignorado por defecto en JSON
+    private String print_tag_name;
+
     private List<Options_view_kimbo> options_view_kimbo;
 
 }

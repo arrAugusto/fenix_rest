@@ -88,12 +88,9 @@ public class FormsServices implements FormsInterfaces {
             @Override
             public GetFormUser mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetFormUser getFormUser = new GetFormUser();
-                // Suponiendo que tienes un ResultSet rs con los resultados de una consulta
-                // Selecciona el nombre de la columna en la base de datos que coincide con el nombre del atributo en getFormUser
-                // Ejemplo de cómo establecer el valor del atributo "id"
                 getFormUser.setId(rs.getInt("id"));
                 System.out.println("rs.getInt(\"type\")> " + rs.getString("type"));
-                if (rs.getString("type").toUpperCase().equals("SELECT")) {
+                if (rs.getString("type").toUpperCase().equals("SELECT")) {//Seteando opciones
                     getFormUser.setOptions_view_kimbo(findOptions(getFormUser.getId()));
                 }
                 // Ejemplo de cómo establecer el valor del atributo "id_bodega_afiliada"
@@ -117,7 +114,10 @@ public class FormsServices implements FormsInterfaces {
                 getFormUser.setType(rs.getString("type"));
                 getFormUser.setEstado(rs.getString("estado"));
                 getFormUser.setValue_default(rs.getString("value_default"));
-
+                //Estos atributos son internos no se mostraran al cliente rest debido a que no es necesario
+                getFormUser.setSub_name_column(rs.getString("sub_name_column"));
+                getFormUser.setPrint_tag_name(rs.getString("print_tag_name"));
+                
                 return getFormUser;
             }
         });

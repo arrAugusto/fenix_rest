@@ -114,5 +114,8 @@ public class IncomeAndWithDrawal {
 
     @Pattern(regexp = "^[0-9]*$", message = "El campo debe contener solo dígitos del 0 al 9")
     private String id_transaccion_foreing;
+    
+    @Pattern(regexp = "^[0-9]*$", message = "El campo debe contener solo dígitos del 0 al 9")
+    private String config_form;
 
 }

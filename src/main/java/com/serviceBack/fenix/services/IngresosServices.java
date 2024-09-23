@@ -18,10 +18,12 @@ import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import com.serviceBack.fenix.models.ingresos.GetDataIngresoArribo;
 import com.serviceBack.fenix.models.ingresos.IngresosPendientes;
+import commons.CommonsLogic;
 import commons.GenericResponse;
 import commons.MessageControll;
 
 import commons.StoredProcedures;
+import commons.UXMessages;
 import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,6 +46,8 @@ public class IngresosServices implements IngresosInterfaces {
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
     private final Send sendMail;
+    private final CommonsLogic commmons;
+    private final UXMessages uxMessages;
 
     private final ResponseService response;
     private final PrepareIncomeStatment prepareIncomeStatment;
@@ -63,8 +67,12 @@ public class IngresosServices implements IngresosInterfaces {
         this.generiResponse = new GenericResponse();
         this.messageControll = new MessageControll();
         this.exceptions = exceptions; // Inyección a través del constructor
+        this.commmons = new CommonsLogic();
+        this.uxMessages = new UXMessages();
 
     }
+    @Autowired
+    private RegisterProducts registerProducts;
 
     /*
         * INGRESOS Y RETIROS REGISTRO DE TRANSACCIONES
@@ -72,8 +80,6 @@ public class IngresosServices implements IngresosInterfaces {
     @Override
     public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingreso) {
         String count_trx = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_COUNT_TRX_KIMBO, ingreso.getNumero_factura(), "cantTrx");
-
-        System.out.println("count_trx> " + count_trx);
 
         if (!count_trx.equals("0")) {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_14, messageControll.MESSAGE_FENIX_DEFAULT);
@@ -89,8 +95,21 @@ public class IngresosServices implements IngresosInterfaces {
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_12, messageControll.MESSAGE_FENIX_DEFAULT);
         }
         System.out.println(ingreso.toString());
+        //Create income
+
         try {
-            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);
+
+            switch (ingreso.getCodigo_transaccion()) {
+                case CommonsLogic.TRANSACTION_02://if transaction 02 details registrer
+                    try {
+                    registerProducts.registerProduct(ingreso);
+                    break;
+
+                } catch (Error e) {
+                    System.out.println("error :" + e.getMessage());
+                }
+            }
+            PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);//Inserting income
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 0) {
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_11, messageControll.MESSAGE_FENIX_DEFAULT);
@@ -98,7 +117,7 @@ public class IngresosServices implements IngresosInterfaces {
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
             // Enviar correo electrónico de alerta
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, "Ingreso Creado exitosamente" + ingreso.getNumero_factura(), "INGRESO EXITOSO");
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.uxMessages.INGRESO_EXITOSO + ingreso.getNumero_factura(), "INGRESO EXITOSO");
 
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 
