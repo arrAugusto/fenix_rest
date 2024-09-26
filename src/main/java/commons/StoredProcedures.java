@@ -99,7 +99,6 @@ public class StoredProcedures {
 
     
     
-
     //GET TOTAL BULTOS ITEMS
     public final String STORE_PROCEDURE_CALL_GET_ITEMS_TOTAL_BULTOS ="CALL GET_ITEMS_TOTAL_BULTOS(?)";
 
@@ -114,10 +113,12 @@ public class StoredProcedures {
     public final String STORE_PROCEDURE_CALL_UPDATE_NIT = "CALL UPDATE_CLIENTE";
 
 
+    //GUARDAR REGISTRO EN EL INVENTARIO
+    public final String STORED_PROCEDURE_CALL_INSERT_INVENTORY_PRODUCT = "CALL INSERT_INVENTORY_PRODUCT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
     
 
-
-    
+   
     //credenciales sendmail, por el momento se pondra aqui y luego pasara  a un archivo .ini o bien a una base de datos de contraseñas
     public final String mailTO = "argomez120@gmail.com";
 
