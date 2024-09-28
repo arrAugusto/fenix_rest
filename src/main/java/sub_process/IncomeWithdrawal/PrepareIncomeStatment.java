@@ -60,6 +60,7 @@ public PreparedStatement IncomeSQLPrepare(String query, IncomeAndWithDrawal ingr
     preparedStatement.setString(33, isEmptyOrNull(ingreso.getBoleta_de_pago()) ? null : ingreso.getBoleta_de_pago());
     preparedStatement.setString(34, isEmptyOrNull(ingreso.getComments()) ? null : ingreso.getComments());
     preparedStatement.setString(35, isEmptyOrNull(ingreso.getId_transaccion_foreing()) ? null : ingreso.getId_transaccion_foreing());
+    preparedStatement.setString(36, isEmptyOrNull(ingreso.getConfig_form()) ? null : ingreso.getConfig_form());
    
     return preparedStatement;
 }

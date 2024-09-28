@@ -106,6 +106,9 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\\s.-]*$", message = "El campo debe no contener caracteres especiales")
     private String nombre;
 
+    @Pattern(regexp = "[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\\s.-]*$", message = "El campo debe no contener caracteres especiales")
+    private String nombre_cliente;
+
     @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
     private String boleta_de_pago;
 
