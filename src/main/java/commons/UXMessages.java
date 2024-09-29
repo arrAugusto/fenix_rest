@@ -10,6 +10,13 @@ package commons;
  */
 public class UXMessages {
 
-    public String INGRESO_EXITOSO = "El Ingreso fue creado correctamente.";//Trasaction success
+        
+    public String SUBJECT_DEFAULT = "TRANSACCION FALLIDA";//Trasaction success
 
+    public String INGRESO_EXITOSO = "El Ingreso fue creado correctamente.";//Trasaction success
+    public String SUBJECT_INGRESO_EXITOSO = "INGRESO EXITOSO";//Trasaction success
+    
+    public String DETALLE_EXITOSO = "Detalle de producto cargado correctamente.";//Trasaction success
+    public String SUBJECT_DETALLE_EXITOSO = "CARGA DE INVENTARIO";//Trasaction success
+    
 }

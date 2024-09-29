@@ -50,11 +50,12 @@ public class FormsServices implements FormsInterfaces {
                 getForms.setImage(rs.getString("image"));
                 getForms.setFormulario(rs.getString("formulario"));
                 getForms.setIcon(rs.getString("icon"));
+                getForms.setVisible(rs.getString("visible"));
                 getForms.setSub_form_two(rs.getString("sub_form_two"));
                 getForms.setSub_form_three(rs.getString("sub_form_three"));
                 getForms.setSub_form_four(rs.getString("sub_form_four"));
                 getForms.setSub_form_five(rs.getString("sub_form_five"));
-                
+
                 return getForms;
             }
         });
@@ -83,7 +84,8 @@ public class FormsServices implements FormsInterfaces {
 
     //Formularios vistas view
     @Override
-    public List<GetFormUser> FormUserService(String id_form) {
+    public List<GetFormUser> FormUserService(String id_form, String idTransaction) {
+        System.out.println("idTransaction>>>>>>>>>>>> " + idTransaction);
         return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_GROUP_FORM, new Object[]{id_form}, new RowMapper<GetFormUser>() {
             @Override
             public GetFormUser mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -91,7 +93,24 @@ public class FormsServices implements FormsInterfaces {
                 getFormUser.setId(rs.getInt("id"));
                 System.out.println("rs.getInt(\"type\")> " + rs.getString("type"));
                 if (rs.getString("type").toUpperCase().equals("SELECT")) {//Seteando opciones
-                    getFormUser.setOptions_view_kimbo(findOptions(getFormUser.getId()));
+                    System.out.println("idTransaction> "+idTransaction);
+                    if (idTransaction != null) {
+                        System.out.println("################### hola ##################");
+                        getFormUser.setOptions_view_kimbo(findOptions(
+                                idTransaction,
+                                stored.STORE_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM
+                            )
+                        );
+
+                    } else {
+                        getFormUser.setOptions_view_kimbo(
+                                findOptions(
+                                        String.valueOf(getFormUser.getId()), // Conversión de entero a String
+                                        stored.STORE_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO
+                                )
+                        );
+
+                    }
                 }
                 // Ejemplo de cómo establecer el valor del atributo "id_bodega_afiliada"
                 getFormUser.setId_bodega_afiliada(rs.getString("id_bodega_afiliada"));
@@ -117,19 +136,20 @@ public class FormsServices implements FormsInterfaces {
                 //Estos atributos son internos no se mostraran al cliente rest debido a que no es necesario
                 getFormUser.setSub_name_column(rs.getString("sub_name_column"));
                 getFormUser.setPrint_tag_name(rs.getString("print_tag_name"));
-                
+
                 return getFormUser;
             }
         });
 
     }
 
-    public List<Options_view_kimbo> findOptions(int id_kimbo_view) {
-        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO, new Object[]{id_kimbo_view}, new RowMapper<Options_view_kimbo>() {
+    public List<Options_view_kimbo> findOptions(String id_kimbo_view, String QUERY) {
+        System.out.println("Query> "+QUERY);
+        return jdbcTemplate.query(QUERY, new Object[]{id_kimbo_view}, new RowMapper<Options_view_kimbo>() {
             public Options_view_kimbo mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Options_view_kimbo option = new Options_view_kimbo();
-                option.setId(rs.getInt("id"));
-                option.setId_view_kimbo(rs.getInt("id_view_kimbo"));
+                option.setId(rs.getString("id"));
+                option.setId_view_kimbo(rs.getString("id_view_kimbo"));
                 option.setValueOption(rs.getString("valueOf"));
                 option.setTextValue(rs.getString("text_value"));
                 return option;

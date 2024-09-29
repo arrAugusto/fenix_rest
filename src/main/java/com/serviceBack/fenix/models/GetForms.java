@@ -27,6 +27,7 @@ public class GetForms {
     private String image;
     private String formulario;
     private String icon;
+    private String visible;
     private String sub_form_two;
     private String sub_form_three;
     private String sub_form_four;

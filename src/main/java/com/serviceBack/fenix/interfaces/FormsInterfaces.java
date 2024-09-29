@@ -8,7 +8,7 @@ import java.util.List;
 public interface FormsInterfaces {
     public List<GetForms>  MenuService(String id);
     
-    public List<GetFormUser> FormUserService(String id_form);
+    public List<GetFormUser> FormUserService(String id_form, String idTransaction);
     
     public List<SideNav> SideNavService();
 }

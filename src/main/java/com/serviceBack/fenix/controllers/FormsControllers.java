@@ -38,9 +38,22 @@ public class FormsControllers {
         return service.MenuService(id);
     }
 
-    @GetMapping("/getFormulario/{id_form}")//Iniciar una nueva session de usuario
-    public List<GetFormUser> getFormUser(@PathVariable String id_form) {
-        return service.FormUserService(id_form);
+    @GetMapping("/getFormulario/{id_form}") // Iniciar una nueva sesión de usuario
+    public List<GetFormUser> getFormUser(
+            @PathVariable String id_form,
+            @RequestParam(value = "id_transaction", required = false) String idTransaction) {
+
+        System.out.println("ID del formulario: " + id_form);
+        System.out.println("ID de transacción: " + idTransaction);
+
+        // Realizar lógica adicional si `id_transaction` está presente
+        if (idTransaction != null) {
+            System.out.println("ID de transacción proporcionado: " + idTransaction);
+            // Puedes agregar lógica adicional aquí, por ejemplo, validar la transacción o filtrado adicional
+        }
+
+        // Retornar la lista de formularios del servicio
+        return service.FormUserService(id_form, idTransaction);
     }
 
     @GetMapping("/getSideNav")//Iniciar una nueva session de usuario

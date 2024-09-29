@@ -42,13 +42,15 @@ import org.slf4j.LoggerFactory;
 @Service
 public class IngresosServices implements IngresosInterfaces {
 
+    private String MENSAJE_MAIL = "";
+    private String SUBJECT = "";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
     private final Send sendMail;
     private final CommonsLogic commmons;
     private final UXMessages uxMessages;
-
     private final ResponseService response;
     private final PrepareIncomeStatment prepareIncomeStatment;
     private final GenericResponse generiResponse;
@@ -79,6 +81,8 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public ResponseService incomeWithdrawalService(IncomeAndWithDrawal ingreso) {
+        this.MENSAJE_MAIL = this.uxMessages.INGRESO_EXITOSO + ingreso.getNumero_factura();
+        this.SUBJECT = this.uxMessages.SUBJECT_DEFAULT;
         String count_trx = getIncomeBasic(stored.STORED_PROCEDURE_CALL_GET_COUNT_TRX_KIMBO, ingreso.getNumero_factura(), "cantTrx");
 
         if (!count_trx.equals("0")) {
@@ -99,25 +103,33 @@ public class IngresosServices implements IngresosInterfaces {
 
         try {
 
-            switch (ingreso.getCodigo_transaccion()) {
-                case CommonsLogic.TRANSACTION_02://if transaction 02 details registrer
-                    try {
-                    registerProducts.registerProduct(ingreso);
-                    break;
-
-                } catch (Error e) {
-                    System.out.println("error :" + e.getMessage());
-                }
-            }
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);//Inserting income
+
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 0) {
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_11, messageControll.MESSAGE_FENIX_DEFAULT);
             }
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
+            switch (ingreso.getCodigo_transaccion()) {
+                case CommonsLogic.TRANSACTION_02://if transaction 02 details registrer
+                    try {
+                    registerProducts.registerProduct(ingreso);
+                    this.MENSAJE_MAIL = this.uxMessages.DETALLE_EXITOSO.concat(" ").concat(ingreso.getNombre());
+                    this.SUBJECT = this.uxMessages.SUBJECT_DETALLE_EXITOSO;
+                    break;
+
+                } catch (Error e) {
+                    System.out.println("error :" + e.getMessage());
+                }
+                default:
+                    this.MENSAJE_MAIL = this.uxMessages.INGRESO_EXITOSO;
+                    this.SUBJECT = this.uxMessages.SUBJECT_INGRESO_EXITOSO;
+
+                    break;
+            }
             // Enviar correo electrónico de alerta
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.uxMessages.INGRESO_EXITOSO + ingreso.getNumero_factura(), "INGRESO EXITOSO");
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
 
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 

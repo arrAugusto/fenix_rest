@@ -11,13 +11,12 @@ import lombok.ToString;
  *
  * @author agr12
  */
-
 @Data
 @ToString
 public class Options_view_kimbo {
 
-    private int id;
-    private int id_view_kimbo;
+    private String id; // Cambiar de int a Long
+    private String id_view_kimbo; // Cambiar de int a Long
     private String valueOption;
     private String textValue;
 

@@ -27,52 +27,55 @@ public class RegisterProducts {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-public void registerProduct(IncomeAndWithDrawal ingreso) {
-    System.out.println("ingreso> " + ingreso.getConfig_form());
-    // Obtiene la configuración necesaria para el registro de productos
-    List<GetFormUser> config = this.service.FormUserService("57");
-    System.out.println(ingreso.getId_transaccion());
-    try {
-        // Array de nombres de las columnas en la tabla, incluyendo `fecha_registro`
-        String[] attributes = {
-            "id_transaction_product", "id_transaction_ingreso", "bultos_total", "bultos_producto",
-            "saldo_bultos", "peso_mercaderia", "nombre_cliente", "detalle_producto",
-            "estado", "generico_1", "generico_2", "generico_3", "generico_4", "generico_5",
-            "generico_6", "generico_7", "generico_8", "generico_9", "generico_10", "UUID_code_register",
-            "fecha_registro" // Incluir `fecha_registro` al final
-        };
-
-        // Uso de un bucle para crear el array de parámetros, excepto el último que será la fecha
-        Object[] params = new Object[attributes.length];
+    public void registerProduct(IncomeAndWithDrawal ingreso) {
         
-        // 1. Asigna directamente el valor de ingreso.getId_transaccion() a `id_transaction_product`
-        params[0] = ingreso.getId_transaccion();  // Asignar el valor de id_transaction_product directamente
-        
-        // 2. Completar los parámetros restantes usando `getValidatedValue`
-        for (int i = 1; i < attributes.length - 1; i++) { // Llenar hasta antes de `fecha_registro`
-            params[i] = getValidatedValue(attributes[i], config, ingreso);
+        System.out.println("ingreso> " + ingreso.getConfig_form());
+        // Obtiene la configuración necesaria para el registro de productos
+        List<GetFormUser> config = this.service.FormUserService("57", null);
+        System.out.println(ingreso.getId_transaccion());
+        try {
+            // Array de nombres de las columnas en la tabla, incluyendo `fecha_registro`
+            String[] attributes = {
+                "id_transaction_product", "saldo_bultos", "id_transaction_ingreso", "bultos_total", "bultos_producto",
+                 "peso_mercaderia", "nombre_cliente", "detalle_producto",
+                "estado", "generico_1", "generico_2", "generico_3", "generico_4", "generico_5",
+                "generico_6", "generico_7", "generico_8", "generico_9", "generico_10", "UUID_code_register",
+                "fecha_registro" // Incluir `fecha_registro` al final
+            };
+
+            // Uso de un bucle para crear el array de parámetros, excepto el último que será la fecha
+            Object[] params = new Object[attributes.length];
+
+            // 1. Asigna directamente el valor de ingreso.getId_transaccion() a `id_transaction_product`
+            params[0] = ingreso.getId_transaccion();  // Asignar el valor de id_transaction_product directamente
+
+            params[1] = ingreso.getBultos();  // Asignar el valor saldo de bultos
+
+            // 2. Completar los parámetros restantes usando `getValidatedValue`
+            for (int i = 2; i < attributes.length - 1; i++) { // Llenar hasta antes de `fecha_registro`
+                params[i] = getValidatedValue(attributes[i], config, ingreso);
+            }
+
+            // 3. Asignar la fecha y hora actual al último parámetro (fecha_registro)
+            params[attributes.length - 1] = new Timestamp(new Date().getTime());
+
+            // Verificar los parámetros antes de ejecutar la consulta (opcional, solo para depuración)
+            for (Object param : params) {
+                System.out.println("Parameter: " + param);
+            }
+
+            // Construcción de la consulta de inserción
+            String insertQuery = buildInsertQuery("kimbo_database.inventory_balance", attributes);
+
+            // Ejecuta la consulta de inserción
+            jdbcTemplate.update(insertQuery, params);
+
+        } catch (Exception e) {
+            // Manejo de errores: captura el error y registra el mensaje
+            System.err.println("Error al intentar registrar el producto: " + e.getMessage());
+            e.printStackTrace(); // Depuración adicional
         }
-
-        // 3. Asignar la fecha y hora actual al último parámetro (fecha_registro)
-        params[attributes.length - 1] = new Timestamp(new Date().getTime());
-
-        // Verificar los parámetros antes de ejecutar la consulta (opcional, solo para depuración)
-        for (Object param : params) {
-            System.out.println("Parameter: " + param);
-        }
-
-        // Construcción de la consulta de inserción
-        String insertQuery = buildInsertQuery("kimbo_database.inventory_balance", attributes);
-
-        // Ejecuta la consulta de inserción
-        jdbcTemplate.update(insertQuery, params);
-
-    } catch (Exception e) {
-        // Manejo de errores: captura el error y registra el mensaje
-        System.err.println("Error al intentar registrar el producto: " + e.getMessage());
-        e.printStackTrace(); // Depuración adicional
     }
-}
 
     // Método para construir dinámicamente la consulta SQL de inserción
     private String buildInsertQuery(String tableName, String[] columns) {

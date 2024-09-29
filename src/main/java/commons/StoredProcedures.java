@@ -77,6 +77,9 @@ public class StoredProcedures {
     //VIEW OPTION SELECT KIMBO
     public final String STORE_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO = "CALL GET_OPTION_VIEW_KIMBO(?)";//Ver las opciones para los select
 
+    //VIEW OPTION SELECT DYNAMICS
+    public final String STORE_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM = "CALL GET_OPTION_DYNAMICS_FORM(?)";//Ver las opciones para los select
+    
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     
