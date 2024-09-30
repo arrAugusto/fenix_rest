@@ -120,5 +120,8 @@ public class IncomeAndWithDrawal {
     
     @Pattern(regexp = "^[0-9]*$", message = "El campo debe contener solo dígitos del 0 al 9")
     private String config_form;
+    
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,:-]+$", message = "El campo debe una geoposición valida")
+    private String gps_location;
 
 }

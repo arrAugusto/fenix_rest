@@ -102,8 +102,10 @@ public class IngresosServices implements IngresosInterfaces {
         //Create income
 
         try {
-
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);//Inserting income
+            System.out.println(preparedStatement.toString());
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 0) {
