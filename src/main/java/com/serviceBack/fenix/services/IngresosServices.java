@@ -1,5 +1,6 @@
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.services.subService.RegisterProducts;
 import com.serviceBack.fenix.Utils.QRCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.serviceBack.fenix.models.ingresos.ItemsFail;
 import com.serviceBack.fenix.models.Product;
 import com.serviceBack.fenix.models.ingresos.GetDataIngresoArribo;
 import com.serviceBack.fenix.models.ingresos.IngresosPendientes;
+import com.serviceBack.fenix.services.subService.RegisterLocation;
 import commons.CommonsLogic;
 import commons.GenericResponse;
 import commons.MessageControll;
@@ -75,6 +77,8 @@ public class IngresosServices implements IngresosInterfaces {
     }
     @Autowired
     private RegisterProducts registerProducts;
+    @Autowired
+    private RegisterLocation registerLocation;
 
     /*
         * INGRESOS Y RETIROS REGISTRO DE TRANSACCIONES
@@ -102,10 +106,7 @@ public class IngresosServices implements IngresosInterfaces {
         //Create income
 
         try {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             PreparedStatement preparedStatement = prepareIncomeStatment.IncomeSQLPrepare(stored.STORED_PROCEDURE_CALL_INSERT_INGRESO, ingreso);//Inserting income
-            System.out.println(preparedStatement.toString());
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 0) {
@@ -114,7 +115,7 @@ public class IngresosServices implements IngresosInterfaces {
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
             switch (ingreso.getCodigo_transaccion()) {
-                case CommonsLogic.TRANSACTION_02://if transaction 02 details registrer
+                case CommonsLogic.TRANSACTION_02_INCOME_DETAILS://if transaction 02 details registrer
                     try {
                     registerProducts.registerProduct(ingreso);
                     this.MENSAJE_MAIL = this.uxMessages.DETALLE_EXITOSO.concat(" ").concat(ingreso.getNombre());
@@ -124,6 +125,12 @@ public class IngresosServices implements IngresosInterfaces {
                 } catch (Error e) {
                     System.out.println("error :" + e.getMessage());
                 }
+                case CommonsLogic.TRANSACTION_03_REGISTER_LOCATION://if transaction 03 register location
+                    registerLocation.registerLocation(ingreso);
+                    this.MENSAJE_MAIL = this.uxMessages.UBACION_EXITOSA.concat(" ").concat(ingreso.getNombre());
+                    this.SUBJECT = this.uxMessages.SUBJECT_UBACION_EXITOSO;
+
+                    break;
                 default:
                     this.MENSAJE_MAIL = this.uxMessages.INGRESO_EXITOSO;
                     this.SUBJECT = this.uxMessages.SUBJECT_INGRESO_EXITOSO;

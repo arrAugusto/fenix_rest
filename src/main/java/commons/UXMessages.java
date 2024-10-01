@@ -19,4 +19,7 @@ public class UXMessages {
     public String DETALLE_EXITOSO = "Detalle de producto cargado correctamente.";//Trasaction success
     public String SUBJECT_DETALLE_EXITOSO = "CARGA DE INVENTARIO";//Trasaction success
     
+    public String UBACION_EXITOSA = "Mercaderia ubicada exitosamente.";//Trasaction success
+    public String SUBJECT_UBACION_EXITOSO = "UBICACION DE MERCADRIA";//Trasaction success
+
 }
