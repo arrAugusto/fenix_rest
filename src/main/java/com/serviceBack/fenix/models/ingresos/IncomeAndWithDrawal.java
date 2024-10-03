@@ -25,19 +25,19 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "^[0-9]*$", message = "El campo debe contener solo dígitos del 0 al 9")
     private String id_transaccion;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String referencia_almacen;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String canal_digital;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String auth_transaction;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String numero_factura;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String estado;
 
     @Pattern(regexp = "^(|\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})$", message = "El campo debe estar vacío o tener el formato 'yyyy-MM-dd HH:mm:ss'")
@@ -52,49 +52,49 @@ public class IncomeAndWithDrawal {
 
     private double valor;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String bl;
 
     @Pattern(regexp = "^[a-zA-Z0-9:]*$", message = "El campo debe no contener caracteres especiales")
     private String documento;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String codigoQR;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String acta;
 
     @Pattern(regexp = "^(|\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})$", message = "El campo debe estar vacío o tener el formato 'yyyy-MM-dd HH:mm:ss'")
     private String arribo;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_1;
 
     @Pattern(regexp = "[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\\s.-]*$", message = "El campo debe no contener caracteres especiales")
     private String generica_2;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_3;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_4;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_5;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_6;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_7;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String generica_8;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String codigo_transaccion;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String idImages;
 
     @Pattern(regexp = "^[a-zA-Z0-9_\\-\\s]*$", message = "El campo debe no contener caracteres especiales")
@@ -109,7 +109,7 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\\s.-]*$", message = "El campo debe no contener caracteres especiales")
     private String nombre_cliente;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "El campo debe no contener caracteres especiales")
+    @Pattern(regexp = "[\\wáéíóúüÁÉÍÓÚÜñÑ\\s\\.-]*", message = "El campo solo debe contener letras, números, espacios, puntos o guiones.")
     private String boleta_de_pago;
 
     @Pattern(regexp = "^[a-zA-Z0-9_\\-\\s]*$", message = "El campo debe no contener caracteres especiales")
@@ -121,7 +121,7 @@ public class IncomeAndWithDrawal {
     @Pattern(regexp = "^[0-9]*$", message = "El campo debe contener solo dígitos del 0 al 9")
     private String config_form;
     
-    @Pattern(regexp = "^[a-zA-Z0-9\\s.,:-]+$", message = "El campo debe una geoposición valida")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,:-]*$", message = "El campo debe tener una geoposición válida")
     private String gps_location;
 
 }

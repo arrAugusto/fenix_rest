@@ -4,10 +4,15 @@
  */
 package com.serviceBack.fenix.models;
 
+import lombok.Data;
+import lombok.ToString;
+
 /**
  *
  * @author agr12
  */
+@Data
+@ToString
 public class SideNav {
 
     private String id;
@@ -16,58 +21,6 @@ public class SideNav {
     private String description;
     private String paquete;
     private String grupo;
-
-    @Override
-    public String toString() {
-        return "SideNav{" + "id=" + id + ", nombre=" + nombre + ", status=" + status + ", description=" + description + ", paquete=" + paquete + ", grupo=" + grupo + '}';
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPaquete() {
-        return paquete;
-    }
-
-    public void setPaquete(String paquete) {
-        this.paquete = paquete;
-    }
-
-    public String getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(String grupo) {
-        this.grupo = grupo;
-    }
+    private String icon;
 
 }

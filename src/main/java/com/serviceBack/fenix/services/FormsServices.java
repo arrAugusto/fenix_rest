@@ -75,6 +75,7 @@ public class FormsServices implements FormsInterfaces {
                 sideNav.setDescription(rs.getString("description"));
                 sideNav.setPaquete(rs.getString("paquete"));
                 sideNav.setGrupo(rs.getString("group"));
+                sideNav.setIcon(rs.getString("icon"));
                 return sideNav;
             }
 
