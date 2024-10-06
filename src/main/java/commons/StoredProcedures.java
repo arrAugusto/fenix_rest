@@ -79,7 +79,10 @@ public class StoredProcedures {
 
     //VIEW OPTION SELECT DYNAMICS
     public final String STORE_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM = "CALL GET_OPTION_DYNAMICS_FORM(?)";//Ver las opciones para los select
-    
+
+    //INSERTAR AUTH FIRMA DE TRANSACCION
+    public final String STORE_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION = "CALL INSERT_AUTH_TRANSACTION(?,?,?,?)";//Insert la auth de la transaccion
+   
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORE_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
     

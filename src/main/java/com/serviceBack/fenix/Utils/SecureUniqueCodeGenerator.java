@@ -6,6 +6,7 @@ package com.serviceBack.fenix.Utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -17,6 +18,9 @@ import java.util.UUID;
 public class SecureUniqueCodeGenerator {
 
     private static long counter = 0;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int SIGNATURE_LENGTH = 21;
 
     public static synchronized String generateUniqueCode() {
         // Obtener la fecha y hora actual
@@ -63,5 +67,22 @@ public class SecureUniqueCodeGenerator {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Genera una cadena aleatoria de 21 caracteres utilizando SecureRandom.
+     *
+     * @return Una firma aleatoria similar a 'FEC5FP4680GCA929ABCDE'
+     */
+    public String generateSecureRandomSignature() {
+        StringBuilder signature = new StringBuilder(SIGNATURE_LENGTH);
+        SecureRandom secureRandom = new SecureRandom();
+
+        for (int i = 0; i < SIGNATURE_LENGTH; i++) {
+            int index = secureRandom.nextInt(CHARACTERS.length());
+            signature.append(CHARACTERS.charAt(index));
+        }
+
+        return signature.toString();
     }
 }
