@@ -58,7 +58,13 @@
     "FENIX_14": {
         "code": "14",
         "message": "EL NUMERO DE INGRESO YA FUE REGISTRADO ANTERIORMENTE"
-    }
-
-
+    },
+    "FENIX_15": {
+        "code": "15",
+        "message": "ALGUNOS USURIOS NO HAN FIRMADO POR LO QUE NO SE HA FINALIZADO LA TRANSACCION"
+    },
+    "FENIX_16": {
+        "code": "16",
+        "message": "ERROR INTERNO CONSULTE AL ADMINISTRADOR DEL SISTEMA."
+    }    
 }

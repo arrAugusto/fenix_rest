@@ -178,7 +178,7 @@ public class IngresosServices implements IngresosInterfaces {
         ItemsFail itemsResponse = new ItemsFail();
 
         if ((totalBultosItemsValue != totalBultosValue)) {
-            genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
+            genericincomeItems(stored.STORED_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
         } else {
             if (totalBultosItemsValue == 0.00) {
                 return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_02, messageControll.MESSAGE_FENIX_DEFAULT);
@@ -221,7 +221,7 @@ public class IngresosServices implements IngresosInterfaces {
                         }
             }
             if (errores > 0) {
-                genericincomeItems(stored.STORE_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
+                genericincomeItems(stored.STORED_PROCEDURE_DELETE_ITEMS_INCOME, detalles.getId_transaccion());
                 String messageItemsFail = "";
                 for (int i = 0; i < itemsResponse.getItemsFail().size(); i++) {
                     messageItemsFail += "\n" + (i + 1) + " : " + itemsResponse.getItemsFail().get(i).toString();
@@ -373,7 +373,7 @@ public class IngresosServices implements IngresosInterfaces {
      */
     @Override
     public List<GetDetalleIngreso> getItems(String idTransaccion) {
-        String queryGetItem = stored.STORE_PROCEDURE_CALL_GET_ITEMS + "(?)";
+        String queryGetItem = stored.STORED_PROCEDURE_CALL_GET_ITEMS + "(?)";
         return jdbcTemplate.query(queryGetItem, new Object[]{idTransaccion}, new RowMapper<GetDetalleIngreso>() {
             @Override
             public GetDetalleIngreso mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -41,5 +41,8 @@ public class MessageControll {
     public final String MESSAGE_FENIX_13 = "FENIX_13";
     //Transaccion existe
     public final String MESSAGE_FENIX_14 = "FENIX_14";
-
+    //firma exitosa
+    public final String MESSAGE_FENIX_15 = "FENIX_15";
+    //error interno
+    public final String MESSAGE_FENIX_16 = "FENIX_16";
 }

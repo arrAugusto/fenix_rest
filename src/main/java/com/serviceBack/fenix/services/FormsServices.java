@@ -99,7 +99,7 @@ public class FormsServices implements FormsInterfaces {
                         System.out.println("################### hola ##################");
                         getFormUser.setOptions_view_kimbo(findOptions(
                                 idTransaction,
-                                stored.STORE_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM
+                                stored.STORED_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM
                             )
                         );
 
@@ -107,7 +107,7 @@ public class FormsServices implements FormsInterfaces {
                         getFormUser.setOptions_view_kimbo(
                                 findOptions(
                                         String.valueOf(getFormUser.getId()), // Conversión de entero a String
-                                        stored.STORE_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO
+                                        stored.STORED_PROCEDURE_CALL_GET_OPTION_VIEW_KIMBO
                                 )
                         );
 

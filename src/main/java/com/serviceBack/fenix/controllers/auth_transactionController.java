@@ -29,7 +29,7 @@ public class auth_transactionController {
     @PostMapping("/auth_firma")//Iniciar una nueva session de usuario
     public String createIngreso(@RequestBody @Valid AuthTransaction authTransaction) {
         service.authTransaction(authTransaction);
-        return "";
+        return null;
     }
 
 }

@@ -33,7 +33,7 @@ public class ClientesServices implements ClientesInterfaces {
 
     @Override
     public List<GetNit> getNitService(String id_nit) {
-        return jdbcTemplate.query(stored.STORE_PROCEDURE_CALL_GET_NIT, new Object[]{id_nit}, new RowMapper<GetNit>() {
+        return jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_NIT, new Object[]{id_nit}, new RowMapper<GetNit>() {
             @Override
             public GetNit mapRow(ResultSet rs, int rowNum) throws SQLException {
                 GetNit nit = new GetNit();
@@ -53,7 +53,7 @@ public class ClientesServices implements ClientesInterfaces {
 
     @Override
     public String newClientService(NuevoCliente nuevoCliente) {
-        String queryInsert = stored.STORE_PROCEDURE_CALL_NEW_NIT.concat("(?,?,?,?,?,?)");
+        String queryInsert = stored.STORED_PROCEDURE_CALL_NEW_NIT.concat("(?,?,?,?,?,?)");
         Object[] params = new Object[]{
             nuevoCliente.getNit_cui(),
             nuevoCliente.getTipo_doc(),
@@ -71,7 +71,7 @@ public class ClientesServices implements ClientesInterfaces {
 
     @Override
     public String updateClienteService(UpdateCliente updateCliente) {
-        String queryInsert = stored.STORE_PROCEDURE_CALL_UPDATE_NIT.concat("(?,?,?,?)");
+        String queryInsert = stored.STORED_PROCEDURE_CALL_UPDATE_NIT.concat("(?,?,?,?)");
         Object[] params = new Object[]{
             updateCliente.getId_cliente(),
             updateCliente.getNombre(),
