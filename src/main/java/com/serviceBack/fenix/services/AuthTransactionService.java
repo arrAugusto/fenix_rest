@@ -4,7 +4,6 @@ import com.serviceBack.fenix.Utils.GenericSQL;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator;
 import com.serviceBack.fenix.Utils.Send;
-import com.serviceBack.fenix.interfaces.authTransactionInterface;
 import com.serviceBack.fenix.models.AuthTransaction;
 import com.serviceBack.fenix.models.ConfigFirmas;
 import com.serviceBack.fenix.models.ResponseValidFirma;
@@ -22,12 +21,17 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
 /**
  * Servicio para manejar las transacciones de autenticación.
  */
 @Service
-public class AuthTransactionService implements authTransactionInterface {
+public class AuthTransactionService implements AuthTransactionInterface {
 
     private String MENSAJE_MAIL = "";
     private String SUBJECT = "";
@@ -70,7 +74,7 @@ public class AuthTransactionService implements authTransactionInterface {
                 authTransaction.getIdTransaction(),
                 authTransaction.getAuth_transaccion(),
                 authTransaction.getUsuario_firma(),
-                authTransaction.getUsuario_firma()
+                authTransaction.getModuloFirma()
             };
 
             logger.info("Ejecutando inserción en la base de datos para la transacción.");
@@ -78,7 +82,7 @@ public class AuthTransactionService implements authTransactionInterface {
             if (isInserted) {
                 logger.info("¡Transacción de autenticación insertada con éxito!");
 
-                Object[] paramsConfig = { const_env.CALL_INGRESO_NORMAL };
+                Object[] paramsConfig = {const_env.CALL_INGRESO_NORMAL};
                 ResultSet configFirma = null;
 
                 try {
@@ -90,7 +94,10 @@ public class AuthTransactionService implements authTransactionInterface {
                     ResponseValidFirma response = validFirma(data, authTransaction.getIdTransaction());
 
                     if (response.isValid()) {
-                        logger.info("Todas las firmas requeridas se han completado. Enviando alerta.");
+                        logger.info("Todas las firmas requeridas se han completado.");
+                        this.MENSAJE_MAIL = "Todas las firmas requeridas se han completado. Enviando alerta.";
+                        this.SUBJECT = "DOCUMENTO FIRMADO CON EXITO";
+                        finishTransaction(authTransaction.getIdTransaction());//Firmando para generacion de pdfs y firma unica
                         sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
                         return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
                     }
@@ -188,7 +195,7 @@ public class AuthTransactionService implements authTransactionInterface {
 
         for (ConfigFirmas config : data) {
             logger.info("Validando firma del módulo: " + config.getModulo());
-            Object[] paramsValid = { config.getModulo(), id_transaccion };
+            Object[] paramsValid = {config.getModulo(), id_transaccion};
 
             ResultSet rsValid = null;
             try {
@@ -212,10 +219,85 @@ public class AuthTransactionService implements authTransactionInterface {
                 }
             }
         }
-
-        response.setDiferencia(count);
+        response.setDiferencia(data.size() - count);
         response.setValid(count == data.size());
         logger.info("Validación de firmas completada. Total de firmas válidas: " + count);
         return response;
     }
+
+    /**
+     * Finaliza la transacción generando una firma (hash) basada en
+     * id_transaccion y la fecha de finalización. Luego, guarda la firma en la
+     * base de datos y la retorna.
+     *
+     * @param idTransaction El identificador de la transacción.
+     * @return El hash generado como firma de la transacción.
+     */
+    public byte[] finishTransaction(String idTransaction) {
+        try {
+            // Convertir idTransaction a tipo long
+            long idTransaccion = Long.parseLong(idTransaction);
+
+            // Obtener la fecha y hora actual del sistema (fecha de finalización)
+            Timestamp fechaFinalizacion = new Timestamp(System.currentTimeMillis());
+
+            // Generar el hash a partir de idTransaccion y fechaFinalizacion
+            byte[] hashFirma = generateHash(idTransaccion, fechaFinalizacion.toString());
+
+            // Guardar el hash en la base de datos en la tabla transaction_signature
+            saveTransactionSignature(idTransaccion, hashFirma);
+
+            // Retornar el hash generado
+            return hashFirma;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al finalizar la transacción: " + e.getMessage());
+            return null;  // Retornar null en caso de error
+        }
+    }
+
+    /**
+     * Genera un hash utilizando id_transaccion y la fecha de finalización.
+     *
+     * @param idTransaccion El identificador de la transacción.
+     * @param fechaFinalizacion La fecha de finalización de la transacción.
+     * @return Un array de bytes con el hash generado.
+     * @throws NoSuchAlgorithmException Si el algoritmo SHA-256 no está
+     * disponible.
+     */
+    private byte[] generateHash(long idTransaccion, String fechaFinalizacion) throws NoSuchAlgorithmException {
+        // Crear la cadena de datos combinando id_transaccion y fecha de finalización
+        String data = "idTransaccion:" + idTransaccion + "|fechaFinalizacion:" + fechaFinalizacion;
+
+        // Seleccionar el algoritmo SHA-256
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+        // Generar el hash como un array de bytes
+        return digest.digest(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Guarda el hash de la transacción en la tabla transaction_signature.
+     *
+     * @param idTransaccion El identificador de la transacción.
+     * @param hashFirma El hash generado para la firma.
+     */
+    private void saveTransactionSignature(long idTransaccion, byte[] hashFirma) {
+        // Consulta SQL para la inserción
+        String sql = "INSERT INTO transaction_signature (id_transaccion, hash_firma) VALUES (?, ?)";
+
+        // Preparar los parámetros para la consulta
+        Object[] params = new Object[]{idTransaccion, hashFirma};
+
+        // Llamar al método genérico insert de genericSQL
+        boolean isInserted = genericSQL.insert(sql, params);
+
+        // Verificar si la inserción fue exitosa
+        if (isInserted) {
+            System.out.println("Firma de transacción guardada exitosamente.");
+        } else {
+            System.out.println("Error al guardar la firma de transacción.");
+        }
+    }
+
 }
