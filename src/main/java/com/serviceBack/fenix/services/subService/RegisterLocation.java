@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Clase RegisterLocation: se encarga de registrar la ubicación de ingresos y retiros.
+ */
 @Service
 public class RegisterLocation {
 
@@ -19,49 +22,60 @@ public class RegisterLocation {
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored;
 
+    /**
+     * Constructor para inicializar `JdbcTemplate` y `StoredProcedures`.
+     * 
+     * @param jdbcTemplate objeto de `JdbcTemplate` inyectado automáticamente por Spring.
+     */
     @Autowired
     public RegisterLocation(JdbcTemplate jdbcTemplate) {
         this.stored = new StoredProcedures(); // Inicializa StoredProcedures
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Método para registrar la ubicación de un ingreso o retiro en la base de datos.
+     * 
+     * @param ingreso Objeto `IncomeAndWithDrawal` que contiene los datos de la transacción.
+     */
     public void registerLocation(IncomeAndWithDrawal ingreso) {
         System.out.println("registerLocation>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+        
         // Obtiene la configuración necesaria para el registro de ubicaciones
         List<GetFormUser> config = this.service.FormUserService("58", null);
+
         try {
             // Array de nombres de las columnas en la tabla, excluyendo `fecha_ultima_auditoria`
             String[] attributes = {
-                "id_transacction_ubicacion", "id_transacction_ingreso", "gps_location", "seccion", "pasillo", "columna",
-                "fila", "nivel", "posicion", "capacidad", "peso_maximo",
-                "ocupacion_actual", "peso_actual", "estado", "tipo",
-                "temperatura", "humedad", "descripcion"
+                "id_transacction_ubicacion", "id_transacction_ingreso", "id_transacction_product", "gps_location",
+                "seccion", "pasillo", "columna", "fila", "nivel", "posicion", "capacidad", "peso_maximo",
+                "ocupacion_actual", "peso_actual", "estado", "tipo", "temperatura", "humedad", "descripcion"
             };
 
             // Uso de un bucle para crear el array de parámetros
-            Object[] params = new Object[attributes.length];
+            Object[] params = new Object[attributes.length];  // Debe coincidir con el número de columnas
 
             // Asigna directamente el valor de `ubicacion` a los parámetros correspondientes
-            params[0] = ingreso.getId_transaccion(); // id_transacction_ubicacion
-            params[1] = ingreso.getId_transaccion_foreing();   // id_transacction_ingreso
+            params[0] = ingreso.getId_transaccion();             // id_transacction_ubicacion
+            params[1] = ingreso.getId_transaccion_foreing();     // id_transacction_ingreso
+            params[2] = ingreso.getNombre();                    // id_transacction_product (mantener como `getNombre` según tu implementación)
 
             // Asignar `gps_location` como un valor de tipo `POINT` utilizando `ST_GeomFromText`
             if (ingreso.getGps_location() != null && !ingreso.getGps_location().isEmpty()) {
-                // Suponiendo que `ingreso.getGps_location()` tiene el formato "latitud, longitud"
                 String[] gpsValues = ingreso.getGps_location().split(",");
                 if (gpsValues.length == 2) {
-                    // Formato del valor POINT para MySQL: latitud y longitud en formato POINT(longitud latitud)
-                    String pointValue = String.format("POINT(%s %s)", gpsValues[1].trim(), gpsValues[0].trim()); // LONGITUD primero, LATITUD después
-                    params[2] = pointValue; // Se pasa como una cadena al parámetro
+                    // Formato del valor POINT para MySQL: LONGITUD primero, LATITUD después
+                    String pointValue = String.format("POINT(%s %s)", gpsValues[1].trim(), gpsValues[0].trim());
+                    params[3] = pointValue; // Se pasa como un solo parámetro en el índice 3 (gps_location)
                 } else {
-                    params[2] = null;
+                    params[3] = null; // Dejar nulo si el formato no es correcto
                 }
             } else {
-                params[2] = null;
+                params[3] = null;
             }
 
             // Completar los parámetros restantes usando `getValidatedValue`
-            for (int i = 3; i < attributes.length; i++) { // Comenzar desde el índice 3 para omitir gps_location
+            for (int i = 4; i < attributes.length; i++) { // Comenzar desde el índice 4 para omitir gps_location y los primeros 3 parámetros
                 params[i] = getValidatedValue(attributes[i], config, ingreso);
             }
 
@@ -70,9 +84,8 @@ public class RegisterLocation {
                 System.out.println("Parameter: " + param);
             }
 
-            // Construcción de la consulta de inserción usando `ST_GeomFromText`
-            String insertQuery = "INSERT INTO kimbo_database.ubicaciones_mercancias (" +
-                                 String.join(", ", attributes) + ") VALUES (?, ?, ST_GeomFromText(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Construcción de la consulta de inserción utilizando `buildInsertQuery`
+            String insertQuery = buildInsertQueryWithGeom("ubicaciones_mercancias", attributes);
 
             // Ejecuta la consulta de inserción con JdbcTemplate
             jdbcTemplate.update(insertQuery, params);
@@ -84,26 +97,56 @@ public class RegisterLocation {
         }
     }
 
-    // Método para construir dinámicamente la consulta SQL de inserción
-    private String buildInsertQuery(String tableName, String[] columns) {
+    /**
+     * Método auxiliar para construir dinámicamente la consulta SQL de inserción incluyendo `ST_GeomFromText` para `gps_location`.
+     * 
+     * @param tableName Nombre de la tabla.
+     * @param columns   Array de nombres de columnas.
+     * @return Consulta SQL de inserción generada dinámicamente.
+     */
+    private String buildInsertQueryWithGeom(String tableName, String[] columns) {
         StringBuilder queryBuilder = new StringBuilder("INSERT INTO " + tableName + " (");
 
         // Añade las columnas separadas por comas
         queryBuilder.append(String.join(", ", columns)).append(") VALUES (");
 
-        // Generar marcadores de '?' separados por coma
-        String placeholders = String.join(", ", java.util.Collections.nCopies(columns.length, "?"));
-        queryBuilder.append(placeholders).append(")");
+        // Generar marcadores de '?' separados por coma, pero con `ST_GeomFromText(?)` para `gps_location`
+        for (int i = 0; i < columns.length; i++) {
+            if (i == 3) { // Si es la columna `gps_location`
+                queryBuilder.append("ST_GeomFromText(?)"); // Usar `ST_GeomFromText(?)`
+            } else {
+                queryBuilder.append("?");
+            }
+            if (i < columns.length - 1) {
+                queryBuilder.append(", ");
+            }
+        }
+        queryBuilder.append(")");
 
         return queryBuilder.toString();
     }
 
-    // Método para obtener y validar el valor de un atributo específico
+    /**
+     * Método para obtener y validar el valor de un atributo específico de `IncomeAndWithDrawal`.
+     * 
+     * @param attribute Nombre del atributo.
+     * @param config    Configuración obtenida desde `FormUserService`.
+     * @param ingreso   Objeto `IncomeAndWithDrawal` para obtener el valor.
+     * @return Valor validado como `String`.
+     */
     private String getValidatedValue(String attribute, List<GetFormUser> config, IncomeAndWithDrawal ingreso) {
         String value = dynamicsGetValue(attribute, config, ingreso);
         return "null".equals(value) ? null : value; // Si es "null", devuelve null (no la cadena "null")
     }
 
+    /**
+     * Método para obtener dinámicamente el valor de un atributo utilizando reflexión.
+     * 
+     * @param attribute Nombre del atributo.
+     * @param config    Configuración obtenida desde `FormUserService`.
+     * @param ingreso   Objeto `IncomeAndWithDrawal` para obtener el valor.
+     * @return Valor del atributo como `String`.
+     */
     private String dynamicsGetValue(String attribute, List<GetFormUser> config, IncomeAndWithDrawal ingreso) {
         try {
             // Obtener el nombre del campo asociado a la columna
