@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.serviceBack.fenix.models;
+package com.serviceBack.fenix.models.pdf;
 
 import lombok.Data;
 import lombok.ToString;
@@ -11,16 +11,11 @@ import lombok.ToString;
  *
  * @author agr12
  */
+
 @Data
 @ToString
-public class ConfigFirmas {
 
-    private String id;
-    private String modulo;
-    private String optional;
-    private String estado;
-    private String tipo_transaccional;
-    private String sql_required;
-    private String info_print;
-
+public class PDF_Income_Title {
+    private String clave;
+    private String textValue;
 }

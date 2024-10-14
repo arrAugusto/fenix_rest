@@ -88,7 +88,9 @@ public class AuthTransactionService implements AuthTransactionInterface {
                 try {
                     logger.info("Ejecutando consulta para obtener la configuración de firmas.");
                     configFirma = genericSQL.select(stored.STORED_PROCEDURE_CALL_GET_CONFIG_FIRMAS, paramsConfig);
-                    List<ConfigFirmas> data = transformData(configFirma);
+                    TransoformGetConfig transformConfig = new TransoformGetConfig();
+
+                    List<ConfigFirmas> data = transformConfig.transformData(configFirma);
                     logger.info("Se obtuvo la configuración de firmas: " + data.size() + " registros encontrados.");
 
                     ResponseValidFirma response = validFirma(data, authTransaction.getIdTransaction());
@@ -150,42 +152,6 @@ public class AuthTransactionService implements AuthTransactionInterface {
         this.SUBJECT = this.uxMessages.SUBJECT_ERROR_INTERNO;
         sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
         return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_16, messageControll.MESSAGE_FENIX_DEFAULT);
-    }
-
-    public List<ConfigFirmas> transformData(ResultSet rs) {
-        logger.info("Iniciando transformación de datos del ResultSet en ConfigFirmas.");
-        List<ConfigFirmas> firmasList = new ArrayList<>();
-        if (rs == null) {
-            logger.warning("ResultSet es nulo, devolviendo lista vacía.");
-            return firmasList; // Retornar lista vacía si ResultSet es null
-        }
-
-        try {
-            while (rs.next()) { // Iterar a través del ResultSet
-                ConfigFirmas config = new ConfigFirmas();
-                config.setId(rs.getString("id"));
-                config.setModulo(rs.getString("modulo"));
-                config.setOptional(rs.getString("optional"));
-                config.setEstado(rs.getString("estado"));
-                config.setTipo_transaccional(rs.getString("tipo_transaccional"));
-
-                firmasList.add(config); // Agregar cada objeto a la lista
-            }
-            logger.info("Transformación de datos completada con " + firmasList.size() + " registros.");
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error al transformar los datos de ConfigFirmas: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (rs != null && !rs.isClosed()) {
-                    logger.info("Cerrando ResultSet en transformData.");
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Error al cerrar ResultSet en transformData: " + e.getMessage(), e);
-            }
-        }
-
-        return firmasList; // Retornar la lista con los resultados
     }
 
     public ResponseValidFirma validFirma(List<ConfigFirmas> data, String id_transaccion) {

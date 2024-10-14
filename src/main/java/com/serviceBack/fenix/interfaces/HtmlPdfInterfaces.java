@@ -14,5 +14,5 @@ public interface HtmlPdfInterfaces {
      * 
      * @return Un array de bytes que contiene el PDF generado.
      */
-    byte[] generatePdfFromHtml();
+    byte[] generatePdfFromHtml(String id_transaction);
 }

@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -32,15 +35,16 @@ public class HtmlPdfController {
      *
      * @return ResponseEntity con el archivo PDF.
      */
-    @GetMapping(value = "/html", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<InputStreamResource> downloadHtmlPdf() {
-        byte[] pdfData = htmlPdfService.generatePdfFromHtml();
+    @GetMapping(value = "/html/{param}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> downloadHtmlPdf(
+            @PathVariable("param") @Valid @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El parámetro solo debe contener letras y números") String id_transaction) {
+        byte[] pdfData = htmlPdfService.generatePdfFromHtml(id_transaction);
 
         if (pdfData != null) {
             ByteArrayInputStream bis = new ByteArrayInputStream(pdfData);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=cliente_augusto_gomez.pdf");
+            headers.add("Content-Disposition", "inline; filename=" + id_transaction + ".pdf");
 
             return ResponseEntity
                     .ok()
@@ -48,7 +52,7 @@ public class HtmlPdfController {
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(new InputStreamResource(bis));
         } else {
-            return null;
+            return ResponseEntity.badRequest().build();
         }
     }
 }

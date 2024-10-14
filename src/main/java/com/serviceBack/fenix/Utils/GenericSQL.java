@@ -49,22 +49,32 @@ public class GenericSQL {
     }
 
     /**
-     * Método genérico para ejecutar una consulta SELECT y devolver el ResultSet
-     * sin cerrarlo. El cierre del ResultSet se debe hacer manualmente en el
-     * lugar de uso.
+     * Método genérico para ejecutar un procedimiento almacenado o una consulta
+     * SELECT y devolver el ResultSet si es aplicable. El cierre del ResultSet
+     * se debe hacer manualmente en el lugar de uso.
      *
-     * @param sqlQuery La consulta SQL en formato de String.
+     * @param sqlQuery La consulta SQL o llamada al procedimiento almacenado.
      * @param params Los parámetros a insertar en la consulta.
-     * @return El ResultSet de la consulta ejecutada.
+     * @return El ResultSet de la consulta ejecutada, o null si no hay
+     * resultados.
      */
     public ResultSet select(String sqlQuery, Object[] params) {
         try {
             Connection connection = DataSourceUtils.getConnection(dataSource);
             PreparedStatement ps = connection.prepareStatement(sqlQuery);
             setParameters(ps, params);
-            return ps.executeQuery();  // Devuelve el ResultSet, el cual debe ser cerrado manualmente
+
+            boolean hasResultSet = ps.execute(); // Ejecutar la consulta o procedimiento
+
+            if (hasResultSet) {
+                return ps.getResultSet(); // Devuelve el ResultSet si hay resultados
+            } else {
+                logger.info("El procedimiento almacenado no devolvió ningún conjunto de resultados.");
+                return null; // No hay ResultSet
+            }
+
         } catch (SQLException e) {
-            logger.error("Error al ejecutar la consulta SELECT: " + e.getMessage(), e);
+            logger.error("Error al ejecutar la consulta o procedimiento almacenado: " + e.getMessage(), e);
             return null;
         }
     }
