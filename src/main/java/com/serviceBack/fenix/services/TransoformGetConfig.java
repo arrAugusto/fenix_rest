@@ -60,47 +60,49 @@ public class TransoformGetConfig {
         return firmasList; // Retornar la lista con los resultados
     }
 
-    public List<PDF_Income_Title> transformDataConfig(ResultSet rs) {
+    public List<PDF_Income_Title> transformDataConfig(ResultSet rs, String titleTransaction) {
         List<PDF_Income_Title> pdfTitles = new ArrayList<>();
 
         if (rs == null) {
             logger.severe("El ResultSet es nulo. No se puede procesar.");
             return pdfTitles; // Retorna una lista vacía o maneja la situación de forma adecuada
         }
-
         try {
             ResultSetMetaData metaData = rs.getMetaData(); // Obtener los metadatos del ResultSet
             int columnCount = metaData.getColumnCount(); // Obtener la cantidad de columnas
-
             while (rs.next()) {
-                // Iterar sobre todas las columnas de cada fila
-                for (int i = 1; i <= columnCount; i++) {
-                    PDF_Income_Title pdfTitle = new PDF_Income_Title();
+                // Crear un nuevo PDF_Income_Title por cada fila del ResultSet
+                PDF_Income_Title pdfTitle = new PDF_Income_Title();
+                pdfTitle.setTitleTransaction(titleTransaction); // Asignar el título de la transacción
 
-                    // Obtener el nombre de la columna y su valor
+                // Crear un objeto Detail por cada fila del ResultSet
+                PDF_Income_Title.Detail detail = new PDF_Income_Title.Detail();
+
+                // Iterar sobre todas las columnas de la fila actual
+                for (int i = 1; i <= columnCount; i++) {
+                    // Obtener el nombre y el valor de cada columna
                     String columnName = metaData.getColumnName(i); // Nombre de la columna
                     String columnValue = rs.getString(i); // Valor de la columna
 
-                    // Asignar los valores al objeto PDF_Income_Title
-                    pdfTitle.setClave(columnName);
-                    pdfTitle.setTextValue(columnValue);
-
-                    // Agregar el objeto a la lista
-                    pdfTitles.add(pdfTitle);
+                    // Si la clave y valor deben ser acumulados o procesados de alguna manera especial
+                    // puedes hacerlo aquí, pero no sobrescribas directamente el valor
+                    if (i == 1) {
+                        detail.setClave(columnName);  // Establece la clave para la primera columna (ejemplo)
+                    } else if (i == 2) {
+                        detail.setTextValue(columnValue); // Establece el valor de la columna
+                    }
+                    // Puedes agregar más condiciones si es necesario para otras columnas
                 }
+
+                // Asignar el objeto Detail al PDF_Income_Title
+                pdfTitle.setDetail(detail);
+
+                // Agregar el objeto a la lista
+                pdfTitles.add(pdfTitle);
             }
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error al procesar el ResultSet", e);
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close(); // Cerrar el ResultSet para evitar fugas de memoria
-                    logger.info("ResultSet cerrado correctamente.");
-                } catch (SQLException e) {
-                    logger.log(Level.SEVERE, "Error al cerrar ResultSet", e);
-                }
-            }
         }
 
         return pdfTitles; // Retornar la lista de objetos PDF_Income_Title

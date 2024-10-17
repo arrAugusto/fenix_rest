@@ -4,18 +4,23 @@
  */
 package com.serviceBack.fenix.models.pdf;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 /**
  *
  * @author agr12
  */
-
 @Data
-@ToString
-
 public class PDF_Income_Title {
-    private String clave;
-    private String textValue;
+    private String titleTransaction;
+
+    // Inicializa el campo Detail sin necesidad de @Builder.Default
+    private Detail detail = new Detail();
+
+    @Data
+    public static class Detail {
+        private String clave;
+        private String textValue;
+    }
 }

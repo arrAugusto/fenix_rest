@@ -1,5 +1,6 @@
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.Utils.CreateToPDFWithPDF;
 import com.serviceBack.fenix.Utils.GenericSQL;
 import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
 import com.serviceBack.fenix.models.ConfigFirmas;
@@ -30,10 +31,10 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
 
     @Override
     public byte[] generatePdfFromHtml(String id_transaction) {
-        PDF_Income_Title pdfTitle = new PDF_Income_Title();
         ResultSet resultSet = null;
-
+        CreateToPDFWithPDF createPDF = new CreateToPDFWithPDF(); // Crear instancia de la clase de PDF
         Object[] paramsConfig = {const_env.CALL_INGRESO_NORMAL};
+
         try {
             logger.info("Ejecutando consulta para obtener la configuración de firmas.");
             resultSet = genericSQL.select(stored.STORED_PROCEDURE_CALL_GET_CONFIG_FIRMAS, paramsConfig);
@@ -43,41 +44,44 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             logger.info("Se obtuvo la configuración de firmas: " + data.size() + " registros encontrados.");
 
             Object[] param_id_transaction = {id_transaction};
-            List<PDF_Income_Title> pdfIncome = new ArrayList<>();
+            List<PDF_Income_Title> pdfIncome = new ArrayList<>();  // Inicializar la lista
 
-            for (int i = 0; i < data.size(); i++) {
-                ResultSet resultSetConfig = null;
-
-                System.out.println("param_id_transaction> " + param_id_transaction);
-                resultSetConfig = genericSQL.select(data.get(i).getSql_required(), param_id_transaction);
+            for (ConfigFirmas configFirma : data) {
+                ResultSet resultSetConfig = genericSQL.select(configFirma.getSql_required(), param_id_transaction);
 
                 if (resultSetConfig == null) {
-                    logger.warning("El ResultSet para la consulta " + data.get(i).getSql_required() + " es nulo.");
+                    logger.warning("El ResultSet para la consulta " + configFirma.getSql_required() + " es nulo.");
                     continue;
                 }
 
                 if (!resultSetConfig.isBeforeFirst()) {
-                    logger.warning("El ResultSet para la consulta " + data.get(i).getSql_required() + " está vacío.");
-                    resultSetConfig.close(); // Asegurarse de cerrar el ResultSet vacío
+                    logger.warning("El ResultSet para la consulta " + configFirma.getSql_required() + " está vacío.");
+                    resultSetConfig.close(); // Cerrar el ResultSet vacío
                     continue;
                 }
 
-                pdfIncome = transformConfig.transformDataConfig(resultSetConfig);
+                // Transformar datos de acuerdo al ResultSet
+                List<PDF_Income_Title> pdfIncomeList = transformConfig.transformDataConfig(resultSetConfig, configFirma.getInfo_print());
+                System.out.println(pdfIncomeList.toString());
+                // Agregar los nuevos datos transformados a la lista pdfIncome
+                pdfIncome.addAll(pdfIncomeList);
 
                 // Cerrar el ResultSet después de procesarlo
-                if (resultSetConfig != null) {
-                    resultSetConfig.close();
-                }
-            }
-            if (pdfIncome != null) {
-                for (int i = 0; i < pdfIncome.size(); i++) {
-                    System.out.println(pdfIncome.get(i).getClave()+" "+pdfIncome.get(i).getTextValue());
-                }
-
+                resultSetConfig.close();
             }
 
-            // Aquí agregarías la lógica para generar el PDF a partir de los datos obtenidos
-            return null; // Aquí deberías devolver el PDF generado en formato byte[]
+            // Verificar si la lista de pdfIncome no está vacía y generar el PDF
+            if (!pdfIncome.isEmpty()) {
+                // Generar el PDF utilizando la lista completa de PDF_Income_Title
+                byte[] pdfData = createPDF.createToPDFWithPDF(pdfIncome);
+
+                // Devolver el PDF generado en formato byte[]
+                return pdfData;
+            } else {
+                logger.warning("La lista de ingresos PDF está vacía, no se generará ningún PDF.");
+                return null;
+            }
+
         } catch (Exception e) {
             logger.severe("Error al generar el PDF: " + e.getMessage());
             e.printStackTrace();
