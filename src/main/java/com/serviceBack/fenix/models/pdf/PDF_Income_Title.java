@@ -1,25 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.serviceBack.fenix.models.pdf;
 
-import lombok.Builder;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
 /**
  *
- * @author agr12
+ * Clase que representa un título de ingresos en un PDF, junto con una lista de detalles.
  */
 @Data
 public class PDF_Income_Title {
+
     private String titleTransaction;
 
-    // Inicializa el campo Detail sin necesidad de @Builder.Default
-    private Detail detail = new Detail();
+    // Cambia Detail de un solo objeto a una lista
+    private List<Detail> details = new ArrayList<>();
 
     @Data
     public static class Detail {
+
         private String clave;
         private String textValue;
     }

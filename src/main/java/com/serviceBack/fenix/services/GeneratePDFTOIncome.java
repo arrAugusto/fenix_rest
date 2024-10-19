@@ -47,6 +47,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             List<PDF_Income_Title> pdfIncome = new ArrayList<>();  // Inicializar la lista
 
             for (ConfigFirmas configFirma : data) {
+                System.out.println("configFirma.getSql_required()> "+configFirma.getSql_required());
                 ResultSet resultSetConfig = genericSQL.select(configFirma.getSql_required(), param_id_transaction);
 
                 if (resultSetConfig == null) {

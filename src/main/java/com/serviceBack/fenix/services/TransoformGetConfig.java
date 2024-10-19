@@ -75,29 +75,30 @@ public class TransoformGetConfig {
                 PDF_Income_Title pdfTitle = new PDF_Income_Title();
                 pdfTitle.setTitleTransaction(titleTransaction); // Asignar el título de la transacción
 
-                // Crear un objeto Detail por cada fila del ResultSet
-                PDF_Income_Title.Detail detail = new PDF_Income_Title.Detail();
+                // Lista para almacenar los detalles de esta fila
+                List<PDF_Income_Title.Detail> details = new ArrayList<>();
 
                 // Iterar sobre todas las columnas de la fila actual
                 for (int i = 1; i <= columnCount; i++) {
+                    // Crear un nuevo Detail para cada columna
+                    PDF_Income_Title.Detail detail = new PDF_Income_Title.Detail();
+
                     // Obtener el nombre y el valor de cada columna
                     String columnName = metaData.getColumnName(i); // Nombre de la columna
                     String columnValue = rs.getString(i); // Valor de la columna
 
-                    // Si la clave y valor deben ser acumulados o procesados de alguna manera especial
-                    // puedes hacerlo aquí, pero no sobrescribas directamente el valor
-                    if (i == 1) {
-                        detail.setClave(columnName);  // Establece la clave para la primera columna (ejemplo)
-                    } else if (i == 2) {
-                        detail.setTextValue(columnValue); // Establece el valor de la columna
-                    }
-                    // Puedes agregar más condiciones si es necesario para otras columnas
+                    // Establecer la clave y el valor en el objeto Detail
+                    detail.setClave(columnName);
+                    detail.setTextValue(columnValue);
+
+                    // Agregar el Detail a la lista de detalles
+                    details.add(detail);
                 }
 
-                // Asignar el objeto Detail al PDF_Income_Title
-                pdfTitle.setDetail(detail);
+                // Asignar la lista de detalles al PDF_Income_Title
+                pdfTitle.setDetails(details);
 
-                // Agregar el objeto a la lista
+                // Agregar el PDF_Income_Title a la lista de resultados
                 pdfTitles.add(pdfTitle);
             }
 
@@ -107,5 +108,4 @@ public class TransoformGetConfig {
 
         return pdfTitles; // Retornar la lista de objetos PDF_Income_Title
     }
-
 }
