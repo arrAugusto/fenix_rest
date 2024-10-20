@@ -148,15 +148,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
         try {
             generatePdfFromHtml(idTransaccion);
 
-            Object[] paramsCheck = {
-                idTransaccion,
-                "1"
-            };
-            System.out.println("stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE> " + stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE);
-            ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE, paramsCheck);
-
-            // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
-            Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+            Comprobante valid = getDataPDF(idTransaccion, "1");
             if (valid != null) {
                 // Devolver el PDF generado en formato byte[] (si es necesario)
                 response.setCodeResponse("00");  // Código de éxito
@@ -227,5 +219,20 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             return errorsPDF.generateErrorPDF("Error al generar PDF", "No se pudo generar el PDF para la transacción solicitada.");
         }
     }
+    
+    @Override
+    public Comprobante getDataPDF(String idTransaccion, String estado) {
+        TransoformGetConfig transformConfig = new TransoformGetConfig();
+        Object[] paramsCheck = {
+            idTransaccion,
+            estado
+        };
+        System.out.println("stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE> " + stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE);
+        ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE, paramsCheck);
 
+        // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
+        Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+
+        return valid;
+    }
 }

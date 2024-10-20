@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.controllers;
 
+import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
 import com.serviceBack.fenix.models.AuthTransaction;
 import javax.validation.Valid;
@@ -27,9 +28,8 @@ public class Auth_transactionController {
     private AuthTransactionInterface service;
 
     @PostMapping("/auth_firma")//Iniciar una nueva session de usuario
-    public String createIngreso(@RequestBody @Valid AuthTransaction authTransaction) {
-        service.authTransaction(authTransaction);
-        return null;
+    public ResponseService createIngreso(@RequestBody @Valid AuthTransaction authTransaction) {
+        return service.authTransaction(authTransaction);
     }
 
 }

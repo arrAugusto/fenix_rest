@@ -14,7 +14,7 @@ public class SendMailIngresos {
     }
 
     public void sendMail(String mailTO, String mailFROM, String PWD, String messageItemsLoads, String subj) {
-        sendMail.alertas(mailTO, mailFROM, PWD, messageItemsLoads, subj);
+        sendMail.alertas(mailTO, mailFROM, PWD, messageItemsLoads, subj, "");
         // Registrar el mensaje en la salida estándar
         System.out.println("Message sent in mail: " + messageItemsLoads);
     }

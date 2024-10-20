@@ -5,6 +5,7 @@
 package com.serviceBack.fenix.interfaces;
 
 import com.serviceBack.fenix.Utils.ResponseService;
+import com.serviceBack.fenix.models.Comprobante;
 
 /**
  * Interfaz para la generación de PDFs a partir de HTML.
@@ -19,4 +20,6 @@ public interface HtmlPdfInterfaces {
     public ResponseService getPDFTransaction(String idTransaccion);
     
     public byte[] view_pdfGenerated(String validator);
+
+    public Comprobante getDataPDF(String idTransaccion, String estado);
 }

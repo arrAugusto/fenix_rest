@@ -77,7 +77,7 @@ public class Exceptions {
 
         // Validar que los valores críticos no sean nulos antes de enviar el correo
         if (stored.mailTO != null && stored.mailFROM != null && stored.PWD != null) {
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, alertSubject);
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, alertSubject, "");
         } else {
             LOGGER.warn("No se pudo enviar el correo de alerta. Faltan valores en stored: mailTO, mailFROM o PWD.");
         }

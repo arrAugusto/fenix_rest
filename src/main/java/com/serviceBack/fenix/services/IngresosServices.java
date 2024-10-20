@@ -138,7 +138,7 @@ public class IngresosServices implements IngresosInterfaces {
                     break;
             }
             // Enviar correo electrónico de alerta
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, "");
 
             return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
 
@@ -407,7 +407,7 @@ public class IngresosServices implements IngresosInterfaces {
                             + "', lineNumber: " + lineNumber + ", errorMessage: '" + e.getMessage() + "']";
 
                     // Enviar correo electrónico de alerta
-                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR INTERNO");
+                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, errorMessage, "ERROR INTERNO", "");
                     // Registrar el error en el log
                     LOGGER.info(errorMessage);
 

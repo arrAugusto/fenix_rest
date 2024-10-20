@@ -22,10 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
+import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
+import com.serviceBack.fenix.models.Comprobante;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 /**
  * Servicio para manejar las transacciones de autenticación.
@@ -35,6 +38,9 @@ public class AuthTransactionService implements AuthTransactionInterface {
 
     private String MENSAJE_MAIL = "";
     private String SUBJECT = "";
+
+    @Autowired
+    private HtmlPdfInterfaces htmlPdfService;
 
     private final GenericSQL genericSQL;
     private final StoredProcedures stored;
@@ -59,11 +65,14 @@ public class AuthTransactionService implements AuthTransactionInterface {
     @Override
     public ResponseService authTransaction(AuthTransaction authTransaction) {
         logger.info("Iniciando proceso de autenticación para la transacción ID: " + authTransaction.getIdTransaction());
+        ResponseService responseService = new ResponseService();
 
         try {
+            // Establecer mensajes iniciales de éxito
             this.MENSAJE_MAIL = this.uxMessages.FIRMA_EXITOSA;
             this.SUBJECT = this.uxMessages.SUBJECT_FIRMA_EXITOSA;
 
+            // Generar código de autenticación
             SecureUniqueCodeGenerator security = new SecureUniqueCodeGenerator();
             authTransaction.setAuth_transaccion(security.generateSecureRandomSignature());
             authTransaction.setUsuario_firma("1");
@@ -77,8 +86,10 @@ public class AuthTransactionService implements AuthTransactionInterface {
                 authTransaction.getModuloFirma()
             };
 
+            // Ejecutar la inserción en la base de datos
             logger.info("Ejecutando inserción en la base de datos para la transacción.");
             boolean isInserted = genericSQL.insert(stored.STORED_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION, params);
+
             if (isInserted) {
                 logger.info("¡Transacción de autenticación insertada con éxito!");
 
@@ -93,17 +104,30 @@ public class AuthTransactionService implements AuthTransactionInterface {
                     List<ConfigFirmas> data = transformConfig.transformData(configFirma);
                     logger.info("Se obtuvo la configuración de firmas: " + data.size() + " registros encontrados.");
 
+                    // Validar las firmas requeridas
                     ResponseValidFirma response = validFirma(data, authTransaction.getIdTransaction());
 
                     if (response.isValid()) {
+                        //Creando pdf
+                        ResponseService pdfResponse = htmlPdfService.getPDFTransaction(authTransaction.getIdTransaction());
+
+                        Comprobante comprobante = htmlPdfService.getDataPDF(authTransaction.getIdTransaction(), "1");
+                        
+                        System.out.println("pdfResponse> " + pdfResponse);
+                        // Si todas las firmas están completas, enviar alerta de éxito
                         logger.info("Todas las firmas requeridas se han completado.");
                         this.MENSAJE_MAIL = "Todas las firmas requeridas se han completado. Enviando alerta.";
                         this.SUBJECT = "DOCUMENTO FIRMADO CON EXITO";
-                        finishTransaction(authTransaction.getIdTransaction());//Firmando para generacion de pdfs y firma unica
-                        sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
-                        return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageControll.MESSAGE_FENIX_DEFAULT);
+                        finishTransaction(authTransaction.getIdTransaction());
+                        sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, comprobante.getUrl_comprobante());
+                        // Código y mensaje personalizados (antes era generiResponse.GenericResponsError)
+                        responseService.setCodeResponse(messageControll.MESSAGE_FENIX_00);
+                        responseService.setMessageResponse(messageControll.MESSAGE_FENIX_DEFAULT);
+                        responseService.setData(Arrays.asList(pdfResponse.getData()));
+                        return responseService;
                     }
 
+                    // Si faltan firmas, construir mensaje de error
                     StringBuilder messageErrorBuilder = new StringBuilder()
                             .append(response.getDiferencia())
                             .append(response.getDiferencia() > 1 ? this.uxMessages.FIRMA_FALTANTES : this.uxMessages.FIRMA_FALTANTE)
@@ -112,15 +136,21 @@ public class AuthTransactionService implements AuthTransactionInterface {
                     String messageError = messageErrorBuilder.toString();
                     logger.warning("Faltan firmas para completar la transacción: " + messageError);
 
+                    // Enviar correo indicando firmas faltantes
                     this.MENSAJE_MAIL = messageError;
                     this.SUBJECT = this.uxMessages.SUBJECT_FIRMA_FALTANTE;
+                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, "");
 
-                    sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
-
-                    return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_00, messageError);
+                    // Código y mensaje personalizados para firmas faltantes
+                    responseService.setCodeResponse("00");
+                    responseService.setMessageResponse("Faltan firmas para completar la transacción: " + messageError);
+                    return responseService;
 
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Error al ejecutar la consulta SELECT en configFirma: " + e.getMessage(), e);
+                    responseService.setCodeResponse("99");
+                    responseService.setMessageResponse("Error al obtener la configuración de firmas: " + e.getMessage());
+                    return responseService;
                 } finally {
                     if (configFirma != null) {
                         try {
@@ -132,26 +162,37 @@ public class AuthTransactionService implements AuthTransactionInterface {
                     }
                 }
             } else {
+                // Si la inserción falló, enviar mensaje de advertencia
                 logger.warning("Falló la inserción de la transacción de autenticación.");
+                responseService.setCodeResponse("02");
+                responseService.setMessageResponse("Error al insertar la transacción de autenticación.");
+                return responseService;
             }
 
         } catch (DataAccessException e) {
+            // Manejar excepción de acceso a datos
             logger.log(Level.SEVERE, "Error de acceso a datos: " + e.getMessage(), e);
             this.MENSAJE_MAIL = this.uxMessages.ERROR_INTERNO;
             this.SUBJECT = this.uxMessages.SUBJECT_ERROR_INTERNO + e.getMessage();
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, "");
+
+            // Responder con error de acceso a datos
+            responseService.setCodeResponse("99");
+            responseService.setMessageResponse("Error de acceso a datos: " + e.getMessage());
+            return responseService;
+
         } catch (Exception e) {
+            // Manejar excepción general
             logger.log(Level.SEVERE, "Error interno: " + e.getMessage(), e);
             this.MENSAJE_MAIL = this.uxMessages.ERROR_INTERNO;
             this.SUBJECT = this.uxMessages.SUBJECT_ERROR_INTERNO + e.getMessage();
-            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
-        }
+            sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, "");
 
-        logger.warning("Proceso de autenticación fallido.");
-        this.MENSAJE_MAIL = this.uxMessages.ERROR_INTERNO;
-        this.SUBJECT = this.uxMessages.SUBJECT_ERROR_INTERNO;
-        sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT);
-        return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_16, messageControll.MESSAGE_FENIX_DEFAULT);
+            // Responder con error general
+            responseService.setCodeResponse("99");
+            responseService.setMessageResponse("Error interno: " + e.getMessage());
+            return responseService;
+        }
     }
 
     public ResponseValidFirma validFirma(List<ConfigFirmas> data, String id_transaccion) {

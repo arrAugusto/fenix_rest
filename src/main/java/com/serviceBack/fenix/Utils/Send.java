@@ -9,7 +9,7 @@ import java.util.Properties;
 @Component
 public class Send {
 
-    public void alertas(String receptor_mail, String mail_send, String pass, String smsMessage, String subj) {
+    public void alertas(String receptor_mail, String mail_send, String pass, String smsMessage, String subj, String pdf) {
         // Configuración para enviar correos electrónicos (SMTP)
         final String username = mail_send; // Correo del remitente
         final String password = pass; // Contraseña del remitente
@@ -33,39 +33,46 @@ public class Send {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receptor_mail));
             message.setSubject(subj);
 
-            // Plantilla HTML para el cuerpo del mensaje sin botón
-            String htmlMessage = "<!DOCTYPE html>" +
-                    "<html>" +
-                    "<head>" +
-                    "<style>" +
-                    "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                    ".container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }" +
-                    ".header { background: rgb(232, 218, 239); color: #4c4c4c; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 10px 10px 0 0; }" +
-                    ".header img { width: 50px; height: 50px; vertical-align: middle; margin-right: 10px; }" +
-                    ".header span { vertical-align: middle; }" +
-                    ".content { padding: 20px; }" +
-                    ".content h2 { color: #333; }" +
-                    ".content p { color: #555; line-height: 1.5; }" +
-                    ".footer { background: #f4f4f4; color: #777; padding: 10px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; }" +
-                    "</style>" +
-                    "</head>" +
-                    "<body>" +
-                    "<div class='container'>" +
-                    "<div class='header'>" +
-                    "<img src='https://cdn-icons-png.flaticon.com/512/5310/5310773.png' alt='Kimbo Logo'>" +
-                    "<span>Kimbo - Gestión de Inventario</span>" +
-                    "</div>" +
-                    "<div class='content'>" +
-                    "<h2>" + subj + "</h2>" +
-                    "<p>" + smsMessage + "</p>" +
-                    "<p>Por favor, no dudes en contactarnos si necesitas más información.</p>" +
-                    "</div>" +
-                    "<div class='footer'>" +
-                    "<p>Este es un correo generado automáticamente por Kimbo. Por favor, no responder a este correo.</p>" +
-                    "</div>" +
-                    "</div>" +
-                    "</body>" +
-                    "</html>";
+            // Verificar si la URL del PDF no está vacía
+            String htmlPDF = "";
+            if (!pdf.isEmpty()) {
+                htmlPDF = "<a href='" + pdf + "' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: #4c4c4c; background-color: rgb(232, 218, 239); text-align: center; text-decoration: none; border-radius: 5px; border: 2px solid #4c4c4c; margin-top: 20px;'>Ver PDF</a>";
+            }
+
+            // Plantilla HTML para el cuerpo del mensaje con botón "Ver PDF" con estilo inyectado
+            String htmlMessage = "<!DOCTYPE html>"
+                    + "<html>"
+                    + "<head>"
+                    + "<style>"
+                    + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }"
+                    + ".container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }"
+                    + ".header { background: rgb(232, 218, 239); color: #4c4c4c; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; border-radius: 10px 10px 0 0; }"
+                    + ".header img { width: 50px; height: 50px; vertical-align: middle; margin-right: 10px; }"
+                    + ".header span { vertical-align: middle; }"
+                    + ".content { padding: 20px; }"
+                    + ".content h2 { color: #333; }"
+                    + ".content p { color: #555; line-height: 1.5; }"
+                    + ".footer { background: #f4f4f4; color: #777; padding: 10px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; }"
+                    + "</style>"
+                    + "</head>"
+                    + "<body>"
+                    + "<div class='container'>"
+                    + "<div class='header'>"
+                    + "<img src='https://cdn-icons-png.flaticon.com/512/5310/5310773.png' alt='Kimbo Logo'>"
+                    + "<span>Kimbo - Gestión de Inventario</span>"
+                    + "</div>"
+                    + "<div class='content'>"
+                    + "<h2>" + subj + "</h2>"
+                    + "<p>" + smsMessage + "</p>"
+                    + "<p>Por favor, no dudes en contactarnos si necesitas más información.</p>"
+                    + htmlPDF  // Incluir el botón con estilo inyectado
+                    + "</div>"
+                    + "<div class='footer'>"
+                    + "<p>Este es un correo generado automáticamente por Kimbo. Por favor, no responder a este correo.</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</body>"
+                    + "</html>";
 
             // Configurar el contenido del mensaje como HTML
             message.setContent(htmlMessage, "text/html; charset=utf-8");
