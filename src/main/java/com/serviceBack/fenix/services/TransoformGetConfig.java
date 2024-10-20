@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.models.Comprobante;
 import com.serviceBack.fenix.models.ConfigFirmas;
 import com.serviceBack.fenix.models.pdf.PDF_Income_Title;
 import java.sql.ResultSet;
@@ -108,4 +109,38 @@ public class TransoformGetConfig {
 
         return pdfTitles; // Retornar la lista de objetos PDF_Income_Title
     }
+
+    public Comprobante transformDataValidTransaction(ResultSet rs) {
+        Comprobante comprobante = new Comprobante();
+        logger.info("Iniciando transformación de datos del ResultSet en ConfigFirmas.");
+
+        if (rs == null) {
+            logger.warning("ResultSet es nulo, devolviendo Comprobante vacío.");
+            return comprobante;  // Devuelve un objeto Comprobante vacío si el ResultSet es nulo
+        }
+
+        try {
+            if (rs.next()) { // Procesar solo un registro si el ResultSet tiene datos
+                comprobante.setIdTransaction(rs.getString("id_transaccion"));
+                comprobante.setValidadorComprobante(rs.getString("validador_comprobante"));
+                comprobante.setFecha_creacion(rs.getString("fecha_creacion"));
+                comprobante.setComprobante(rs.getString("comprobante_impresion"));
+            } else {
+                logger.warning("ResultSet no contiene datos.");
+            }
+        } catch (SQLException e) {
+            logger.severe("Error al procesar ResultSet: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();  // Asegura que el ResultSet se cierra para evitar problemas de memoria
+                }
+            } catch (SQLException e) {
+                logger.severe("Error al cerrar el ResultSet: " + e.getMessage());
+            }
+        }
+
+        return comprobante;  // Retorna el objeto comprobante
+    }
+
 }

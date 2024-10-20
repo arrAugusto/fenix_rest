@@ -35,7 +35,7 @@ public class HtmlPdfController {
      *
      * @return ResponseEntity con el archivo PDF.
      */
-    @GetMapping(value = "/html/{param}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/create_PDF/{param}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> downloadHtmlPdf(
             @PathVariable("param") @Valid @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El parámetro solo debe contener letras y números") String id_transaction) {
         byte[] pdfData = htmlPdfService.generatePdfFromHtml(id_transaction);

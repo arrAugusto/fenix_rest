@@ -88,6 +88,8 @@ public class StoredProcedures {
 
     public final String STORED_PROCEDURE_INSERT_COMPROBANTE_TRANSACCION = "CALL INSERT_COMPROBANTE_TRANSACCION(?,?,?)";//Guardar comprobante de transaccion
 
+    public final String STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE = "CALL GET_CHECK_VALID_COMPROBANTE(?,?)";//getTransacction comprobante
+
     //REGISTRAR NUEVO OTP CODIGO
     public final String STORED_PROCEDURE_CALL_INSERT_OTP_CODE = "CALL INSERT_OTP_CODE_INGRESO";
 

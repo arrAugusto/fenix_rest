@@ -3,6 +3,7 @@ package com.serviceBack.fenix.services;
 import com.serviceBack.fenix.Utils.CreateToPDFWithPDF;
 import com.serviceBack.fenix.Utils.GenericSQL;
 import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
+import com.serviceBack.fenix.models.Comprobante;
 import com.serviceBack.fenix.models.ConfigFirmas;
 import com.serviceBack.fenix.models.pdf.PDF_Income_Title;
 import commons.Const_env;
@@ -36,8 +37,33 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
 
     @Override
     public byte[] generatePdfFromHtml(String id_transaction) {
+
         ResultSet resultSet = null;
         CreateToPDFWithPDF createPDF = new CreateToPDFWithPDF(); // Crear instancia de la clase de PDF
+
+        TransoformGetConfig transformConfig = new TransoformGetConfig();
+        try {
+            Object[] paramsCheck = {
+                id_transaction,
+                "1"
+            };
+
+            resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE, paramsCheck);
+
+            Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+            if (valid != null) {
+                System.out.println("valid.getIdTransaction()> " + valid.getIdTransaction());
+                System.out.println("valid.getComprobante()> " + valid.getComprobante());
+                // Generar el PDF utilizando la lista completa de PDF_Income_Title
+                byte[] pdfData = createPDF.createPDFWithHTML(valid.getComprobante());
+                // Devolver el PDF generado en formato byte[]
+                System.out.println("PDF ya existe....");
+                return pdfData;
+            }
+
+        } catch (Exception e) {
+
+        }
         Object[] paramsConfig = {
             const_env.CALL_INGRESO_NORMAL
         };
@@ -46,7 +72,6 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             logger.info("Ejecutando consulta para obtener la configuración de firmas.");
             resultSet = genericSQL.select(stored.STORED_PROCEDURE_CALL_GET_CONFIG_FIRMAS, paramsConfig);
 
-            TransoformGetConfig transformConfig = new TransoformGetConfig();
             List< ConfigFirmas> data = transformConfig.transformData(resultSet);
             logger.info("Se obtuvo la configuración de firmas: " + data.size() + " registros encontrados.");
             System.out.println(data.toString());
@@ -92,7 +117,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             // Verificar si la lista de pdfIncome no está vacía y generar el PDF
             if (!pdfIncome.isEmpty()) {
                 // Generar el PDF utilizando la lista completa de PDF_Income_Title
-                byte[] pdfData = createPDF.createToPDFWithPDF(pdfIncome, id_transaction, genericSQL, stored);
+                byte[] pdfData = createPDF.createToNewPDF(pdfIncome, id_transaction, genericSQL, stored);
 
                 // Devolver el PDF generado en formato byte[]
                 return pdfData;
