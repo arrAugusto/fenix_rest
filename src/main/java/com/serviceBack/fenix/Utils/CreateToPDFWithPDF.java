@@ -145,9 +145,57 @@ public class CreateToPDFWithPDF {
     }
 
     public byte[] createPDFWithHTML(String html) {
+        if (html == null || html.isEmpty()) {
+            // Si el HTML es nulo o vacío, genera un PDF con mensaje de error
+            return generateErrorPDF("Error - Contenido HTML vacío", "El contenido HTML proporcionado está vacío o es nulo.");
+        }
+
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, null); // Usar directamente el HTML que viene como parámetro
+            builder.toStream(outputStream);
+            builder.run();
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Retornar un PDF con mensaje de error al ocurrir una IOException
+            return generateErrorPDF("Error de E/S", "Se produjo un error de entrada/salida al generar el PDF: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Retornar un PDF con mensaje de error para cualquier otra excepción
+            return generateErrorPDF("Error desconocido", "Se produjo un error inesperado al generar el PDF: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Genera un PDF con un mensaje de error.
+     *
+     * @param tituloError El título del mensaje de error.
+     * @param mensajeError El contenido del mensaje de error.
+     * @return Un array de bytes que contiene el PDF con el error.
+     */
+    public byte[] generateErrorPDF(String tituloError, String mensajeError) {
+        StringBuilder htmlContent = new StringBuilder();
+
+        // Inicia el documento HTML con estilos CSS para mostrar el error
+        htmlContent.append("<html><head><meta charset='UTF-8' /><style>")
+                .append("body{font-family:Arial,sans-serif;margin:0;padding:50px;text-align:center;background-color:#f8f8f8;}")
+                .append(".container{padding:20px;background:#ffffff;border-radius:8px;box-shadow:0px 0px 10px rgba(0,0,0,0.1);}")
+                .append("h1{color:#e74c3c;}")
+                .append("p{color:#555;}")
+                .append("</style></head><body><div class='container'>")
+                // Agrega el título del error
+                .append("<h1>").append(tituloError).append("</h1>")
+                // Agrega el mensaje de error
+                .append("<p>").append(mensajeError).append("</p>")
+                .append("<p>Por favor, verifica la información e intenta nuevamente.</p>")
+                // Finaliza el contenido HTML
+                .append("</div></body></html>");
+
+        // Genera el PDF con el contenido HTML
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.withHtmlContent(htmlContent.toString(), null);
             builder.toStream(outputStream);
             builder.run();
             return outputStream.toByteArray();

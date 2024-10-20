@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.Utils.DomainsEnv;
 import com.serviceBack.fenix.models.Comprobante;
 import com.serviceBack.fenix.models.ConfigFirmas;
 import com.serviceBack.fenix.models.pdf.PDF_Income_Title;
@@ -20,9 +21,9 @@ import java.util.logging.Logger;
  * @author agr12
  */
 public class TransoformGetConfig {
-
+    
     private static final Logger logger = Logger.getLogger(AuthTransactionService.class.getName());
-
+    
     public List<ConfigFirmas> transformData(ResultSet rs) {
         logger.info("Iniciando transformación de datos del ResultSet en ConfigFirmas.");
         List<ConfigFirmas> firmasList = new ArrayList<>();
@@ -30,7 +31,7 @@ public class TransoformGetConfig {
             logger.warning("ResultSet es nulo, devolviendo lista vacía.");
             return firmasList; // Retornar lista vacía si ResultSet es null
         }
-
+        
         try {
             while (rs.next()) { // Iterar a través del ResultSet
                 ConfigFirmas config = new ConfigFirmas();
@@ -41,7 +42,7 @@ public class TransoformGetConfig {
                 config.setSql_required(rs.getString("sql_required"));
                 config.setInfo_print(rs.getString("info_print"));
                 config.setTipo_transaccional(rs.getString("tipo_transaccional"));
-
+                
                 firmasList.add(config); // Agregar cada objeto a la lista
             }
             logger.info("Transformación de datos completada con " + firmasList.size() + " registros.");
@@ -57,13 +58,13 @@ public class TransoformGetConfig {
                 logger.log(Level.SEVERE, "Error al cerrar ResultSet en transformData: " + e.getMessage(), e);
             }
         }
-
+        
         return firmasList; // Retornar la lista con los resultados
     }
-
+    
     public List<PDF_Income_Title> transformDataConfig(ResultSet rs, String titleTransaction) {
         List<PDF_Income_Title> pdfTitles = new ArrayList<>();
-
+        
         if (rs == null) {
             logger.severe("El ResultSet es nulo. No se puede procesar.");
             return pdfTitles; // Retorna una lista vacía o maneja la situación de forma adecuada
@@ -102,29 +103,31 @@ public class TransoformGetConfig {
                 // Agregar el PDF_Income_Title a la lista de resultados
                 pdfTitles.add(pdfTitle);
             }
-
+            
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error al procesar el ResultSet", e);
         }
-
+        
         return pdfTitles; // Retornar la lista de objetos PDF_Income_Title
     }
-
+    
     public Comprobante transformDataValidTransaction(ResultSet rs) {
+        DomainsEnv domain = new DomainsEnv();        
         Comprobante comprobante = new Comprobante();
         logger.info("Iniciando transformación de datos del ResultSet en ConfigFirmas.");
-
+        
         if (rs == null) {
             logger.warning("ResultSet es nulo, devolviendo Comprobante vacío.");
             return comprobante;  // Devuelve un objeto Comprobante vacío si el ResultSet es nulo
         }
-
+        
         try {
             if (rs.next()) { // Procesar solo un registro si el ResultSet tiene datos
                 comprobante.setIdTransaction(rs.getString("id_transaccion"));
                 comprobante.setValidadorComprobante(rs.getString("validador_comprobante"));
                 comprobante.setFecha_creacion(rs.getString("fecha_creacion"));
                 comprobante.setComprobante(rs.getString("comprobante_impresion"));
+                comprobante.setUrl_comprobante(domain.getBaseUrl().concat("/fenix_service/api/pdf/view_PDF/").concat(rs.getString("validador_comprobante")));
             } else {
                 logger.warning("ResultSet no contiene datos.");
             }
@@ -139,8 +142,8 @@ public class TransoformGetConfig {
                 logger.severe("Error al cerrar el ResultSet: " + e.getMessage());
             }
         }
-
+        
         return comprobante;  // Retorna el objeto comprobante
     }
-
+    
 }

@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
@@ -18,6 +19,8 @@ public class Comprobante {
     private String idTransaction;
     private String validadorComprobante;
     private String fecha_creacion;
+    private String url_comprobante;
+    @JsonIgnore  // Ignorar este campo durante la serialización/deserialización
     private String comprobante;
-    
+
 }

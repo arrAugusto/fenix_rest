@@ -4,6 +4,7 @@
  */
 package com.serviceBack.fenix.controllers;
 
+import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -35,16 +36,16 @@ public class HtmlPdfController {
      *
      * @return ResponseEntity con el archivo PDF.
      */
-    @GetMapping(value = "/create_PDF/{param}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/get_pdf/{param}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> downloadHtmlPdf(
-            @PathVariable("param") @Valid @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "El parámetro solo debe contener letras y números") String id_transaction) {
-        byte[] pdfData = htmlPdfService.generatePdfFromHtml(id_transaction);
-
+            @PathVariable("param") @Valid @Pattern(regexp = "^[a-zA-Z0-9\\-_]+$", message = "El parámetro solo debe contener letras y números") String validadorComprobante) {
+        byte[] pdfData = htmlPdfService.view_pdfGenerated(validadorComprobante);
+        
         if (pdfData != null) {
             ByteArrayInputStream bis = new ByteArrayInputStream(pdfData);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=" + id_transaction + ".pdf");
+            headers.add("Content-Disposition", "inline; filename=" + validadorComprobante + ".pdf");
 
             return ResponseEntity
                     .ok()
@@ -54,5 +55,10 @@ public class HtmlPdfController {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/create_PDF/{idTransaccion}")//Iniciar una nueva session de usuario
+    public ResponseService getItemsIng(@PathVariable @Valid @Pattern(regexp = "^[0-9]+$", message = "El campo debe no contener caracteres especiales") String idTransaccion) {
+        return htmlPdfService.getPDFTransaction(idTransaccion);
     }
 }

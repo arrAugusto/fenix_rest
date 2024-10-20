@@ -1,7 +1,9 @@
 package com.serviceBack.fenix.services;
 
 import com.serviceBack.fenix.Utils.CreateToPDFWithPDF;
+import com.serviceBack.fenix.Utils.DomainsEnv;
 import com.serviceBack.fenix.Utils.GenericSQL;
+import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
 import com.serviceBack.fenix.models.Comprobante;
 import com.serviceBack.fenix.models.ConfigFirmas;
@@ -35,9 +37,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
         this.jdbcTemplate = new JdbcTemplate();
     }
 
-    @Override
     public byte[] generatePdfFromHtml(String id_transaction) {
-
         ResultSet resultSet = null;
         CreateToPDFWithPDF createPDF = new CreateToPDFWithPDF(); // Crear instancia de la clase de PDF
 
@@ -52,12 +52,11 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
 
             Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
             if (valid != null) {
-                System.out.println("valid.getIdTransaction()> " + valid.getIdTransaction());
-                System.out.println("valid.getComprobante()> " + valid.getComprobante());
+                System.out.println("PDF ya existe....");
                 // Generar el PDF utilizando la lista completa de PDF_Income_Title
                 byte[] pdfData = createPDF.createPDFWithHTML(valid.getComprobante());
+
                 // Devolver el PDF generado en formato byte[]
-                System.out.println("PDF ya existe....");
                 return pdfData;
             }
 
@@ -139,5 +138,70 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
                 }
             }
         }
+    }
+
+    @Override
+    public ResponseService<Comprobante> getPDFTransaction(String idTransaccion) {
+        ResponseService<Comprobante> response = new ResponseService<>(); // Asegúrate de tipar el ResponseService correctamente
+        generatePdfFromHtml(idTransaccion);
+        TransoformGetConfig transformConfig = new TransoformGetConfig();
+
+        try {
+            Object[] paramsCheck = {
+                idTransaccion,
+                "1"
+            };
+
+            ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE, paramsCheck);
+
+            // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
+            Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+
+            if (valid != null) {
+                // Devolver el PDF generado en formato byte[] (si es necesario)
+                response.setCodeResponse("00");  // Código de éxito
+                response.setMessageResponse("ÉXITO");  // Mensaje de éxito
+                response.setData(Arrays.asList(valid));  // Agregar el comprobante a la lista de data
+                System.out.println("PDF ya existe....");
+            } else {
+                // Si no hay comprobante válido
+                response.setCodeResponse("01");
+                response.setMessageResponse("No se encontró un comprobante válido para la transacción proporcionada.");
+            }
+
+        } catch (Exception e) {
+            // Manejar la excepción adecuadamente
+            response.setCodeResponse("99");
+            response.setMessageResponse("Error al procesar la transacción: " + e.getMessage());
+            e.printStackTrace();  // Opcional: para ver el error completo en la consola
+        }
+
+        return response;
+    }
+
+    @Override
+    public byte[] view_pdfGenerated(String validator) {
+        ResponseService<Comprobante> response = new ResponseService<>(); // Asegúrate de tipar el ResponseService correctamente
+        TransoformGetConfig transformConfig = new TransoformGetConfig();
+
+        try {
+            Object[] paramsCheck = {
+                validator,
+                "1"
+            };
+
+            ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_PDF_COMPROBANTE, paramsCheck);
+
+            // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
+            Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+            return generatePdfFromHtml(valid.getIdTransaction());
+
+        } catch (Exception e) {
+            // Manejar la excepción adecuadamente
+            response.setCodeResponse("99");
+            response.setMessageResponse("Error al procesar la transacción: " + e.getMessage());
+            e.printStackTrace();  // Opcional: para ver el error completo en la consola
+        }
+        return null;
     }
 }

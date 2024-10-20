@@ -4,6 +4,8 @@
  */
 package com.serviceBack.fenix.interfaces;
 
+import com.serviceBack.fenix.Utils.ResponseService;
+
 /**
  * Interfaz para la generación de PDFs a partir de HTML.
  */
@@ -11,8 +13,10 @@ public interface HtmlPdfInterfaces {
 
     /**
      * Genera un PDF a partir de contenido HTML.
-     * 
+     *
      * @return Un array de bytes que contiene el PDF generado.
      */
-    byte[] generatePdfFromHtml(String id_transaction);
+    public ResponseService getPDFTransaction(String idTransaccion);
+    
+    public byte[] view_pdfGenerated(String validator);
 }
