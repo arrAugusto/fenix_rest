@@ -24,19 +24,7 @@ public class CreateToPDFWithPDF {
         StringBuilder htmlContent = new StringBuilder();
 
         // Inicia el documento HTML con estilos CSS en línea
-        htmlContent.append("<html><head><meta charset='UTF-8' /><style>")
-                .append("body{font-family:Arial,sans-serif;margin:0;padding:5px 10px;}")
-                .append(".container{padding:5px;background:#ffffff;border-radius:8px;position:relative;}")
-                .append(".header{text-align:center;margin-bottom:3px;}")
-                .append(".invoice-title{font-size:18px;text-transform:uppercase;margin-top:10px;margin-bottom:3px;}")
-                .append(".info-container{padding:8px;border:1px solid #ddd;margin-top:5px;}")
-                .append(".info-item{margin-bottom:4px;}")
-                .append(".info-item span{font-weight:bold;}")
-                .append(".table{width:100%;border-collapse:collapse;margin-top:5px;font-size:11px;border:1px solid #ddd;}")
-                .append(".table th,.table td{padding:6px;border:1px solid #ddd;text-align:left;}")
-                .append(".table tbody tr{margin-bottom:4px;}")
-                .append(".invoice-summary{text-align:right;margin-top:5px;font-weight:bold;font-size:13px;}")
-                .append(".footer{margin-top:10px;text-align:center;color:#aaa;font-size:9px;}</style></head><body><div class='container'>");
+        htmlContent.append(headPDF());
 
         // Información de cabecera
         htmlContent.append("<div style='text-align: right; line-height: 1.5; margin-left: 10px;'>")
@@ -145,11 +133,6 @@ public class CreateToPDFWithPDF {
     }
 
     public byte[] createPDFWithHTML(String html) {
-        if (html == null || html.isEmpty()) {
-            // Si el HTML es nulo o vacío, genera un PDF con mensaje de error
-            return generateErrorPDF("Error - Contenido HTML vacío", "El contenido HTML proporcionado está vacío o es nulo.");
-        }
-
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, null); // Usar directamente el HTML que viene como parámetro
@@ -158,12 +141,7 @@ public class CreateToPDFWithPDF {
             return outputStream.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
-            // Retornar un PDF con mensaje de error al ocurrir una IOException
-            return generateErrorPDF("Error de E/S", "Se produjo un error de entrada/salida al generar el PDF: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Retornar un PDF con mensaje de error para cualquier otra excepción
-            return generateErrorPDF("Error desconocido", "Se produjo un error inesperado al generar el PDF: " + e.getMessage());
+            return null;
         }
     }
 
@@ -175,34 +153,58 @@ public class CreateToPDFWithPDF {
      * @return Un array de bytes que contiene el PDF con el error.
      */
     public byte[] generateErrorPDF(String tituloError, String mensajeError) {
-        StringBuilder htmlContent = new StringBuilder();
+        // Construcción del contenido HTML
+        String htmlContent = "<html><head><meta charset='UTF-8' /><style>"
+                + "body{font-family:Arial,sans-serif;margin:0;padding:50px;text-align:center;background-color:#f8f8f8;}"
+                + ".container{padding:20px;background:#ffffff;border-radius:8px;}"
+                + "h1{color:#e74c3c;}"
+                + "p{color:#555;}"
+                + "</style></head><body><div class='container'>"
+                + "<h1>" + tituloError + "</h1>"
+                + "<p>" + mensajeError + "</p>"
+                + "<p>Por favor, verifica la información e intenta nuevamente.</p>"
+                + "</div></body></html>";
 
-        // Inicia el documento HTML con estilos CSS para mostrar el error
-        htmlContent.append("<html><head><meta charset='UTF-8' /><style>")
-                .append("body{font-family:Arial,sans-serif;margin:0;padding:50px;text-align:center;background-color:#f8f8f8;}")
-                .append(".container{padding:20px;background:#ffffff;border-radius:8px;box-shadow:0px 0px 10px rgba(0,0,0,0.1);}")
-                .append("h1{color:#e74c3c;}")
-                .append("p{color:#555;}")
-                .append("</style></head><body><div class='container'>")
-                // Agrega el título del error
-                .append("<h1>").append(tituloError).append("</h1>")
-                // Agrega el mensaje de error
-                .append("<p>").append(mensajeError).append("</p>")
-                .append("<p>Por favor, verifica la información e intenta nuevamente.</p>")
-                // Finaliza el contenido HTML
-                .append("</div></body></html>");
-
-        // Genera el PDF con el contenido HTML
+        // Genera el PDF a partir del contenido HTML
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.withHtmlContent(htmlContent.toString(), null);
-            builder.toStream(outputStream);
-            builder.run();
+
+            // Validación del HTML para depurar
+            System.out.println("Generando PDF con el siguiente HTML:\n" + htmlContent);
+
+            // Configuración del builder
+            builder.withHtmlContent(htmlContent, null);  // HTML que se convertirá a PDF
+            builder.toStream(outputStream);              // Salida del PDF en un array de bytes
+            builder.run();                               // Ejecuta la construcción del PDF
+
+            // Retorna los bytes generados del PDF
             return outputStream.toByteArray();
+
         } catch (IOException e) {
+            // Manejo de errores de entrada/salida
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            // Manejo de cualquier otro tipo de excepción
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String headPDF() {
+        return "<html><head><meta charset='UTF-8' /><style>"
+                + "body{font-family:Arial,sans-serif;margin:0;padding:5px 10px;}"
+                + ".container{padding:5px;background:#ffffff;border-radius:8px;position:relative;}"
+                + ".header{text-align:center;margin-bottom:3px;}"
+                + ".invoice-title{font-size:18px;text-transform:uppercase;margin-top:10px;margin-bottom:3px;}"
+                + ".info-container{padding:8px;border:1px solid #ddd;margin-top:5px;}"
+                + ".info-item{margin-bottom:4px;}"
+                + ".info-item span{font-weight:bold;}"
+                + ".table{width:100%;border-collapse:collapse;margin-top:5px;font-size:11px;border:1px solid #ddd;}"
+                + ".table th,.table td{padding:6px;border:1px solid #ddd;text-align:left;}"
+                + ".table tbody tr{margin-bottom:4px;}"
+                + ".invoice-summary{text-align:right;margin-top:5px;font-weight:bold;font-size:13px;}"
+                + ".footer{margin-top:10px;text-align:center;color:#aaa;font-size:9px;}</style></head><body><div class='container'>";
     }
 
 }

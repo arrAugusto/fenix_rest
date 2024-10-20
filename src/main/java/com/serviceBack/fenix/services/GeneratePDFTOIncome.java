@@ -143,26 +143,25 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
     @Override
     public ResponseService<Comprobante> getPDFTransaction(String idTransaccion) {
         ResponseService<Comprobante> response = new ResponseService<>(); // Asegúrate de tipar el ResponseService correctamente
-        generatePdfFromHtml(idTransaccion);
         TransoformGetConfig transformConfig = new TransoformGetConfig();
 
         try {
+            generatePdfFromHtml(idTransaccion);
+
             Object[] paramsCheck = {
                 idTransaccion,
                 "1"
             };
-
+            System.out.println("stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE> " + stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE);
             ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_CHECK_VALID_COMPROBANTE, paramsCheck);
 
             // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
             Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
-
             if (valid != null) {
                 // Devolver el PDF generado en formato byte[] (si es necesario)
                 response.setCodeResponse("00");  // Código de éxito
                 response.setMessageResponse("ÉXITO");  // Mensaje de éxito
                 response.setData(Arrays.asList(valid));  // Agregar el comprobante a la lista de data
-                System.out.println("PDF ya existe....");
             } else {
                 // Si no hay comprobante válido
                 response.setCodeResponse("01");
@@ -181,27 +180,52 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
 
     @Override
     public byte[] view_pdfGenerated(String validator) {
-        ResponseService<Comprobante> response = new ResponseService<>(); // Asegúrate de tipar el ResponseService correctamente
+        ResponseService<Comprobante> response = new ResponseService<>();
         TransoformGetConfig transformConfig = new TransoformGetConfig();
+        CreateToPDFWithPDF errorsPDF = new CreateToPDFWithPDF();
 
         try {
+            // Parámetros para la consulta
             Object[] paramsCheck = {
                 validator,
                 "1"
             };
 
-            ResultSet resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_PDF_COMPROBANTE, paramsCheck);
+            // Ejecutar la consulta en la base de datos
+            ResultSet resultSet = null;
+            try {
+                resultSet = genericSQL.select(stored.STORED_PROCEDURE_GET_PDF_COMPROBANTE, paramsCheck);
+                System.out.println("resultSet> " + resultSet);
 
-            // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
-            Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
-            return generatePdfFromHtml(valid.getIdTransaction());
+                // Transformar los datos obtenidos del ResultSet a un objeto Comprobante
+                Comprobante valid = transformConfig.transformDataValidTransaction(resultSet);
+                if (valid.getIdTransaction() == null) {
+                    return errorsPDF.generateErrorPDF("Error al generar PDF", "No se pudo generar el PDF para la transacción solicitada. \n" + validator);
+                }
+
+                // Generar el PDF con los datos de la transacción válida
+                return generatePdfFromHtml(valid.getIdTransaction());
+
+            } finally {
+                // Asegurar que el ResultSet se cierra adecuadamente
+                if (resultSet != null) {
+                    try {
+                        resultSet.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
         } catch (Exception e) {
             // Manejar la excepción adecuadamente
             response.setCodeResponse("99");
             response.setMessageResponse("Error al procesar la transacción: " + e.getMessage());
-            e.printStackTrace();  // Opcional: para ver el error completo en la consola
+            e.printStackTrace();  // Para ver el error completo en la consola
+
+            // Retornar PDF con mensaje de error
+            return errorsPDF.generateErrorPDF("Error al generar PDF", "No se pudo generar el PDF para la transacción solicitada.");
         }
-        return null;
     }
+
 }
