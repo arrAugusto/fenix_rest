@@ -8,10 +8,13 @@ import com.serviceBack.fenix.models.pdf.PDF_Income_Title;
 import commons.Const_env;
 import commons.StoredProcedures;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +23,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
     private final Const_env const_env;
     private final GenericSQL genericSQL;
     private final StoredProcedures stored;
+    private final JdbcTemplate jdbcTemplate;
     private static final Logger logger = Logger.getLogger(AuthTransactionService.class.getName());
 
     @Autowired
@@ -27,54 +31,68 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
         this.genericSQL = genericSQL;
         this.const_env = new Const_env();
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor        
+        this.jdbcTemplate = new JdbcTemplate();
     }
 
     @Override
     public byte[] generatePdfFromHtml(String id_transaction) {
         ResultSet resultSet = null;
         CreateToPDFWithPDF createPDF = new CreateToPDFWithPDF(); // Crear instancia de la clase de PDF
-        Object[] paramsConfig = {const_env.CALL_INGRESO_NORMAL};
+        Object[] paramsConfig = {
+            const_env.CALL_INGRESO_NORMAL
+        };
 
         try {
             logger.info("Ejecutando consulta para obtener la configuración de firmas.");
             resultSet = genericSQL.select(stored.STORED_PROCEDURE_CALL_GET_CONFIG_FIRMAS, paramsConfig);
 
             TransoformGetConfig transformConfig = new TransoformGetConfig();
-            List<ConfigFirmas> data = transformConfig.transformData(resultSet);
+            List< ConfigFirmas> data = transformConfig.transformData(resultSet);
             logger.info("Se obtuvo la configuración de firmas: " + data.size() + " registros encontrados.");
-
-            Object[] param_id_transaction = {id_transaction};
-            List<PDF_Income_Title> pdfIncome = new ArrayList<>();  // Inicializar la lista
+            System.out.println(data.toString());
+            Object[] param_id_transaction = {
+                id_transaction
+            };
+            List< PDF_Income_Title> pdfIncome = new ArrayList<>(); // Inicializar la lista
 
             for (ConfigFirmas configFirma : data) {
-                System.out.println("configFirma.getSql_required()> "+configFirma.getSql_required());
-                ResultSet resultSetConfig = genericSQL.select(configFirma.getSql_required(), param_id_transaction);
+                String sqlQuery = configFirma.getSql_required();
+                // Verificar si la consulta SQL está vacía o nula
+                if (sqlQuery == null || sqlQuery.trim().isEmpty()) {
+                    logger.warning("La consulta SQL está vacía o nula para la configuración de firmas: " + configFirma.toString());
+                    continue;
+
+                }
+
+                // Imprimir consulta y parámetros para depuración
+                System.out.println("Ejecutando consulta: " + sqlQuery);
+                System.out.println("Parámetros de la consulta: " + Arrays.toString(param_id_transaction));
+
+                // Ejecutar la consulta SQL
+                ResultSet resultSetConfig = genericSQL.select(sqlQuery, param_id_transaction);
 
                 if (resultSetConfig == null) {
-                    logger.warning("El ResultSet para la consulta " + configFirma.getSql_required() + " es nulo.");
+                    logger.warning("El ResultSet para la consulta " + sqlQuery + " es nulo.");
                     continue;
                 }
 
+                // Verificar si el ResultSet tiene datos
                 if (!resultSetConfig.isBeforeFirst()) {
-                    logger.warning("El ResultSet para la consulta " + configFirma.getSql_required() + " está vacío.");
+                    logger.warning("El ResultSet para la consulta " + sqlQuery + " está vacío.");
                     resultSetConfig.close(); // Cerrar el ResultSet vacío
                     continue;
                 }
 
-                // Transformar datos de acuerdo al ResultSet
-                List<PDF_Income_Title> pdfIncomeList = transformConfig.transformDataConfig(resultSetConfig, configFirma.getInfo_print());
-                System.out.println(pdfIncomeList.toString());
-                // Agregar los nuevos datos transformados a la lista pdfIncome
+                // Procesar el ResultSet
+                List< PDF_Income_Title> pdfIncomeList = transformConfig.transformDataConfig(resultSetConfig, configFirma.getInfo_print());
                 pdfIncome.addAll(pdfIncomeList);
-
-                // Cerrar el ResultSet después de procesarlo
                 resultSetConfig.close();
             }
 
             // Verificar si la lista de pdfIncome no está vacía y generar el PDF
             if (!pdfIncome.isEmpty()) {
                 // Generar el PDF utilizando la lista completa de PDF_Income_Title
-                byte[] pdfData = createPDF.createToPDFWithPDF(pdfIncome);
+                byte[] pdfData = createPDF.createToPDFWithPDF(pdfIncome, id_transaction, genericSQL, stored);
 
                 // Devolver el PDF generado en formato byte[]
                 return pdfData;
@@ -91,7 +109,7 @@ public class GeneratePDFTOIncome implements HtmlPdfInterfaces {
             if (resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     logger.severe("Error al cerrar el ResultSet: " + e.getMessage());
                 }
             }
