@@ -5,7 +5,7 @@
 package com.serviceBack.fenix.controllers;
 
 import com.serviceBack.fenix.Utils.ResponseService;
-import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
+import com.serviceBack.fenix.interfaces.AuthTransactionInterfaceSing;
 import com.serviceBack.fenix.models.AuthTransaction;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Auth_transactionController {
 
     @Autowired
-    private AuthTransactionInterface service;
+    AuthTransactionInterfaceSing service;
 
     @PostMapping("/auth_firma")//Iniciar una nueva session de usuario
     public ResponseService createIngreso(@RequestBody @Valid AuthTransaction authTransaction) {

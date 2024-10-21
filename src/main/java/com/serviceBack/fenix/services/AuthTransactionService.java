@@ -4,6 +4,7 @@ import com.serviceBack.fenix.Utils.GenericSQL;
 import com.serviceBack.fenix.Utils.ResponseService;
 import com.serviceBack.fenix.Utils.SecureUniqueCodeGenerator;
 import com.serviceBack.fenix.Utils.Send;
+import com.serviceBack.fenix.interfaces.AuthTransactionInterfaceSing;
 import com.serviceBack.fenix.models.AuthTransaction;
 import com.serviceBack.fenix.models.ConfigFirmas;
 import com.serviceBack.fenix.models.ResponseValidFirma;
@@ -28,13 +29,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
 
 /**
  * Servicio para manejar las transacciones de autenticación.
  */
 @Service
-public class AuthTransactionService implements AuthTransactionInterface {
+public class AuthTransactionService implements AuthTransactionInterfaceSing {
 
     private String MENSAJE_MAIL = "";
     private String SUBJECT = "";
