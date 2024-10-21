@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
 import com.serviceBack.fenix.interfaces.HtmlPdfInterfaces;
 import com.serviceBack.fenix.models.Comprobante;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +28,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import com.serviceBack.fenix.interfaces.AuthTransactionInterface;
 
 /**
  * Servicio para manejar las transacciones de autenticación.
