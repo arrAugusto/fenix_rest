@@ -88,7 +88,11 @@ public class AuthTransactionService implements AuthTransactionInterface {
 
             // Ejecutar la inserción en la base de datos
             logger.info("Ejecutando inserción en la base de datos para la transacción.");
+
+            // Guardar el resultado de checkTransaction para evitar múltiples llamadas
+
             boolean isInserted = genericSQL.insert(stored.STORED_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION, params);
+
 
             if (isInserted) {
                 logger.info("¡Transacción de autenticación insertada con éxito!");
@@ -112,7 +116,7 @@ public class AuthTransactionService implements AuthTransactionInterface {
                         ResponseService pdfResponse = htmlPdfService.getPDFTransaction(authTransaction.getIdTransaction());
 
                         Comprobante comprobante = htmlPdfService.getDataPDF(authTransaction.getIdTransaction(), "1");
-                        
+
                         System.out.println("pdfResponse> " + pdfResponse);
                         // Si todas las firmas están completas, enviar alerta de éxito
                         logger.info("Todas las firmas requeridas se han completado.");
@@ -251,11 +255,23 @@ public class AuthTransactionService implements AuthTransactionInterface {
             // Generar el hash a partir de idTransaccion y fechaFinalizacion
             byte[] hashFirma = generateHash(idTransaccion, fechaFinalizacion.toString());
 
-            // Guardar el hash en la base de datos en la tabla transaction_signature
-            saveTransactionSignature(idTransaccion, hashFirma);
+            // Guardar el resultado de checkTransaction para evitar múltiples llamadas
+            int transactionCheck = checkTransaction(idTransaction);
+            System.out.println("checkTransaction(idTransaction, modulo) > " + transactionCheck);
+
+            // Condición para verificar que no existe ninguna transacción con el mismo idTransaction y modulo
+            if (transactionCheck == 0) {
+                System.out.println("No existen transacciones previas, procediendo a guardar la firma.");
+
+                // Guardar el hash en la base de datos en la tabla transaction_signature
+                saveTransactionSignature(idTransaccion, hashFirma);
+            } else {
+                System.out.println("Ya existe una o más transacciones, no se guarda la firma.");
+            }
 
             // Retornar el hash generado
             return hashFirma;
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al finalizar la transacción: " + e.getMessage());
@@ -305,6 +321,30 @@ public class AuthTransactionService implements AuthTransactionInterface {
         } else {
             System.out.println("Error al guardar la firma de transacción.");
         }
+    }
+
+    public int checkTransaction(String idTransaccion) {
+        // Primero, verifica si el id_transaccion ya existe
+        String checkSql = stored.STORED_PROCEDURE_GET_AUTH_TRANSACTION_SIGN;
+        // Creando objeto de inserción
+        Object[] paramsCheck = {
+            idTransaccion
+        };
+
+        // Ejecutar la consulta y obtener el ResultSet
+        ResultSet rs = genericSQL.select(checkSql, paramsCheck);
+        int count = 0;
+
+        try {
+            if (rs.next()) {
+                count = rs.getInt("count");  // Obtener el conteo de registros
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al verificar el id_transaccion.");
+        }
+        System.out.println("count> " + count);
+        return count;
     }
 
 }
