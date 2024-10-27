@@ -90,9 +90,7 @@ public class AuthTransactionService implements AuthTransactionInterfaceSing {
             logger.info("Ejecutando inserción en la base de datos para la transacción.");
 
             // Guardar el resultado de checkTransaction para evitar múltiples llamadas
-
             boolean isInserted = genericSQL.insert(stored.STORED_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION, params);
-
 
             if (isInserted) {
                 logger.info("¡Transacción de autenticación insertada con éxito!");
@@ -347,4 +345,8 @@ public class AuthTransactionService implements AuthTransactionInterfaceSing {
         return count;
     }
 
+    @Override
+    public void getInfoTransactionPenddingAth() {
+
+    }
 }

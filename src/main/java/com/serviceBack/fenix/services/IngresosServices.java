@@ -309,6 +309,9 @@ public class IngresosServices implements IngresosInterfaces {
                     ingresoPendiente.setBultos(rs.getInt("bultos"));
                     ingresoPendiente.setValor(rs.getDouble("valor"));
                     ingresoPendiente.setEstado(rs.getString("estado") != null ? rs.getString("estado") : "Pendiente");
+                    ingresoPendiente.setEstado_transaccion("Pendiente");
+                    ingresoPendiente.setReferenciaUnica("132602016063");
+                    ingresoPendiente.setUsuario(rs.getString("usuario_id"));
 
                     return ingresoPendiente;
                 }

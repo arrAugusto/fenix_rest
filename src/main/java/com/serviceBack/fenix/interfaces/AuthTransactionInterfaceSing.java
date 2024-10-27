@@ -5,4 +5,5 @@ import com.serviceBack.fenix.models.AuthTransaction;
 
 public interface AuthTransactionInterfaceSing {
     public ResponseService authTransaction(AuthTransaction authTransaction);
+    public void getInfoTransactionPenddingAth();
 }

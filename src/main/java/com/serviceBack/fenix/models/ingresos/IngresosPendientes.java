@@ -23,5 +23,7 @@ public class IngresosPendientes {
     private int bultos;
     private double valor;
     private String estado;
-
+    private String usuario;
+    private String estado_transaccion;
+    private String referenciaUnica;
 }
