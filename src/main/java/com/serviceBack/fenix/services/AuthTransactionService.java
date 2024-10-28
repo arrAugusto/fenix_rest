@@ -83,7 +83,8 @@ public class AuthTransactionService implements AuthTransactionInterfaceSing {
                 authTransaction.getIdTransaction(),
                 authTransaction.getAuth_transaccion(),
                 authTransaction.getUsuario_firma(),
-                authTransaction.getModuloFirma()
+                authTransaction.getModuloFirma(),
+                authTransaction.getReferenciaUnica()
             };
 
             // Ejecutar la inserción en la base de datos
@@ -123,7 +124,7 @@ public class AuthTransactionService implements AuthTransactionInterfaceSing {
                         finishTransaction(authTransaction.getIdTransaction());
                         sendMail.alertas(stored.mailTO, stored.mailFROM, stored.PWD, this.MENSAJE_MAIL, this.SUBJECT, comprobante.getUrl_comprobante());
                         // Código y mensaje personalizados (antes era generiResponse.GenericResponsError)
-                        responseService.setCodeResponse(messageControll.MESSAGE_FENIX_00);
+                        responseService.setCodeResponse("00");
                         responseService.setMessageResponse(messageControll.MESSAGE_FENIX_DEFAULT);
                         responseService.setData(Arrays.asList(pdfResponse.getData()));
                         return responseService;

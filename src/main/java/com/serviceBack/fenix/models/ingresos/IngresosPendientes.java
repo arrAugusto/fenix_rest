@@ -11,7 +11,6 @@ import lombok.ToString;
  *
  * @author agr12
  */
-
 @Data
 @ToString
 
@@ -26,4 +25,5 @@ public class IngresosPendientes {
     private String usuario;
     private String estado_transaccion;
     private String referenciaUnica;
+    private String config_form;
 }

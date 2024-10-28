@@ -18,7 +18,7 @@ public class AuthTransaction {
     
     private String idTransaction;
     private String moduloFirma;
-
+    private String referenciaUnica;
     @JsonIgnore
     private String auth_transaccion;
     @JsonIgnore

@@ -10,6 +10,9 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
@@ -85,4 +88,40 @@ public class SecureUniqueCodeGenerator {
 
         return signature.toString();
     }
+
+    public static String generateTransactionId() {
+        // Genera un UUID
+        UUID uuid = UUID.randomUUID();
+        
+        // Obtén la fecha y hora actual en formato 'yyyyMMddHHmmss'
+        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
+        // Genera un número aleatorio adicional para mayor aleatoriedad
+        int randomNum = ThreadLocalRandom.current().nextInt(1000, 9999);
+        
+        // Concatenar UUID, timestamp y número aleatorio
+        String uniqueString = uuid.toString() + timestamp + randomNum;
+        
+        try {
+            // Crear instancia de SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(uniqueString.getBytes(StandardCharsets.UTF_8));
+            
+            // Codificar en Base64, convertir a mayúsculas y eliminar caracteres especiales
+            String base64Encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(hash).replaceAll("[^A-Z0-9]", "").toUpperCase();
+            
+            // Asegurar que la longitud sea de exactamente 30 caracteres
+            if (base64Encoded.length() < 30) {
+                base64Encoded = String.format("%-30s", base64Encoded).replace(' ', 'X');
+            } else if (base64Encoded.length() > 30) {
+                base64Encoded = base64Encoded.substring(0, 30);
+            }
+
+            return base64Encoded;
+            
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al generar ID de transacción", e);
+        }
+    }
+    
 }

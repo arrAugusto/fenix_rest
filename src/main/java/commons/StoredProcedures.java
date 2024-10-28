@@ -17,7 +17,7 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";//Crear usuarios
 
     //INGRESOS
-    public final String STORED_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//Crear ingresos
+    public final String STORED_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//Crear ingresos
 
     //CHECKAR TRANSACCION INGRESO
     public final String STORED_PROCEDURE_CALL_CHECK_INCOME = "CALL CHECK_INCOME(?)";//Validación de ingresos
@@ -78,7 +78,7 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_GET_OPTION_DYNAMICS_FORM = "CALL GET_OPTION_DYNAMICS_FORM(?)";//Ver las opciones para los select
 
     //INSERTAR AUTH FIRMA DE TRANSACCION
-    public final String STORED_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION = "CALL INSERT_AUTH_TRANSACTION(?,?,?,?)";//Insert la auth de la transaccion
+    public final String STORED_PROCEDURE_CALL_INSERT_AUTH_TRANSACTION = "CALL INSERT_AUTH_TRANSACTION(?,?,?,?,?)";//Insert la auth de la transaccion
 
     //VIEW CONFIG FIRMAS
     public final String STORED_PROCEDURE_CALL_GET_CONFIG_FIRMAS = "CALL GET_CONFIG_FIRMAS(?)";//Get config firmas
