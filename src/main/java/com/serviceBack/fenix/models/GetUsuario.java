@@ -11,15 +11,19 @@ import lombok.ToString;
  *
  * @author agr12
  */
+
 @Data
 @ToString
-public class GetSession {
-
-    private String user;
-    private String status;
+public class GetUsuario {
+    private int id;
+    private String nombres;
+    private String apellidos;
+    private String codigoEmpleado;
     private String perfil;
-
-    private String jwt;
-    private String strSessionId;
+    private String status;
+    private String usuario;
+    private String fechaCreacion;
+    private String imagenPerfil;
+    private int paquete;
 
 }

@@ -14,7 +14,7 @@ public class StoredProcedures {
     public final String STORED_PROCEDURE_CALL_GET_LOGING_USER = "CALL GET_LOGIN_USER(?)";//Login
 
     //LOG INICIO DE SESSION
-    public final String STORED_PROCEDURE_CALL_LOG_USER = "CALL INSERT_INICIO_SESSION(?,?,?,?)";//Crear usuarios
+    public final String STORED_PROCEDURE_CALL_INSERT_USER_LOG = "CALL INSERT_USER_LOG(?,?,?,?,?,?)";//Crear usuarios
 
     //INGRESOS
     public final String STORED_PROCEDURE_CALL_INSERT_INGRESO = "CALL INSERT_INGRESO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//Crear ingresos

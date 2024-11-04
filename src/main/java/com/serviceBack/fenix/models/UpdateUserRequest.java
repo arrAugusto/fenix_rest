@@ -5,21 +5,14 @@
 package com.serviceBack.fenix.models;
 
 import lombok.Data;
-import lombok.ToString;
 
 /**
  *
  * @author agr12
  */
 @Data
-@ToString
-public class GetSession {
-
-    private String user;
-    private String status;
+public class UpdateUserRequest {
+    private int id;
     private String perfil;
-
-    private String jwt;
-    private String strSessionId;
-
+    private String status;
 }

@@ -5,21 +5,14 @@
 package com.serviceBack.fenix.models;
 
 import lombok.Data;
-import lombok.ToString;
 
 /**
  *
  * @author agr12
  */
 @Data
-@ToString
-public class GetSession {
+public class ResetPasswordRequest {
 
-    private String user;
-    private String status;
-    private String perfil;
-
-    private String jwt;
-    private String strSessionId;
-
+    private int id;
+    private String newPassword;
 }
