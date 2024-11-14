@@ -9,6 +9,7 @@ package commons;
  * @author agr12
  */
 public class CommonsLogic {
+    public static final String TRANSACTION_01_INCOME = "01"; // TRANSACCTION 02 INCOME PRODUCTS
 
     public static final String TRANSACTION_02_INCOME_DETAILS = "02"; // TRANSACCTION 02 INCOME PRODUCTS
     

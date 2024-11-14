@@ -67,4 +67,9 @@
         "code": "16",
         "message": "ERROR INTERNO CONSULTE AL ADMINISTRADOR DEL SISTEMA."
     }    
+,
+    "FENIX_17": {
+        "code": "17",
+        "message": "ERROR EN VALIDACION DE INGRESO"
+    }       
 }

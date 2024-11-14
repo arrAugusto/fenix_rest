@@ -1,5 +1,6 @@
 package com.serviceBack.fenix.services;
 
+import com.serviceBack.fenix.Utils.GenericSQL;
 import com.serviceBack.fenix.services.subService.RegisterProducts;
 import com.serviceBack.fenix.Utils.QRCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,8 @@ public class IngresosServices implements IngresosInterfaces {
 
     private String MENSAJE_MAIL = "";
     private String SUBJECT = "";
-
+    
+    private final GenericSQL genericSQL;
     private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
     private final JdbcTemplate jdbcTemplate;
     private final StoredProcedures stored; // Nueva variable de instancia
@@ -62,7 +64,8 @@ public class IngresosServices implements IngresosInterfaces {
     private SendMailIngresos sendMailIng;
 
     @Autowired
-    public IngresosServices(JdbcTemplate jdbcTemplate) {
+    public IngresosServices(JdbcTemplate jdbcTemplate, GenericSQL genericSQL) {
+        this.genericSQL = genericSQL;        
         this.jdbcTemplate = jdbcTemplate;
         this.stored = new StoredProcedures(); // Inicializa la variable stored en el constructor
         this.sendMail = new Send();
@@ -115,6 +118,26 @@ public class IngresosServices implements IngresosInterfaces {
 
             genericincomeItems(stored.STORED_PROCEDURE_CALL_UPDATE_INGRESO_EXITOSO, ingreso.getId_transaccion());
             switch (ingreso.getCodigo_transaccion()) {
+                case CommonsLogic.TRANSACTION_01_INCOME://if transaction 02 details registrer
+                    CheckIncome check = new CheckIncome();
+                    String message = check.validFormIncome(ingreso);
+                    if (!message.equals("00")) {
+                        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        //Creando objeto de inserccion
+                        Object[] params = {
+                            "17",
+                            message,
+                            ingreso.getId_transaccion()
+                        };
+                        //Insertando el detalle de mercaderia
+                        this.genericSQL.updateTransaction(stored.STORED_PROCEDURE_CALL_UPDATE_REVISION_ERRONEA, params);
+                        //Si no se inserto el registro retornar error
+                        System.out.println(">XZxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                            return generiResponse.GenericResponsError(messageControll.MESSAGE_FENIX_17, message);
+                       
+
+                    }
+                    break;
                 case CommonsLogic.TRANSACTION_02_INCOME_DETAILS://if transaction 02 details registrer
                     try {
                     registerProducts.registerProduct(ingreso);
@@ -134,7 +157,6 @@ public class IngresosServices implements IngresosInterfaces {
                 default:
                     this.MENSAJE_MAIL = this.uxMessages.INGRESO_EXITOSO;
                     this.SUBJECT = this.uxMessages.SUBJECT_INGRESO_EXITOSO;
-
                     break;
             }
             // Enviar correo electrónico de alerta
@@ -313,8 +335,7 @@ public class IngresosServices implements IngresosInterfaces {
                     ingresoPendiente.setReferenciaUnica(rs.getString("referencia_unica"));
                     ingresoPendiente.setUsuario(rs.getString("usuario_id"));
                     ingresoPendiente.setUsuario(rs.getString("usuario_id"));
-                    ingresoPendiente.setConfig_form(rs.getString("config_form<"));
-                    
+                    ingresoPendiente.setConfig_form(rs.getString("config_form"));
 
                     return ingresoPendiente;
                 }

@@ -45,55 +45,49 @@ public class SessionUsuarios implements UsuariosInterfaces {
     public ResponseService startSession(Usuarios usuarios) {
         ResponseService responseService = new ResponseService();
         String checkStatusSql = "SELECT status FROM usuarios_kimbo WHERE usuario = ?";
-        String status;
 
         try {
             // Verificar el estado del usuario
-            status = jdbcTemplate.queryForObject(checkStatusSql, new Object[]{usuarios.getUsuario()}, String.class);
+            String status = jdbcTemplate.queryForObject(checkStatusSql, new Object[]{usuarios.getUsuario()}, String.class);
 
             if (!"A".equalsIgnoreCase(status)) {
-                // Usuario inactivo
-                responseService.setCodeResponse("403");
-                responseService.setMessageResponse("Usuario inactivo");
+                // Mensaje de error general para usuarios inactivos
+                responseService.setCodeResponse("401");
+                responseService.setMessageResponse("Usuario o contraseña incorrectos");
                 responseService.setData(null);
                 return responseService;
             }
 
         } catch (EmptyResultDataAccessException e) {
-            // Usuario no encontrado
-            responseService.setCodeResponse("404");
-            responseService.setMessageResponse("Usuario no existe");
+            // Usuario no encontrado, pero el mensaje es generalizado
+            responseService.setCodeResponse("401");
+            responseService.setMessageResponse("Usuario o contraseña incorrectos");
             responseService.setData(null);
             return responseService;
         }
 
         // Usuario activo, proceder con el proceso de inicio de sesión
         try {
-            List<GetSession> sessions = jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()}, new RowMapper<GetSession>() {
+            jdbcTemplate.query(stored.STORED_PROCEDURE_CALL_GET_LOGING_USER, new Object[]{usuarios.getUsuario()},
+                    new RowMapper<GetSession>() {
                 @Override
                 public GetSession mapRow(ResultSet rs, int rowNum) throws SQLException {
                     GetSession session = new GetSession();
-                    session.setUser(rs.getString("usuario"));
 
-                    // Verificar la contraseña
-                    if (usuarios.getUsuario().toUpperCase().equals(rs.getString("usuario"))
-                            && BCrypt.checkpw(usuarios.getSecrete_pass(), rs.getString("secrete_pass"))) {
-
-                        // Configuración de la sesión
+                    // Verificar la contraseña de manera segura
+                    if (BCrypt.checkpw(usuarios.getSecrete_pass(), rs.getString("secrete_pass"))) {
+                        session.setUser(rs.getString("usuario"));
                         session.setPerfil(rs.getString("perfil"));
                         session.setStatus(rs.getString("status"));
 
                         // Generación del JWT
-                        String idUser = rs.getString(1);
                         String jwt = jwtService.generateToken(usuarios, session.getPerfil(), session.getStatus());
-                        System.out.println(jwt);
 
                         // Generación del ID de sesión
                         String strSessionId = strSessiones.generateSessionId();
-                        System.out.println("Token de sesión: " + strSessionId);
 
                         Object[] params = new Object[]{
-                            Integer.parseInt(idUser),
+                            Integer.parseInt(rs.getString(1)),
                             usuarios.getUsuario(),
                             "A",
                             strSessionId,
@@ -102,18 +96,17 @@ public class SessionUsuarios implements UsuariosInterfaces {
                         };
 
                         // Ejecutar el procedimiento de log
-                        int result = jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_USER_LOG, params);
-                        if (result > 0) {
-                            session.setJwt(jwt);
-                            session.setStrSessionId(strSessionId);
-                        }
+                        jdbcTemplate.update(stored.STORED_PROCEDURE_CALL_INSERT_USER_LOG, params);
 
-                        // Configurar la respuesta con el JWT
-                        responseService.setCodeResponse("200");
+                        session.setJwt(jwt);
+                        session.setStrSessionId(strSessionId);
+
+                        // Configurar la respuesta exitosa
+                        responseService.setCodeResponse("00");
                         responseService.setMessageResponse("Sesión iniciada correctamente");
                         responseService.setData(Arrays.asList(session));
                     } else {
-                        throw new RuntimeException("Contraseña incorrecta");
+                        throw new RuntimeException("Usuario o contraseña incorrectos");
                     }
 
                     return session;
@@ -121,9 +114,9 @@ public class SessionUsuarios implements UsuariosInterfaces {
             });
 
         } catch (Exception e) {
-            // Error en el proceso de autenticación
-            responseService.setCodeResponse("500");
-            responseService.setMessageResponse("Error interno: " + e.getMessage());
+            // Manejo de error generalizado para cualquier problema durante la autenticación
+            responseService.setCodeResponse("401");
+            responseService.setMessageResponse("Usuario o contraseña incorrectos");
             responseService.setData(null);
         }
 
@@ -175,6 +168,7 @@ public class SessionUsuarios implements UsuariosInterfaces {
             return false;
         }
     }
+
     @Override
     public ResponseService getAllUsers() {
         String sql = "SELECT id, nombres, apellidos, codigoEmpleado, perfil, status, usuario, fecha_creacion, imagen_perfil, paquete FROM kimbo_database.usuarios_kimbo";
@@ -198,7 +192,7 @@ public class SessionUsuarios implements UsuariosInterfaces {
         });
 
         ResponseService<List<GetUsuario>> responseService = new ResponseService<>();
-        responseService.setCodeResponse("200");
+        responseService.setCodeResponse("00");
         responseService.setMessageResponse("Usuarios obtenidos exitosamente");
         responseService.setData(Arrays.asList(usuarios));
 

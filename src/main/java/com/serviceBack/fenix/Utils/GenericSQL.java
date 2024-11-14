@@ -49,6 +49,32 @@ public class GenericSQL {
     }
 
     /**
+     * Método genérico para ejecutar una consulta de actualización utilizando
+     * PreparedStatement.
+     *
+     * @param sqlQuery La consulta SQL en formato de String.
+     * @param params Los parámetros a insertar en la consulta.
+     * @return true si la actualización fue exitosa (al menos una fila
+     * afectada), false en caso contrario.
+     */
+    public boolean updateTransaction(String sqlQuery, Object[] params) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        try {
+            connection = DataSourceUtils.getConnection(dataSource);
+            ps = connection.prepareStatement(sqlQuery);
+            setParameters(ps, params); // Establece los parámetros dinámicos
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Devuelve true si se afectó al menos una fila
+        } catch (SQLException e) {
+            logger.error("Error al ejecutar la consulta de actualización: " + e.getMessage(), e);
+            return false;
+        } finally {
+            closeResources(null, ps, connection); // Asegura la liberación de recursos
+        }
+    }
+
+    /**
      * Método genérico para ejecutar un procedimiento almacenado o una consulta
      * SELECT y devolver el ResultSet si es aplicable. El cierre del ResultSet
      * se debe hacer manualmente en el lugar de uso.

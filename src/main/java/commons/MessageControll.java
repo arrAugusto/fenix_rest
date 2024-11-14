@@ -45,4 +45,6 @@ public class MessageControll {
     public final String MESSAGE_FENIX_15 = "FENIX_15";
     //error interno
     public final String MESSAGE_FENIX_16 = "FENIX_16";
+    //error interno
+    public final String MESSAGE_FENIX_17 = "FENIX_17";    
 }
