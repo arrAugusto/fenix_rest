@@ -8,84 +8,84 @@
 ![JWT](https://img.shields.io/badge/Security-JWT-yellow)
 ![Linux](https://img.shields.io/badge/Infra-Linux%20VPS-black)
 
-Plataforma **orquestadora de procesos transaccionales** diseñada para modelar y ejecutar flujos empresariales completos de forma **configurable desde base de datos**, sin necesidad de cambios en código.
+Kimbo is a **transaction process orchestration platform** designed to model and execute complete business workflows in a **database-driven and configurable way**, without requiring code changes.
 
 ---
 
-## 🧠 Descripción general
+## 🧠 Overview
 
-Kimbo es una solución empresarial compuesta por **backend, frontend y base de datos**, que desacopla la lógica del proceso del código fuente.  
-Permite definir **formularios, flujos, estados, responsables y validaciones** directamente desde la base de datos.
+Kimbo is an enterprise solution composed of **backend, frontend, and database**, designed to decouple business process logic from source code.
 
-El sistema fue aplicado a un **caso real de gestión de embarques e importaciones**, cubriendo todo el ciclo operativo.
+It allows defining **forms, workflows, states, responsibilities, and validations** directly in the database, enabling flexible and dynamic business process execution.
+
+The system was implemented for a **real-world shipment and import management use case**, covering the full operational lifecycle.
 
 ---
 
-## 🧩 Proyectos que componen la solución
+## 🧩 Solution Components
 
-### ⚙ Backend – API REST
+### ⚙ Backend – REST API
 📦 **fenix_rest**  
 https://github.com/arrAugusto/fenix_rest
 
-- Java 1.8 + Spring Boot
-- Orquestación de procesos transaccionales
-- Validaciones y control de estados
-- Autenticación con JWT
-- Documentación con Swagger
+- Java 1.8 + Spring Boot  
+- Transaction process orchestration engine  
+- State management and validations  
+- JWT-based authentication  
+- API documentation with Swagger  
 
 ---
 
-### 🎨 Frontend – Aplicación Web
+### 🎨 Frontend – Web Application
 📦 **kimbo**  
 https://github.com/arrAugusto/kimbo
 
-- Angular
-- Formularios dinámicos
-- Flujo por etapas (registro, seguimiento, cierre)
-- UI por roles y estados
-- Consumo de APIs REST
+- Angular  
+- Dynamic form rendering  
+- Stage-based workflows (creation, tracking, closure)  
+- Role- and state-based UI  
+- REST API integration  
 
 ---
 
-### 🗄 Base de Datos
+### 🗄 Database
 📦 **kimbo_database**  
 https://github.com/arrAugusto/kimbo_database
 
-- MySQL
-- Modelo relacional normalizado
-- Catálogos, flujos y trazabilidad
-- Control documental y métricas
+- MySQL  
+- Normalized relational data model  
+- Workflow configuration and traceability  
+- Document control and operational metrics  
 
 ---
 
-## 🔄 Flujo funcional implementado
+## 🔄 Functional Workflow
 
-1. **Registro** – Creación inicial del proceso  
-2. **Seguimiento** – Actualización operativa en tránsito  
-3. **Cierre** – Control documental y métricas finales  
-
----
-
-## 🏗 Arquitectura
-
-- Frontend: Angular
-- Backend: Spring Boot (REST)
-- Base de datos: MySQL
-- Infraestructura: Linux VPS, Apache, Tomcat
-
-Arquitectura desacoplada, escalable y orientada a procesos.
+1. **Creation** – Initial process registration  
+2. **Tracking** – Operational updates during execution  
+3. **Closure** – Document control and final metrics  
 
 ---
 
-## ⚠ Nota
+## 🏗 Architecture
 
-Este proyecto representa una **implementación real**.  
-Los repositorios públicos no contienen información sensible ni datos productivos.
+- Frontend: Angular  
+- Backend: Spring Boot (REST)  
+- Database: MySQL  
+- Infrastructure: Linux VPS, Apache, Tomcat  
+
+The architecture is **decoupled, scalable, and process-oriented**, suitable for transactional and enterprise environments.
 
 ---
 
-## 👤 Autor
+## ⚠ Disclaimer
+
+This repository represents a **real production implementation**.  
+Public repositories do **not** contain sensitive or production data.
+
+---
+
+## 👤 Author
 
 **Augusto Rufino Gómez Concúan**  
-Arquitectura · Backend · Frontend
-
+Architecture · Backend · Frontend
