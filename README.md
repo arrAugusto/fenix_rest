@@ -22,6 +22,19 @@ The system was implemented for a **real-world shipment and import management use
 
 ---
 
+## 🌐 Live Demo (Non-Production)
+
+The application is available for demonstration purposes at the following VPS URL:
+
+🔗 **http://72.62.82.104/kimbo/auth_login**
+
+> ⚠ **Note:**  
+> This environment is **not a production system**.  
+> It is hosted on a VPS without a custom domain, which is why it is accessed via an IP address.  
+> The instance exists solely for **technical demonstration and evaluation purposes** and does not contain real or sensitive data.
+
+---
+
 ## 🧩 Solution Components
 
 ### ⚙ Backend – REST API
